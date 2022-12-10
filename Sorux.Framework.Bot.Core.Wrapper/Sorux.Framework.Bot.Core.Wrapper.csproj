@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sorux.Framework.Bot.Core.Kernel\Sorux.Framework.Bot.Core.Kernel.csproj" />
+    <ProjectReference Include="..\Sorux.Framework.Bot.Core.Shell\Sorux.Framework.Bot.Core.Shell.csproj" />
+  </ItemGroup>
+
 </Project>

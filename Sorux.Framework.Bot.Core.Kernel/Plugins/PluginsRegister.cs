@@ -13,7 +13,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
         public static void Register(string path,string name)
         {
             Assembly assembly= Assembly.LoadFile(path);
-            Type? type = assembly.GetType(name.Replace(".dll", ".RegisterInformation"));
+            Type? type = assembly.GetType(name.Replace(".dll", ".Register"));
             if (type == null)
                 Global.GetGlobal().Logger
                       .LogWarn("[SoruxBot][PluginsRegister]The plugin:"+name+"can not be loaded exactly" +

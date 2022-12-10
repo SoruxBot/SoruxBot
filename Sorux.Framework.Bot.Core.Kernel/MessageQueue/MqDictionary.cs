@@ -23,7 +23,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
         private Queue<string> _Queue = new Queue<string>();
         public void DisposeFromLocalStorage()
         {
-            Global.GetGlobal().Logger.LogInformation("[MQ]Dispose all local Storage");
+            Global.GetGlobal().Logger.LogInformation("[SoruxBot][MQ]Dispose all local Storage");
             new FileInfo(DsLocalStorage.GetMessageQueuePath()).Delete();
         }
 

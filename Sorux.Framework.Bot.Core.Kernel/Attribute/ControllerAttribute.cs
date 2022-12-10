@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Attribute
 {
-    public class PermissionFilter : System.Attribute
+    /// <summary>
+    /// Mark Controller
+    /// </summary>
+    public class ControllerAttribute
     {
-
+        public ControllerAttribute() { }
     }
 }

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "ykgWM5lhzn1XdF4YxeGHAnbDjBn4C+s6ZAd089hRDL4=",
+  "Source": "Sorux.Framework.Bot.Core.Shell",
+  "BasePath": "_content/Sorux.Framework.Bot.Core.Shell",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

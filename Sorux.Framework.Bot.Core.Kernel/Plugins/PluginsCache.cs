@@ -8,5 +8,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
 {
     internal class PluginsCache
     {
+
     }
 }

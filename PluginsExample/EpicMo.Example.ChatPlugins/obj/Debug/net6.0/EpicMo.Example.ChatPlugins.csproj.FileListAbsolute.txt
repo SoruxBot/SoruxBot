@@ -1,0 +1,15 @@
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\bin\Debug\net6.0\EpicMo.Example.ChatPlugins.deps.json
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\bin\Debug\net6.0\EpicMo.Example.ChatPlugins.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\bin\Debug\net6.0\EpicMo.Example.ChatPlugins.pdb
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.csproj.AssemblyReference.cache
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.GeneratedMSBuildEditorConfig.editorconfig
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.AssemblyInfoInputs.cache
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.AssemblyInfo.cs
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.csproj.CoreCompileInputs.cache
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\refint\EpicMo.Example.ChatPlugins.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\EpicMo.Example.ChatPlugins.pdb
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\PluginsExample\EpicMo.Example.ChatPlugins\obj\Debug\net6.0\ref\EpicMo.Example.ChatPlugins.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Wrapper\bin\Debug\net6.0\Plugins\Bin\Debug\net6.0\EpicMo.Example.ChatPlugins.deps.json
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Wrapper\bin\Debug\net6.0\Plugins\Bin\Debug\net6.0\EpicMo.Example.ChatPlugins.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Wrapper\bin\Debug\net6.0\Plugins\Bin\Debug\net6.0\EpicMo.Example.ChatPlugins.pdb

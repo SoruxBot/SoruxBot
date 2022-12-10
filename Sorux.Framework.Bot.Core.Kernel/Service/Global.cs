@@ -19,7 +19,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Service
             if (global != null)
                 throw new Exception("Cannot Register two Global instances.");
         }
-
         public static Global GetGlobal() => global;
     }
 }

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Sorux.Framework.Bot.Core.Shell.props" />
+</Project>

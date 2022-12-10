@@ -16,5 +16,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                     .ToList()
                     .ForEach(plugin => PluginsRegister.Register(plugin.FullName,plugin.Name));
         }
+
+
     }
 }

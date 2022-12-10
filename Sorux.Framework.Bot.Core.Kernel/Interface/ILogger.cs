@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Interface
 {
+    
     public interface ILogger
     {
         void LogInformation(string log);

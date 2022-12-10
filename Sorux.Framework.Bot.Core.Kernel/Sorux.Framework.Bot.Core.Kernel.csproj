@@ -15,7 +15,6 @@
     <Folder Include="Network\" />
     <Folder Include="Protocol\" />
     <Folder Include="Filter\" />
-    <Folder Include="AOP\" />
     <Folder Include="BotInstance\" />
   </ItemGroup>
 
