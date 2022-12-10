@@ -7,4 +7,12 @@
     <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="GroupMessageController\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Sorux.Framework.Bot.Core.Kernel\Sorux.Framework.Bot.Core.Kernel.csproj" />
+  </ItemGroup>
+
 </Project>

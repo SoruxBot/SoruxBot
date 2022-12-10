@@ -11,7 +11,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Attribute
     /// The command need not the beginning mark.If need , mark your need explicitly.
     /// the parameter in the <> will be fill automatically with the suitable command patameter
     /// the parameter in the [] is optional ,which means the parameter waiting for the data have default value
-    /// 
     /// </summary>
     internal class CommandAttribute : System.Attribute
     {

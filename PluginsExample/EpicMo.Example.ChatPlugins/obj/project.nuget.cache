@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "SlZlINFWtlRYk97NFXFeLlGNSMbBTaZumeqAcfsiCMgEhZPiJ2cj58No7cbdjt+0+YO/oMjXAScKJOWRKNsTtQ==",
+  "dgSpecHash": "i7PqCwQ6YMP2HmVm92dES94xlmT8c4UzZ8GiJurwXVyM6zADOgPPNXKAbb99iZAppG0Eg3mmnG93+XObn97DHw==",
   "success": true,
   "projectFilePath": "H:\\Sorux\\SoruxBot\\Sorux.Framework.Bot\\PluginsExample\\EpicMo.Example.ChatPlugins\\EpicMo.Example.ChatPlugins.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\EpicMo\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\7.0.0\\microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\EpicMo\\.nuget\\packages\\newtonsoft.json\\12.0.1\\newtonsoft.json.12.0.1.nupkg.sha512",
+    "C:\\Users\\EpicMo\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512"
+  ],
   "logs": []
 }

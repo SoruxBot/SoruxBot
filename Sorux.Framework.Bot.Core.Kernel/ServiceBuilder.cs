@@ -1,5 +1,7 @@
 ﻿using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
+using Sorux.Framework.Bot.Core.Kernel.Logger;
+using Sorux.Framework.Bot.Core.Kernel.MessageQueue;
 using Sorux.Framework.Bot.Core.Kernel.Plugins;
 using Sorux.Framework.Bot.Core.Kernel.Service;
 using System;
@@ -12,8 +14,11 @@ namespace Sorux.Framework.Bot.Core.Kernel
 {
     public class ServiceBuilder
     {
-        private IMessageQueue messageQueue;
-        private ILogger logger;
+        private IMessageQueue messageQueue = MqDictionary.GetInstance();
+        private ILogger logger = Logger.Logger.GetInstance();
+        private IPluginsStorage pluginsStorage = PluginsLocalStorage.GetInstance();
+        private IPluginsStoragePermanentAble? pluginsStoragePermanentAble;
+        private IPluginsStorageWebSupport? pluginsStorageWebSupport;
         public ServiceBuilder AddMessageQueue(IMessageQueue messageQueue)
         {
             this.messageQueue = messageQueue;
@@ -33,7 +38,12 @@ namespace Sorux.Framework.Bot.Core.Kernel
         {
             Global global = new Global(
                 this.logger,
-                this.messageQueue);
+                this.messageQueue,
+                this.pluginsStorage);
+            if (pluginsStorageWebSupport != null)
+                global.AddPluginsStorageWebSupport(pluginsStorageWebSupport);
+            if (pluginsStoragePermanentAble != null) 
+                global.AddPluginsStoragePerment(pluginsStoragePermanentAble);
         }
     }
 }
