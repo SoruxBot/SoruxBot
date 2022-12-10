@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "CEeYFIQB1CLhy7AneRx53LC4jPSRm1ku3qCZlXA5zij1+tU6de1hlv9klqVeyZoZNsZxmCf5kaSLeoqLFoWq6Q==",
+  "success": true,
+  "projectFilePath": "H:\\Sorux\\SoruxBot\\Sorux.Framework.Bot\\Sorux.Framework.Bot.Core.Kernel\\Sorux.Framework.Bot.Core.Kernel.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\EpicMo\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\7.0.0\\microsoft.extensions.logging.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\EpicMo\\.nuget\\packages\\newtonsoft.json\\12.0.1\\newtonsoft.json.12.0.1.nupkg.sha512",
+    "C:\\Users\\EpicMo\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
