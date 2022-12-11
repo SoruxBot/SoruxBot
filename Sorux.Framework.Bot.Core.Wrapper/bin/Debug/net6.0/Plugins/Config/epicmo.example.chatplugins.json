@@ -1,0 +1,19 @@
+{
+    "name": "epicmo.example.chatplugins",
+    "privilege": "1",
+    "permission": [
+        {
+            "node": "chatplugins.superadmin",
+            "group": "$SuperAdmin"
+        },
+        {
+            "node": "chatplugins.manager",
+            "group": "$Manager"
+        },
+        {
+            "node": "chatplugins.common.*",
+            "group": "$Default"
+        }
+    ],
+    "permission_deny_msg": "$TriggerUser你好，你所在的用户组$TriggerGroup不含有执行此命令的权限节点，如果需要使用请添加权限节点$TriggerPermissionNode"
+}

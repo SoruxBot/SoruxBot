@@ -20,9 +20,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Attribute
         //We do not support you use different command prefix in one plugin.
         public enum Prefix
         {
-            None = 1,
-            Single = 2,
-            Global = 3,
+            None = 0,
+            Single = 1,
+            Global = 2,
         }
     }
 }

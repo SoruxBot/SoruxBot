@@ -23,6 +23,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Attribute
         }
         public enum CoolDownTarget
         {
+            None = 0,
             SinglePerson = 1,
             CommonUsers = 2,
             CommonUsersAndManagers = 3,

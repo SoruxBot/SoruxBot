@@ -17,6 +17,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Attribute
         //If you need to lmit user please use CommandPermission and mark LongCommunicatePermissionBinding
         public enum LongCommunicateType
         {
+            None = 0,
             SingleUserListener = 1,
             AllUserListener = 2,
             PermissionBinding = 3,

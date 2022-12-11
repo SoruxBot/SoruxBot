@@ -1,5 +1,8 @@
-﻿using Sorux.Framework.Bot.Core.Kernel.DataStorage;
+﻿using Newtonsoft.Json;
+using Sorux.Framework.Bot.Core.Kernel.DataStorage;
+using Sorux.Framework.Bot.Core.Kernel.Models;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Interface;
+using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Service;
 using System;
 using System.Collections.Generic;
@@ -31,13 +34,18 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                       ", please check the plugin with its developer");
                 return;
             }
-                PluginsLocalStorage.GetInstance()
+            JsonConfig jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
+                File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
+            Global.GetGlobal().pluginsStorage
                                    .AddPlugins(basicInformationRegister.GetName(),
                                                basicInformationRegister.GetAuthor(),
                                                basicInformationRegister.GetDLL(),
                                                basicInformationRegister.GetVersion(),
-                                               basicInformationRegister.GetDescription());
+                                               basicInformationRegister.GetDescription(),
+                                               jsonfile);
 
+            if (basicInformationRegister is IPluginsUUIDRegister)
+                Plugins;
         }
     }
 }
