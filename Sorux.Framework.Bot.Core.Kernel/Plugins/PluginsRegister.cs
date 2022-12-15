@@ -41,11 +41,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                                basicInformationRegister.GetAuthor(),
                                                basicInformationRegister.GetDLL(),
                                                basicInformationRegister.GetVersion(),
-                                               basicInformationRegister.GetDescription(),
-                                               jsonfile);
+                                               basicInformationRegister.GetDescription()
+                                               );
 
-            if (basicInformationRegister is IPluginsUUIDRegister)
-                Plugins;
+           
+                
         }
     }
 }

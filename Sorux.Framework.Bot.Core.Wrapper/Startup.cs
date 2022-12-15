@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Interface
+namespace Sorux.Framework.Bot.Core.Wrapper
 {
-    public interface IPluginsStorageWebSupport
+    public class Startup
     {
 
     }

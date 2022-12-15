@@ -28,7 +28,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
         }
 
         public string GetNextMessageRequest() => _Queue.Dequeue();
-
         public void RestoreFromLocalStorage()
         {
             Global.GetGlobal().Logger.LogInformation("[SoruxBot][MQ]Restore from local storage");

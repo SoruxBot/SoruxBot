@@ -1,0 +1,12 @@
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.csproj.AssemblyReference.cache
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.GeneratedMSBuildEditorConfig.editorconfig
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.AssemblyInfoInputs.cache
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.AssemblyInfo.cs
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.csproj.CoreCompileInputs.cache
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\bin\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.deps.json
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\bin\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\bin\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.pdb
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\refint\Sorux.Framework.Bot.Core.Kernel.dll
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\Sorux.Framework.Bot.Core.Kernel.pdb
+H:\Sorux\SoruxBot\Sorux.Framework.Bot\Sorux.Framework.Bot.Core.Kernel\obj\Debug\net6.0\ref\Sorux.Framework.Bot.Core.Kernel.dll
