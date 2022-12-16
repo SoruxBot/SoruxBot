@@ -18,7 +18,6 @@ namespace Sorux.Framework.Bot.Core.Kernel
         private ILogger logger = Logger.Logger.GetInstance();
         private IPluginsStorage pluginsStorage = PluginsLocalStorage.GetInstance();
         private IPluginsStoragePermanentAble? pluginsStoragePermanentAble;
-        private IPluginsStorageWebSupport? pluginsStorageWebSupport;
         public ServiceBuilder AddMessageQueue(IMessageQueue messageQueue)
         {
             this.messageQueue = messageQueue;
@@ -40,8 +39,6 @@ namespace Sorux.Framework.Bot.Core.Kernel
                 this.logger,
                 this.messageQueue,
                 this.pluginsStorage);
-            if (pluginsStorageWebSupport != null)
-                global.AddPluginsStorageWebSupport(pluginsStorageWebSupport);
             if (pluginsStoragePermanentAble != null) 
                 global.AddPluginsStoragePerment(pluginsStoragePermanentAble);
         }

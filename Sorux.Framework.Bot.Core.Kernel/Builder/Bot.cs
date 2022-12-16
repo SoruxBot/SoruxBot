@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,24 +16,34 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         {
             this.Services = services;
             this.Configuration = configuration;
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddSingleton(this);
+                    services.AddSingleton<ILoggerService,LoggerService>();
+                    services.AddHostedService<Work>();
+                })
+                .Build();
         }
         public BotServicesFactory Services { get; init; }
 
         public IConfiguration Configuration { get; init; }
 
+        private IHost _host;
+
         public void Dispose()
         {
-            throw new NotImplementedException();
+            this.Stop();
         }
 
-        public Task StartAsync(CancellationToken cancellationToken = default)
+        public void Start()
         {
-            throw new NotImplementedException();
+            _host.Run();
         }
 
-        public Task StopAsync(CancellationToken cancellationToken = default)
+        public void Stop()
         {
-            throw new NotImplementedException();
+            _host.StopAsync();
         }
     }
 }

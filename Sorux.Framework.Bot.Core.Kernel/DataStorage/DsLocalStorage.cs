@@ -17,6 +17,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             if (!new FileInfo(Directory.GetCurrentDirectory() + "\\parse.lock").Exists)
             {
                 new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Config").Create();
+                new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Logs").Create();
                 new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins").Create();
                 new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins\\Data").Create();
                 new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins\\Bin").Create();

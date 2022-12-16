@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sorux.Framework.Bot.Core.Kernel.Interface;
 using System;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         private IServiceCollection _services;
         //机器人实例的生成工厂
         private BotServicesFactory _servicesFactory = BotServicesFactory.Instance;
-
         public BotBuilder()
         {
             _services = new ServiceCollection();
@@ -41,11 +41,13 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             InitBotActions();
             //初始化IOC容器
             InitServices();
-            if (_serviceProvider is null)
+            //注册Bot配置的接口
+            _servicesFactory.ConfigureService(services =>
             {
-                throw new InvalidOperationException();
-            }
-            return _serviceProvider.GetRequiredService<IBot>();
+                services.AddSingleton(_servicesFactory);
+                services.AddSingleton(_appConfiguration!);
+            });
+            return new Bot(_servicesFactory,_appConfiguration!);
         }
         private void InitServices()
         {
@@ -54,7 +56,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             {
                 configureServicesAction(_appConfiguration!, services);
             }
-            _services= _servicesFactory.BuildContainer(_services);
+            _services= _servicesFactory.BuildContainer(services);
             _serviceProvider = _servicesFactory.GetProvider();
         }
 
@@ -84,9 +86,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             }
             #endregion
             BuildEnvironmentType bet = _RuntimeConfiguration["section:RuntimeSettings:key:RuntimeType"] switch { 
-                "Debug" => BuildEnvironmentType.Debug,
+                "Debug"     => BuildEnvironmentType.Debug,
                 "Developer" => BuildEnvironmentType.Developer,
-                _ => BuildEnvironmentType.Normal
+                _           => BuildEnvironmentType.Normal
             };
             _botBuilderContext = new BotBuilderContext(bet, runtimeSystemType);
         }

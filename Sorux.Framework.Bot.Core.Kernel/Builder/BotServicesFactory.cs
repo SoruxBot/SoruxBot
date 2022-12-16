@@ -24,7 +24,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             return this._services;
         }
 
+        public BotServicesFactory ConfigureService(Action<IServiceCollection> services) 
+        {
+            services(_services!);
+            
+            return this;
+        }
+
         public IServiceProvider GetProvider()
-            => _services.BuildServiceProvider();
+            => _services!.BuildServiceProvider();
     }
 }

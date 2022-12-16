@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
+using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +15,17 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
     public static class BotBuilderExtension
     {
-        internal static IBotBuilder CreateDefaultBotConfigure(this BotBuilder builder, string[]? args)
+        public static IBotBuilder CreateDefaultBotConfigure(this BotBuilder builder, string[]? args)
             => builder.ConfigureRuntimeConfiguration(config => ApplyDefaultRuntimeConfiguration(config, args))
                       .ConfigureBotConfiguration((context, config) => ApplyDefaultBotConfiguration(context, config))
-                      .ConfigureServices(ApplyDefaultServices);
+                      .ConfigureServices(ApplyDefaultServices)
+                      .ConfigureServices((config, services) =>
+                      {
+                          services.AddSingleton<IBot,Bot>();
+                          services.AddSingleton<ILoggerService, LoggerService>();
+                      });
 
-        internal static void ApplyDefaultRuntimeConfiguration(IConfigurationBuilder config, string[]? args)
+        private static void ApplyDefaultRuntimeConfiguration(IConfigurationBuilder config, string[]? args)
         {
             //添加CommandLine 的 args
             if (args is { Length: >0})
@@ -28,11 +34,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             }
         }
 
-        internal static void ApplyDefaultBotConfiguration(BotBuilderContext context,IConfigurationBuilder config)
+        private static void ApplyDefaultBotConfiguration(BotBuilderContext context,IConfigurationBuilder config)
         {
             //Bot Configuration主要负责配置连接器的组装等操作
             string cwd = Environment.CurrentDirectory;
-            config.AddXmlFile("BotConfigguration.xml",optional:false,reloadOnChange:false);//配置为单例模式
+            config.AddXmlFile("BotConfiguration.xml",optional:false,reloadOnChange:false);//配置为单例模式
             //注入BotContext
             //注入CurrentPath【Controller不一定来源于当前目录】
             config.AddInMemoryCollection(new[]
@@ -42,7 +48,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 new KeyValuePair<string,string?>("CurrentPath",cwd)
             });
         }
-        internal static void ApplyDefaultServices(IConfiguration configuration,IServiceCollection services)
+        private static void ApplyDefaultServices(IConfiguration configuration,IServiceCollection services)
         {
             IConfigurationSection section = configuration.GetSection("RuntimeAdapter");
             string? mqPath = section.GetSection("MessageQueue")["Path"];
@@ -80,7 +86,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
 
             if (loggerPath == "$BotFramework")
             {
-                switch (loggerPath)
+                switch (loggerModule)
                 {
                     case "$None":
                         break;
@@ -101,7 +107,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
 
             if (pluginsDataStoragePath == "$BotFramework")
             {
-                switch (pluginsDataStoragePath)
+                switch (pluginsDataStorageModule)
                 {
                     case "$None":
                         break;
@@ -122,7 +128,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
 
             if (pluginsDataStoragePermenantPath == "$BotFramework")
             {
-                switch (pluginsDataStoragePermenantPath)
+                switch (pluginsDataStorageModule)
                 {
                     case "$None":
                         break;
@@ -140,6 +146,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IPluginsStoragePermanentAble>(s => (IPluginsStoragePermanentAble)Activator.CreateInstance(type)!);
                 }
             }
+
         }
     }
 }

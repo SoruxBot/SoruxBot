@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\Sorux.Framework.Bot.Core.Shell.props" />
-</Project>

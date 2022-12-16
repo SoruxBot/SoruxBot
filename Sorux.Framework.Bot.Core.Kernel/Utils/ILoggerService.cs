@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Sorux.Framework.Bot.Core.Kernel.Utils
+{
+    internal interface ILoggerService
+    {
+        void Info(string source,string msg);
+        void Warn(string source,string msg);
+        void Error(string source,string msg);
+        void Fatal(string source,string msg);
+        void Debug(string source,string msg);
+
+        void Info<T>(string source, string msg, T Context);
+
+        void Warn<T>(string source, string msg, T Context);
+
+        void Error<T>(string source, string msg, T Context);
+        void Fatal<T>(string source, string msg, T Context);
+        void Debug<T>(string source, string msg, T Context);
+
+        void Error<T>(Exception exception,string source ,string msg, T Context);
+        void Fatal<T>(Exception exception,string source ,string msg, T Context);
+    }
+}

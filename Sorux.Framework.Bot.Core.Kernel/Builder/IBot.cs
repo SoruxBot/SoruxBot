@@ -17,12 +17,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task StartAsync(CancellationToken cancellationToken = default);
+        void Start();
         /// <summary>
         /// 负责机器人实例的关闭
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task StopAsync(CancellationToken cancellationToken = default);
+        void Stop();
     }
 }

@@ -10,8 +10,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Service
     public class Global
     {
         private IPluginsStoragePermanentAble? _pluginsStoragePermanentAble;
-        private IPluginsStorageWebSupport? _pluginsStorageWebSupport;
-        private static Global global = null;
+        private static Global global;
         public IMessageQueue messageQueue { get; init; }
         public ILogger Logger { get; init; }
         public IPluginsStorage pluginsStorage { get; init; }
@@ -20,10 +19,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Service
             get { return _pluginsStoragePermanentAble; } 
         }
 
-        public IPluginsStorageWebSupport? pluginsStorageWebSupport
-        {
-            get { return _pluginsStorageWebSupport; }
-        }
 
         public Global(ILogger logger, IMessageQueue messageQueue,IPluginsStorage pluginsStorage)
         {
@@ -38,11 +33,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Service
         public Global AddPluginsStoragePerment(IPluginsStoragePermanentAble pluginsStoragePermanentAble)
         {
             _pluginsStoragePermanentAble = pluginsStoragePermanentAble;
-            return global;
-        }
-        public Global AddPluginsStorageWebSupport(IPluginsStorageWebSupport pluginsStorageWebSupport)
-        {
-            _pluginsStorageWebSupport = pluginsStorageWebSupport;
             return global;
         }
     }

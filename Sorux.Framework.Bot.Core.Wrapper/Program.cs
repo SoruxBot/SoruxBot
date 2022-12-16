@@ -2,6 +2,7 @@
 using Sorux.Framework.Bot.Core.Kernel.MessageQueue;
 using Sorux.Framework.Bot.Core.Kernel.Logger;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace Sorux.Framework.Bot.Core.Wrapper
 {
@@ -9,13 +10,21 @@ namespace Sorux.Framework.Bot.Core.Wrapper
     {
         static void Main(string[] args)
         {
-
+            var app = CreateDefaultBotBuilder(args).Build();
+            app.Start();
         }
 
         public static IBotBuilder CreateDefaultBotBuilder(string[] args)
         {
-            throw;
+            BotBuilder botBuilder = new();
+            return botBuilder.CreateDefaultBotConfigure(args)
+                             .ConfigureBotConfiguration((context, configure) =>
+                             {
+                                 configure.AddInMemoryCollection(new[]
+                                 {
+                                    new KeyValuePair<string, string?>("WebListenerPort","7999")
+                                 });
+                             });
         }
-            
     }
 }
