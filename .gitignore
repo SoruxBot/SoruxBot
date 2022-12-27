@@ -31,6 +31,8 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
+.vs/
+.idea/
 [Bb]in/
 [Oo]bj/
 [Ll]og/

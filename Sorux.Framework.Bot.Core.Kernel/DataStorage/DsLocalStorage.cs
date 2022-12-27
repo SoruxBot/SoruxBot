@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 {
-    //Built-in storage implement.
+    /// <summary>
+    /// 内置的低级信息存储类
+    /// </summary>
     public class DsLocalStorage
     {
         static DsLocalStorage()
@@ -27,14 +29,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 new FileInfo(Directory.GetCurrentDirectory() + "\\Config\\AppSettings.json").Create();
             }
         }
-
-        public static AppSettings GetAppSettings() =>
-            JsonConvert.DeserializeObject<AppSettings>(
-                File.ReadAllText(Directory.GetCurrentDirectory() + "\\Config\\AppSettings.json"));
-
+        
         public static string GetMessageQueuePath() 
             => Directory.GetCurrentDirectory() + "\\Config\\MessageQueue.sb";
-
         public static string GetPluginsDataDirectory()
             => Directory.GetCurrentDirectory() + "\\Plugins\\Data";
         public static string GetPluginsConfigDirectory()

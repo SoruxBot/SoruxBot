@@ -1,49 +1,59 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Sorux.Framework.Bot.Core.Kernel.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Sorux.Framework.Bot.Core.Kernel.Interface;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
     public class Bot : IBot
     {
-        public Bot(BotServicesFactory services,IConfiguration configuration) 
-        {
-            this.Services = services;
-            this.Configuration = configuration;
-            _host = Host.CreateDefaultBuilder()
-                .ConfigureServices(services =>
-                {
-                    services.AddSingleton(this);
-                    services.AddSingleton<ILoggerService,LoggerService>();
-                    services.AddHostedService<Work>();
-                })
-                .Build();
-        }
-        public BotServicesFactory Services { get; init; }
-
+        private List<Action<BotContext, IConfiguration>> _initializeAction = new();
+        public BotContext Context { get; init; }
         public IConfiguration Configuration { get; init; }
-
-        private IHost _host;
-
-        public void Dispose()
+        public Bot(BotContext context,IConfiguration configuration) 
         {
-            this.Stop();
+            this.Context = context;
+            this.Configuration = configuration;
+            // _host = Host.CreateDefaultBuilder()
+            //     .ConfigureServices(services =>
+            //     {
+            //         services.AddSingleton(this);
+            //         services.AddSingleton<ILoggerService, LoggerService>();
+            //         //services.AddHostedService<Work>(); //后台服务请求
+            //     })
+            //     .Build();
         }
-
-        public void Start()
+        
+        public void AddMsgRequest(string msg)
         {
-            _host.Run();
+            this.Context.GetProvider().GetRequiredService<IMessageQueue>().SetNextMsg(msg);
         }
-
-        public void Stop()
+        public void InitializePipe()
         {
-            _host.StopAsync();
+            foreach (var actions in _initializeAction)
+            {
+                actions(Context, Configuration);
+            }
         }
+        public IBot ConfigureInitialize(Action<BotContext, IConfiguration> delegates)
+        {
+            _initializeAction.Add(delegates);
+            return this;
+        }
+        //private IHost _host;
+        // public void Dispose()
+        // {
+        //     //this.Stop();
+        // }
+        //
+        // public void Start()
+        // {
+        //    //_host.Run();
+        // }
+        //
+        // public void Stop()
+        // {
+        //     //_host.StopAsync();
+        // }
+
     }
 }

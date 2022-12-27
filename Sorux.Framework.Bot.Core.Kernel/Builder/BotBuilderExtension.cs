@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Sorux.Framework.Bot.Core.Kernel.Models;
+using ILogger = Sorux.Framework.Bot.Core.Kernel.Interface.ILogger;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
@@ -17,11 +13,23 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
     {
         public static IBotBuilder CreateDefaultBotConfigure(this BotBuilder builder, string[]? args)
             => builder.ConfigureRuntimeConfiguration(config => ApplyDefaultRuntimeConfiguration(config, args))
+                      //注入Bot配置信息，用于存储基本的框架配置信息
                       .ConfigureBotConfiguration((context, config) => ApplyDefaultBotConfiguration(context, config))
+                      //注入框架自身的版本信息
+                      .ConfigureBotConfiguration((context, config) => ApplyDefaultBotFrameworkInformation(context,config))
+                      //配置框架的基本服务信息
                       .ConfigureServices(ApplyDefaultServices)
+                      //注入不可变的信息，分开放是因为这四个服务是绝对不会变的
                       .ConfigureServices((config, services) =>
                       {
+                          //Bot自身
                           services.AddSingleton<IBot,Bot>();
+                          var loggerFactory = LoggerFactory.Create(builder =>
+                          {
+                              builder.AddConsole();
+                          });
+                          services.AddSingleton(loggerFactory);
+                          services.AddSingleton(typeof(ILogger<>),typeof(Logger<>));
                           services.AddSingleton<ILoggerService, LoggerService>();
                       });
 
@@ -45,12 +53,26 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             {
                 new KeyValuePair<string, string?>("ContextBuildEnvironment",context.BuildEnvironment.ToString()),
                 new KeyValuePair<string, string?>("ContextRuntimeSystem",context.RuntimeSystem.ToString()),
-                new KeyValuePair<string,string?>("CurrentPath",cwd)
+                new KeyValuePair<string, string?>("CurrentPath",cwd)
             });
         }
+
+        private static void ApplyDefaultBotFrameworkInformation(BotBuilderContext context, IConfigurationBuilder config)
+        {
+            //注入基本信息
+            config.AddInMemoryCollection(new[]
+            {
+                new KeyValuePair<string, string?>("FrameworkVersion",AppSettings.FrameworkVersion),
+                new KeyValuePair<string, string?>("CoreKernelVersion",AppSettings.CoreKernelVersion),
+                new KeyValuePair<string, string?>("WebDirector",AppSettings.WebDirector),
+                new KeyValuePair<string, string?>("WebApiDirector",AppSettings.WebApiDirector)
+            });
+        }
+        
         private static void ApplyDefaultServices(IConfiguration configuration,IServiceCollection services)
         {
             IConfigurationSection section = configuration.GetSection("RuntimeAdapter");
+            //直接绑定
             string? mqPath = section.GetSection("MessageQueue")["Path"];
             string? mqModule = section.GetSection("MessageQueue")["Namespace"];
             string? loggerPath = section.GetSection("Logger")["Path"];
@@ -59,7 +81,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             string? pluginsDataStorageModule = section.GetSection("PluginsDataStorage")["Namespace"];
             string? pluginsDataStoragePermenantPath = section.GetSection("PluginsStoragePermanent")["Path"];
             string? pluginsDataStoragePermenantModule = section.GetSection("PluginsStoragePermanent")["Namespace"];
-
+            //管道通信
             if (mqPath == "$BotFramework")
             {
                 switch (mqModule)
@@ -83,7 +105,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IMessageQueue>(s => (IMessageQueue)Activator.CreateInstance(type)!);
                 }
             }
-
+            //日志实现
             if (loggerPath == "$BotFramework")
             {
                 switch (loggerModule)
@@ -104,7 +126,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<ILogger>(s => (ILogger)Activator.CreateInstance(type)!);
                 }
             }
-
+            //插件数据文件储存
             if (pluginsDataStoragePath == "$BotFramework")
             {
                 switch (pluginsDataStorageModule)
@@ -125,7 +147,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IPluginsDataStorage>(s => (IPluginsDataStorage)Activator.CreateInstance(type)!);
                 }
             }
-
+            //插件永久数据存储实现
             if (pluginsDataStoragePermenantPath == "$BotFramework")
             {
                 switch (pluginsDataStorageModule)

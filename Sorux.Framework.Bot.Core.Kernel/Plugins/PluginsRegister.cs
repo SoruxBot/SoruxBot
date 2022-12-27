@@ -3,49 +3,56 @@ using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 using Sorux.Framework.Bot.Core.Kernel.Models;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
-using Sorux.Framework.Bot.Core.Kernel.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Sorux.Framework.Bot.Core.Kernel.Interface;
+using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins
 {
-    internal static class PluginsRegister
+    internal class PluginsRegister
     {
-        public static void Register(string path,string name)
+        private BotContext _botContext;
+        private ILoggerService _loggerService;
+        public PluginsRegister(BotContext context, ILoggerService loggerService)
+        {
+            this._botContext = context;
+            this._loggerService = loggerService;
+        }
+        
+        public void Register(string path,string name)
         {
             Assembly assembly= Assembly.LoadFile(path);
             Type? type = assembly.GetType(name.Replace(".dll", ".Register"));
             if (type == null)
             {
-                Global.GetGlobal().Logger
-                    .LogWarn("[SoruxBot][PluginsRegister]The plugin:" + name + "can not be loaded exactly" +
-                             ", please check the plugin with its developer");
+                _loggerService.Warn("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
+                                                      ", please check the plugin with its developer");
                 return;
             }
-                IBasicInformationRegister? basicInformationRegister = Activator.CreateInstance(type) as IBasicInformationRegister;
+            
+            IBasicInformationRegister? basicInformationRegister = Activator.CreateInstance(type) as IBasicInformationRegister;
             if (basicInformationRegister == null)
             {
-                Global.GetGlobal().Logger
-                      .LogWarn("[SoruxBot][PluginsRegister]The plugin:" + name + "can not be loaded exactly" +
-                      ", please check the plugin with its developer");
+                _loggerService.Warn("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
+                                                      ", please check the plugin with its developer");
                 return;
             }
             JsonConfig jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
                 File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
-            Global.GetGlobal().pluginsStorage
-                                   .AddPlugins(basicInformationRegister.GetName(),
-                                               basicInformationRegister.GetAuthor(),
-                                               basicInformationRegister.GetDLL(),
-                                               basicInformationRegister.GetVersion(),
-                                               basicInformationRegister.GetDescription()
-                                               );
-
-           
-                
+            _botContext.GetProvider().GetRequiredService<IPluginsStorage>()
+                                            .AddPlugins(basicInformationRegister.GetName(),
+                                                        basicInformationRegister.GetAuthor(),
+                                                        basicInformationRegister.GetDLL(),
+                                                        basicInformationRegister.GetVersion(),
+                                                        basicInformationRegister.GetDescription()
+                                                        );
         }
     }
 }

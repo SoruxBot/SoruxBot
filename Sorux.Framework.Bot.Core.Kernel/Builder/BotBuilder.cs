@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sorux.Framework.Bot.Core.Kernel.Interface;
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
@@ -25,7 +21,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         //机器人的IOC容器
         private IServiceCollection _services;
         //机器人实例的生成工厂
-        private BotServicesFactory _servicesFactory = BotServicesFactory.Instance;
+        private BotContext _servicesFactory = BotContext.Instance;
         public BotBuilder()
         {
             _services = new ServiceCollection();
@@ -47,7 +43,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 services.AddSingleton(_servicesFactory);
                 services.AddSingleton(_appConfiguration!);
             });
-            return new Bot(_servicesFactory,_appConfiguration!);
+            return _servicesFactory.GetProvider().GetRequiredService<IBot>();
         }
         private void InitServices()
         {
@@ -107,7 +103,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             IConfigurationBuilder configBuilder = new ConfigurationBuilder();
             foreach (var buildAction in _configureBotActions)
             {
-                buildAction(_botBuilderContext,configBuilder);
+                buildAction(_botBuilderContext!,configBuilder);
             }
             _appConfiguration = configBuilder.Build();
         }

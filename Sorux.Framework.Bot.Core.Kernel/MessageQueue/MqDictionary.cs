@@ -1,36 +1,33 @@
 ﻿using Sorux.Framework.Bot.Core.Kernel.Interface;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Sorux.Framework.Bot.Core.Kernel.DataStorage;
-using Microsoft.Extensions.Logging;
-using Sorux.Framework.Bot.Core.Kernel.Service;
+using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
 {
     public class MqDictionary : IMessageQueue
     {
-        private static readonly MqDictionary mqDictionary = new MqDictionary();
-        private MqDictionary() { }
-        public static MqDictionary GetInstance() => mqDictionary;
-
-        private Queue<string> _Queue = new Queue<string>();
-        public void DisposeFromLocalStorage()
+        private readonly BotContext _botContext;
+        private readonly ILoggerService _loggerService;
+        private Queue<string> _Queue = new Queue<string>(); //MqDictionary是单例生成，此处不需要额外static
+        public MqDictionary(BotContext botContext,ILoggerService loggerService)
         {
-            Global.GetGlobal().Logger.LogInformation("[SoruxBot][MQ]Dispose all local Storage");
-            new FileInfo(DsLocalStorage.GetMessageQueuePath()).Delete();
+            this._botContext = botContext;
+            this._loggerService = loggerService;
+            _loggerService.Info("MqDictionary","MqDictionary has been initialized.");
+            _loggerService.Info("MqDictionary","MqDictionary's Author: SoruxBot Local Implement. Version:1.0.0");
         }
-
-        public string GetNextMessageRequest() => _Queue.Dequeue();
+        
+        public void SetNextMsg(string value)
+        {
+            _loggerService.Info("MqDictionary","Message enqueue.",value);
+            _Queue.Enqueue(value);
+        }
+        public string? GetNextMessageRequest() => _Queue.TryDequeue(out string? value) == true ? value : null;
         public void RestoreFromLocalStorage()
         {
-            Global.GetGlobal().Logger.LogInformation("[SoruxBot][MQ]Restore from local storage");
+            _loggerService.Info("MqDictionary","Restore from the local storage.");
             if (new FileInfo(DsLocalStorage.GetMessageQueuePath()).Exists)
             {
                 this._Queue = JsonConvert.DeserializeObject<Queue<string>>(
@@ -38,17 +35,17 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
             }
         }
 
+        public void DisposeFromLocalStorage()
+        {
+            _loggerService.Info("MqDictionary","Dispose the local storage.");
+            new FileInfo(DsLocalStorage.GetMessageQueuePath()).Delete();
+        }
+        
         public void SaveIntoLocalStorage()
         {
             this.DisposeFromLocalStorage();
             File.WriteAllText(DsLocalStorage.GetMessageQueuePath(),
                 JsonConvert.SerializeObject(_Queue));
-        }
-
-        public void SetNextMsg(string value)
-        {
-            Global.GetGlobal().Logger.LogInformation("[SoruxBot][MQ]Message enqueue.",value);
-            _Queue.Enqueue(value);
         }
 
     }

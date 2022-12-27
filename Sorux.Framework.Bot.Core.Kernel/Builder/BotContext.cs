@@ -1,18 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
-    public class BotServicesFactory
+    public class BotContext
     {
         //单例模型
-        private static readonly BotServicesFactory instance = new BotServicesFactory();
-        private BotServicesFactory() { }
-        public static BotServicesFactory Instance { get { return instance; } }
+        private static readonly BotContext instance = new BotContext();
+        private BotContext() { }
+        public static BotContext Instance { get { return instance; } }
 
         //IOC 工厂
         private IServiceCollection? _services;
@@ -24,10 +19,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             return this._services;
         }
 
-        public BotServicesFactory ConfigureService(Action<IServiceCollection> services) 
+        public BotContext ConfigureService(Action<IServiceCollection> services) 
         {
             services(_services!);
-            
             return this;
         }
 

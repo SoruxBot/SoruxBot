@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Utils
 {
-    internal interface ILoggerService
+    public interface ILoggerService
     {
         void Info(string source,string msg);
         void Warn(string source,string msg);

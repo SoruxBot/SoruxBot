@@ -10,7 +10,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
     public interface IMessageQueue
     {
         //Get request in the queue.
-        public string GetNextMessageRequest();
+        public string? GetNextMessageRequest();
         //Put request in the queue
         public void SetNextMsg(string value);
         //Temp storage in order to prevent abnormal event.
