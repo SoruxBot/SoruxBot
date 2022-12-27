@@ -8,7 +8,6 @@ namespace Sorux.Framework.Bot.Core.Wrapper
 {
     internal class Program
     {
-        
         static void Main(string[] args)
         {
             var app = CreateDefaultBotBuilder(args).Build();
