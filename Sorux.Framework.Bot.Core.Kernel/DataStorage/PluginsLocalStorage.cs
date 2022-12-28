@@ -1,6 +1,4 @@
-﻿using Sorux.Framework.Bot.Core.Kernel.Filter;
-using Sorux.Framework.Bot.Core.Kernel.Interface;
-using Sorux.Framework.Bot.Core.Kernel.MessageQueue;
+﻿using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Models;
 using System;
 using System.Collections.Generic;
@@ -9,55 +7,44 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 {
     public class PluginsLocalStorage : IPluginsStorage
     {
-        private static readonly PluginsLocalStorage pluginsLocalStorage = new PluginsLocalStorage();
-        private DataSet pluginsDB = new DataSet();
-        private PluginsLocalStorage() 
+        private ILoggerService _loggerService;
+        private BotContext _botContext;
+        public PluginsLocalStorage(BotContext context, ILoggerService loggerService)
         {
-            DataTable pluginsList = new DataTable("pluginsList");
-            DataColumn[] dataColumns = {
-                new DataColumn("id"),
-                new DataColumn("name"),
-                new DataColumn("author"),
-                new DataColumn("filename"),
-                new DataColumn("version"),
-                new DataColumn("Description"),
-                new DataColumn("uuid")
-            };
-            dataColumns[0].Unique = true;
-            pluginsList.Columns.AddRange(dataColumns);
-            pluginsDB.Tables.Add(pluginsList);
+            this._botContext = context;
+            this._loggerService = loggerService;
         }
         
-        public static PluginsLocalStorage GetInstance() => pluginsLocalStorage;
-
-        public bool AddPlugins(string name, string author, string filename, string version, string description)
-        {
-            DataRow dataRow = pluginsDB.Tables["pluginsList"].NewRow();
-            dataRow["name"] = name;
-            dataRow["author"] = author;
-            dataRow["filename"] = filename;
-            dataRow["version"] = version;
-            dataRow["description"] = description;
-            pluginsDB.Tables["pluginsList"].Rows.Add(dataRow);
-            return true;
-        }
-
-        public bool AddPlugins(string name, string author, string filename, string version, string description, string uuid)
+        public bool AddPlugin(string name, string author, string filename, string version, string description, int privilege)
         {
             throw new NotImplementedException();
         }
 
-        public string GetEventAction(EventType eventType)
+        public bool AddPlugin(string name, string author, string filename, string version, string description, string uuid,
+            int privilege)
         {
             throw new NotImplementedException();
         }
 
-        public List<string> GetEventWaitingList(EventType eventType)
+        public bool TryGetPrivilege(int privilege, out int result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetLastUsablePrivilege()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemovePlugin(string name)
         {
             throw new NotImplementedException();
         }
@@ -67,7 +54,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             throw new NotImplementedException();
         }
 
-        public void RemovePlugins(string name)
+        public List<Func<bool, MessageContext, ILoggerService, IPluginsDataStorage>> GetAction(EventType eventType)
         {
             throw new NotImplementedException();
         }

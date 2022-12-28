@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\MessageModels" />
     <Folder Include="Network\" />
     <Folder Include="Protocol\" />
   </ItemGroup>

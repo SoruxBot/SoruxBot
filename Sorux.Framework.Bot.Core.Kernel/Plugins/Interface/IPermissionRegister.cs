@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Interface
 {
-    internal class IPermissionRegister
+    public class IPermissionRegister
     {
 
     }

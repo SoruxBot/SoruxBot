@@ -28,8 +28,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
         
         public void Register(string path,string name)
         {
-            Assembly assembly= Assembly.LoadFile(path);
-            Type? type = assembly.GetType(name.Replace(".dll", ".Register"));
+            Assembly assembly = Assembly.LoadFile(path);
+            Type? type = assembly.GetType(name.Replace(".dll", ".Register"));//命名空间规定为Register
             if (type == null)
             {
                 _loggerService.Warn("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
@@ -47,12 +47,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             JsonConfig jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
                 File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
             _botContext.GetProvider().GetRequiredService<IPluginsStorage>()
-                                            .AddPlugins(basicInformationRegister.GetName(),
-                                                        basicInformationRegister.GetAuthor(),
-                                                        basicInformationRegister.GetDLL(),
-                                                        basicInformationRegister.GetVersion(),
-                                                        basicInformationRegister.GetDescription()
-                                                        );
+                                            .AddPlugin(basicInformationRegister.GetName(),
+                                                       basicInformationRegister.GetAuthor(),
+                                                       basicInformationRegister.GetDLL(),
+                                                       basicInformationRegister.GetVersion(),
+                                                       basicInformationRegister.GetDescription(),
+                                                       1);
         }
     }
 }

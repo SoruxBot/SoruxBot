@@ -5,7 +5,6 @@ using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Sorux.Framework.Bot.Core.Kernel.Models;
-using ILogger = Sorux.Framework.Bot.Core.Kernel.Interface.ILogger;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
