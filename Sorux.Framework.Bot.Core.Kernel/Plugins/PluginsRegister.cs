@@ -47,7 +47,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             JsonConfig jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
                 File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
             _botContext.GetProvider().GetRequiredService<IPluginsStorage>()
-                                            .AddPlugin(basicInformationRegister.GetName(),
+                                            .AddPlugin(name,
                                                        basicInformationRegister.GetAuthor(),
                                                        basicInformationRegister.GetDLL(),
                                                        basicInformationRegister.GetVersion(),

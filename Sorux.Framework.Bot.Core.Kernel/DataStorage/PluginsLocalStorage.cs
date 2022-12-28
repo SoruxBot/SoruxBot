@@ -21,7 +21,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         /// 内置数据库，用于存储：内存中的插件信息、各个事件的插件队列
         /// </summary>
         private static DataSet _dataSet = new DataSet();
-        
+        private int lastPrivilege = 0;
+        private DataTable pluginsInformationTable;
         public PluginsLocalStorage(BotContext context, ILoggerService loggerService)
         {
             this._botContext = context;
@@ -33,7 +34,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         private void InitDataSet()
         {
-            DataTable pluginsInformationTable = new DataTable("pluginsInformation");
+            DataTable pluginsInformationTable = new DataTable("pluginsInfotmation");
             DataColumn dataColumn;
             //插件信息表生成
             dataColumn = new DataColumn();
@@ -81,28 +82,72 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             pluginsInformationTable.Columns.Add(dataColumn);
             
             _dataSet.Tables.Add(pluginsInformationTable);
+            this.pluginsInformationTable = _dataSet.Tables["pluginsInfotmation"]!;
         }
         
         public bool AddPlugin(string name, string author, string filename, string version, string description, int privilege)
         {
-            throw new NotImplementedException();
+            DataRow dataRow = pluginsInformationTable.NewRow();
+            dataRow["name"] = name;
+            dataRow["author"] = author;
+            dataRow["filename"] = filename;
+            dataRow["version"] = version;
+            dataRow["description"] = description;
+            dataRow["privilege"] = privilege;
+            dataRow["uuid"] = "-1"; //-1表示的是UUID并不存在
+            //try-catch出问题的大概率是优先级的问题，在这个方法中不检查优先级是否合格
+            try
+            {
+                pluginsInformationTable.Rows.Add(dataRow);
+            }
+            catch (Exception e)
+            {
+                _loggerService.Error(e,"PluginsLocalStorage","Cannot load plugin:" + name,e.Message);
+                return false;
+            }
+            return true;
         }
 
         public bool AddPlugin(string name, string author, string filename, string version, string description, string uuid,
             int privilege)
         {
-            throw new NotImplementedException();
+            DataRow dataRow = pluginsInformationTable.NewRow();
+            dataRow["name"] = name;
+            dataRow["author"] = author;
+            dataRow["filename"] = filename;
+            dataRow["version"] = version;
+            dataRow["description"] = description;
+            dataRow["privilege"] = privilege;
+            dataRow["uuid"] = uuid;
+            //try-catch出问题的大概率是优先级的问题，在这个方法中不检查优先级是否合格
+            try
+            {
+                pluginsInformationTable.Rows.Add(dataRow);
+            }
+            catch (Exception e)
+            {
+                _loggerService.Error(e,"PluginsLocalStorage","Cannot load plugin:" + name,e.Message);
+                return false;
+            }
+            return true;
         }
 
         public bool TryGetPrivilege(int privilege, out int result)
         {
-            throw new NotImplementedException();
+            if (pluginsInformationTable.AsEnumerable()
+                    .Where(p => (int)p["privilege"] == privilege)
+                    .FirstOrDefault() != null)
+            {
+                bool ret = TryGetPrivilege(privilege + 1, out int _);
+                result = privilege + 1;
+                return ret;
+            }
+            result = privilege;
+            return true;
+
         }
 
-        public int GetLastUsablePrivilege()
-        {
-            throw new NotImplementedException();
-        }
+        public int GetLastUsablePrivilege() => lastPrivilege;
 
         public void RemovePlugin(string name)
         {
