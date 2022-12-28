@@ -1,6 +1,10 @@
 # SoruxBot  
-A cross-chatting-platform bot framework implemented by CSharp.
-The framework supports multiplied chatting platform such as QQ, WeChat, Telegram, Discord and so on.
+A cross-chatting-platform bot framework implemented by CSharp.  
+The framework supports multiplied chatting platform such as QQ, WeChat, Telegram, Discord and so on.  
+# Feature  
+You can use C# feature to make a plugin of this framework easily, such as attribute which implement command route and permission verify.  
+This project is a easily-DIY framework which can be easily update according to your need by replacing the component of system.  
+This framework is made after studying the source of asp.net core. So there are maybe some similiar logical in the main pipe model.  
 # 架构  
 SoruxBot 本身不实现协议层，接受外置的协议层输入[内置实现HTTP的正向和反向协议]，二次开发可通过加入自己的中间件，向按照内置接口MessageQueue加入消息管道。  
 SoruxBot 提供可供二次开发的框架，框架耦合程度里，可以通过Interface中的接口实现二次开发，你可以Pr根据Interface实现的类到对应的文件夹，然后在Shell中指定特定的模块。目前可供替换的有：插件队列模块，消息队列模块，插件数据存储模块等。原生框架内置实现均为基于.net core库实现，你可以实现Redis，带数据库的类。
