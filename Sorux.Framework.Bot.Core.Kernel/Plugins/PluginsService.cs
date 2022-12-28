@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins
@@ -38,8 +39,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
         {
             context.ConfigureService(services =>
             {
+                //注册基础服务
                 services.AddSingleton<PluginsService>();
                 services.AddSingleton<PluginsRegister>();
+                services.AddSingleton<PluginsDispatcher>();
+                
+                //注册可选项服务
+                //TODO: 此处需要改成根据 Configuration 进行选项式配置服务
+                services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();
             });
         }
     }

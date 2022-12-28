@@ -1,4 +1,6 @@
-﻿namespace Sorux.Framework.Bot.Core.Kernel.Models;
+﻿using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+
+namespace Sorux.Framework.Bot.Core.Kernel.Models;
 
 public class MessageEntity
 {
@@ -6,6 +8,10 @@ public class MessageEntity
     /// 原始消息字符串，包含已经解析的如 Action 等
     /// </summary>
     public string Meta { get; init; }
+    /// <summary>
+    /// 消息的状态
+    /// </summary>
+    public PluginFucFlag MsgState { get; init; }
     /// <summary>
     /// 获得 Meta 中的原始消息
     /// </summary>

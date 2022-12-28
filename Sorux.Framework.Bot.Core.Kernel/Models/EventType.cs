@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Models
 {
+    /// <summary>
+    /// 事件类型，表示消息的来源状态。
+    /// </summary>
     public enum EventType
     {
         //单独对话，即两个人对话的场景，例如QQ的企业临时咨询，私聊对话，群临时对话，微信的验证对话等等
