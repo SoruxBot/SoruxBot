@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
@@ -46,13 +47,42 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             }
             JsonConfig jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
                 File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
-            _botContext.GetProvider().GetRequiredService<IPluginsStorage>()
-                                            .AddPlugin(name,
-                                                       basicInformationRegister.GetAuthor(),
-                                                       basicInformationRegister.GetDLL(),
-                                                       basicInformationRegister.GetVersion(),
-                                                       basicInformationRegister.GetDescription(),
-                                                       1);
+            IPluginsStorage pluginsStorage = _botContext.GetProvider().GetRequiredService<IPluginsStorage>();
+            //判断privilege是否合法：
+            IConfiguration configuration = _botContext.GetProvider()
+                                                      .GetRequiredService<IBot>()
+                                                      .Configuration
+                                                      .GetRequiredSection("PluginsDispatcher")
+                                                      .GetRequiredSection("PrivilegeSchedule");
+            int privilege = jsonfile.Privilege;
+            int newPrivilege = jsonfile.Privilege;
+            switch (configuration["PushStandard"])
+            {
+                case "Lower":
+                    if (!pluginsStorage.TryGetPrivilege(privilege,out newPrivilege))
+                    {
+                        _loggerService.Warn("PluginsRegister","Privilege Conflict for " + privilege 
+                            + ", push for " + newPrivilege);
+                    }
+                    break;
+                case "Upper":
+                    if (!pluginsStorage.TryGetPrivilegeUpper(privilege,out newPrivilege))
+                    {
+                        _loggerService.Warn("PluginsRegister","Privilege Conflict for " + privilege 
+                            + ", push for " + newPrivilege);
+                    }
+                    break;
+                default:
+                    _loggerService.Warn("PluginsRegister","Config Section:PushStandard Error,for its config:" + configuration["PushStandard"]);
+                    break;
+            }
+            
+            pluginsStorage.AddPlugin(name,
+                                     basicInformationRegister.GetAuthor(),
+                                     basicInformationRegister.GetDLL(),
+                                     basicInformationRegister.GetVersion(),
+                                     basicInformationRegister.GetDescription(),
+                                     newPrivilege);
         }
     }
 }

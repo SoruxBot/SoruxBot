@@ -8,10 +8,10 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models
 {
     public class JsonConfig
     {
-        string Name;
-        int Privilege;
-        PermissionNodeConfig Permission;
-        string PermissionDeniedMsg;
+        public string Name;
+        public int Privilege;
+        public PermissionNodeConfig Permission;
+        public string PermissionDeniedMsg;
     }
 
     public class PermissionNodeConfig 

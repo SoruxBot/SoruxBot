@@ -1,12 +1,6 @@
 ﻿using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
@@ -99,6 +93,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             try
             {
                 pluginsInformationTable.Rows.Add(dataRow);
+                pluginsInformationTable.AcceptChanges();
             }
             catch (Exception e)
             {
@@ -123,6 +118,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             try
             {
                 pluginsInformationTable.Rows.Add(dataRow);
+                pluginsInformationTable.AcceptChanges();
             }
             catch (Exception e)
             {
@@ -135,29 +131,44 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         public bool TryGetPrivilege(int privilege, out int result)
         {
             if (pluginsInformationTable.AsEnumerable()
-                    .Where(p => (int)p["privilege"] == privilege)
-                    .FirstOrDefault() != null)
+                    .FirstOrDefault(p => (int)p["privilege"] == privilege) != null)
             {
-                bool ret = TryGetPrivilege(privilege + 1, out int _);
-                result = privilege + 1;
-                return ret;
+                TryGetPrivilege(privilege + 1, out int res);
+                result = res;
+                lastPrivilege = result + 1;
+                return false;
             }
             result = privilege;
+            lastPrivilege = result + 1;
             return true;
-
         }
-
+        
+        public bool TryGetPrivilegeUpper(int privilege, out int result)
+        {
+            if (pluginsInformationTable.AsEnumerable()
+                    .FirstOrDefault(p => (int)p["privilege"] == privilege) != null)
+            {
+                TryGetPrivilege(privilege -1, out int res);
+                result = res;
+                lastPrivilege = result - 1;
+                return false;
+            }
+            result = privilege;
+            lastPrivilege = result - 1;
+            return true;
+        }
+        
         public int GetLastUsablePrivilege() => lastPrivilege;
 
         public void RemovePlugin(string name)
         {
-            throw new NotImplementedException();
+            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name));
+            pluginsInformationTable.Rows.Remove(dataRow);
+            pluginsInformationTable.AcceptChanges();
         }
 
         public void RemoveAllPlugins()
-        {
-            throw new NotImplementedException();
-        }
+            => pluginsInformationTable.Clear();
 
         public List<Func<bool, MessageContext, ILoggerService, IPluginsDataStorage>> GetAction
                                                                     (EventType eventType,string TriggerMessage)
@@ -165,54 +176,67 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             throw new NotImplementedException();
         }
 
-        public string GetAuthor(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public string? GetAuthor(string name)
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["author"];
 
-        public string GetFileName(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public string? GetFileName(string name)
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["filename"];
 
-        public string GetVersion(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public string? GetVersion(string name)
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["version"];
 
-        public string GetDescription(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public string? GetDescription(string name)
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["descrption"];
 
-        public int GetPrivilege(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public int? GetPrivilege(string name)
+            => (int)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["privilege"];
 
-        public string GetUUID(string name)
-        {
-            throw new NotImplementedException();
-        }
+        public string? GetUUID(string name)
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["uuid"];
 
-        public bool TryGetUUID(out string name)
+        public bool TryGetUUID(string name,out string uuid)
         {
-            throw new NotImplementedException();
+            if (GetUUID("name") != null && GetUUID("name")!.Equals("-1"))
+            {
+                uuid = GetUUID("name")!;
+                return false;
+            }
+            uuid = "-1";//表示uuid不存在
+            return false;
         }
 
         public int EditPrivilege(string name, int privilege)
         {
-            throw new NotImplementedException();
+            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name));
+            if (TryGetPrivilege(privilege,out int newPrivilege))
+            {
+                dataRow["privilege"] = privilege;
+                pluginsInformationTable.AcceptChanges();
+                return privilege;
+            }
+            dataRow["privilege"] = newPrivilege;
+            pluginsInformationTable.AcceptChanges();
+            return newPrivilege;
         }
 
         public string? GetPluginByPrivilege(int privilege)
-        {
-            throw new NotImplementedException();
-        }
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((int)p["privilege"]).Equals(privilege))["name"];
 
         public int EditPrivilegeByUpper(string name, int privilege)
         {
-            throw new NotImplementedException();
+            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name));
+            if (TryGetPrivilegeUpper(privilege,out int newPrivilege))
+            {
+                dataRow["privilege"] = privilege;
+                pluginsInformationTable.AcceptChanges();
+                return privilege;
+            }
+            dataRow["privilege"] = newPrivilege;
+            pluginsInformationTable.AcceptChanges();
+            return newPrivilege;
         }
+
+        public bool IsExists(string name) 
+            => pluginsInformationTable.AsEnumerable().FirstOrDefault(p => ((string)p["name"]).Equals(name)) == null;
     }
 }

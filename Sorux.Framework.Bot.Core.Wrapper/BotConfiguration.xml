@@ -35,4 +35,40 @@
     <!--这个节点配置框架是否输出Log日志，如果输出，那么会在程序运行目录下的Logs文件夹内以天为单位输出日志-->
     <CreateFiles>True</CreateFiles>
   </LoggerConfig>
+  <PluginsDispatcher>
+    <!--这个节点配置框架分发插件的具体细节-->
+    <PrivilegeSchedule>
+      <!--这个节点配置优先级冲突时的处理方式-->
+      <!--可为Lower或者是Upper，默认Lower。表示当插件加载时若发生了优先级相同的冲突，那么会将晚加载的插件优先级"向后或者向前"调动以避免冲突-->
+      <PushStandard>Lower</PushStandard>
+      <!--可为Enable或者是Disable，默认为Disable，表示当插件加载时若发生了优先级相同的冲突，"会或者不会"自动修改插件的优先级配置文件，以避免下一次加载也会发生冲突-->
+      <ConflictSolvePersistence>Disable</ConflictSolvePersistence>
+      <!--实验性功能，仅在Version:1.1.0-Beta以上有效-->
+      <!--可为Enable或者是Disable，默认为Disable，表示插件"是否"允许相同优先级的存在。若启用本项，上面两项配置失效。-->
+      <!--注意：若开启，无法预测优先级相同的插件的具体执行顺序！！！-->
+      <EnableMutipliedPrivilege>Disable</EnableMutipliedPrivilege>
+    </PrivilegeSchedule>
+  </PluginsDispatcher>
+  <FutureTest>
+    <!--这个节点配置Future Test功能的具体细节-->
+    <!--可为Enable或者是Disable，默认为Enable，表示是否支持在标准事件/功能集以外的特定于平台的事件，若为是则表示支持。-->
+    <State>Enable</State>
+    <!--这个节点配置第三方事件支持的对象存在的地址，若遇到第三方事件那么会移交给被配置的库处理。-->
+    <ThirdEventSupport>
+      <!--实际路径为程序根目录下的FutureTest目录，需要遵循SoruxBot Future开发规范。-->
+      <Event>
+        <Config>
+          <!--[聊天平台].[版本号]-->
+          <TargetPlatform>qq.2.6.3</TargetPlatform>
+          <!--被注册的事件，需要将注册的事件全部枚举出，对应的Meta信息为Action项-->
+          <TargetAction>
+            <Register>self-joingroup</Register>
+            <Register>luckymoney</Register>
+          </TargetAction>
+        </Config>
+        <!--处理此类消息的FutureTest路径-->
+        <Path>qq.2.6.3.futuretest.example.dll</Path>
+      </Event>
+    </ThirdEventSupport>
+  </FutureTest>
 </BotConfiguration>

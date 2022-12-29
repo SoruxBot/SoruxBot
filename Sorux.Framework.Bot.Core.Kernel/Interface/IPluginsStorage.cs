@@ -29,6 +29,15 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// <returns></returns>
         bool TryGetPrivilege(int privilege, out int result);
         /// <summary>
+        /// 尝试得到优先级，如果返回真则表示对应的优先级可用，如果返回假则说明对应的优先级不可用，同时通过 out int result 返回可以使用的优先级。
+        /// 本命令旨在注册指定的优先级，基于优先级唯一的原则，若指定注册的优先级已经被注册了（实际注册顺序为内置 API 遍历目录的顺序），那么返回可用的最靠近的优先级。
+        /// 永远满足 privilege <= result
+        /// </summary>
+        /// <param name="privilege"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryGetPrivilegeUpper(int privilege, out int result);
+        /// <summary>
         /// 如果一个插件没有指明优先级，比如 Privilege 配置为 $Default 那么就依次添加优先级即可。使用本命令可以直接得到可用中最低的优先级。
         /// 如果插件显式指明了优先级，那么使用 TryGetPrivilege
         /// </summary>
@@ -60,43 +69,44 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetAuthor(string name);
+        public string? GetAuthor(string name);
         /// <summary>
         /// 得到指定插件的文件名称
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetFileName(string name);
+        public string? GetFileName(string name);
         /// <summary>
         /// 得到指定插件的版本名称
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetVersion(string name);
+        public string? GetVersion(string name);
         /// <summary>
         /// 得到指定插件的描述信息
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetDescription(string name);
+        public string? GetDescription(string name);
         /// <summary>
         /// 得到指定插件的优先级
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public int GetPrivilege(string name);
+        public int? GetPrivilege(string name);
         /// <summary>
         /// 得到指定插件的 UUID
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string GetUUID(string name);
+        public string? GetUUID(string name);
+
         /// <summary>
         /// 得到指定插件的 UUID , 若插件并未注册 UUID， 那么返回 False.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public bool TryGetUUID(out string name);
+        public bool TryGetUUID(string name, out string uuid);
         /// <summary>
         /// 修改插件的优先级顺序，且返回修改后真实的优先级（修改后的优先级后于或等于指定优先级）
         /// </summary>
@@ -116,5 +126,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// <param name="privilege"></param>
         /// <returns></returns>
         public int EditPrivilegeByUpper(string name, int privilege);
+        /// <summary>
+        /// 判断插件是否存在
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsExists(string name);
     }
 }
