@@ -2,7 +2,7 @@
 
 namespace EpicMo.Example.ChatPlugins
 {
-    public class Register : IBasicInformationRegister,IPluginsUUIDRegister
+    public class Register : IBasicInformationRegister , IPluginsUUIDRegister
     {
         public string GetAuthor() => "EpicMo";
         public string GetName() => "SoruxBot示例插件";

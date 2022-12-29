@@ -1,14 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Sorux.Framework.Bot.Core.Kernel.DataStorage;
-using Sorux.Framework.Bot.Core.Kernel.Models;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
@@ -33,20 +27,32 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             Type? type = assembly.GetType(name.Replace(".dll", ".Register"));//命名空间规定为Register
             if (type == null)
             {
-                _loggerService.Warn("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
-                                                      ", please check the plugin with its developer");
+                _loggerService.Error("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
+                                                      ", please check the plugin with its developer." +
+                                                      "ErrorCode:EX0001");
                 return;
             }
             
             IBasicInformationRegister? basicInformationRegister = Activator.CreateInstance(type) as IBasicInformationRegister;
             if (basicInformationRegister == null)
             {
-                _loggerService.Warn("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
-                                                      ", please check the plugin with its developer");
+                _loggerService.Error("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
+                                                       ", please check the plugin with its developer." +
+                                                       "ErrorCode:EX0002");
                 return;
             }
-            JsonConfig jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
-                File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
+            JsonConfig jsonfile;
+            try
+            {
+                jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
+                    File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
+            }
+            catch (Exception e)
+            {
+                _loggerService.Error("PluginsRegister","The plugin:" + name + " loses json file:"+name.Replace(".dll", ".json")  +
+                                                       "ErrorCode:EX0003");
+                return;
+            }
             IPluginsStorage pluginsStorage = _botContext.GetProvider().GetRequiredService<IPluginsStorage>();
             //判断privilege是否合法：
             IConfiguration configuration = _botContext.GetProvider()

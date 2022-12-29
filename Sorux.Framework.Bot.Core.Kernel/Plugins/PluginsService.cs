@@ -43,7 +43,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                 services.AddSingleton<PluginsService>();
                 services.AddSingleton<PluginsRegister>();
                 services.AddSingleton<PluginsDispatcher>();
-                
                 //注册可选项服务
                 //TODO: 此处需要改成根据 Configuration 进行选项式配置服务
                 services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();

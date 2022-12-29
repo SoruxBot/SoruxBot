@@ -37,7 +37,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         public static string GetPluginsConfigDirectory()
             => Directory.GetCurrentDirectory() + "\\Plugins\\Config";
         public static string GetPluginsDirectory()
-            => Directory.GetCurrentDirectory() + "\\Plugins";
+            => Directory.GetCurrentDirectory() + "\\Plugins\\Bin";
 
         public static string GetStoragePath()
             => Directory.GetCurrentDirectory();

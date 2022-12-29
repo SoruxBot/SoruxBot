@@ -100,6 +100,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 _loggerService.Error(e,"PluginsLocalStorage","Cannot load plugin:" + name,e.Message);
                 return false;
             }
+            _loggerService.Info("PluginsLocalStorage","Plugin:" + name + " is loaded exactly.");
+            _loggerService.Info(name,"Loading from framework. Author:" + author + " ,version:" + version+ ", with privilege:" + privilege);
+            _loggerService.Info(name,"Description:" + description);
             return true;
         }
 
@@ -125,6 +128,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 _loggerService.Error(e,"PluginsLocalStorage","Cannot load plugin:" + name,e.Message);
                 return false;
             }
+            _loggerService.Info("PluginsLocalStorage","Plugin:" + name + " is loaded exactly.");
+            _loggerService.Info(name,"Loading from framework. Author:" + author + " ,version:" + version + ", with privilege:" + privilege);
+            _loggerService.Info(name,"Description:" + description);
             return true;
         }
 
