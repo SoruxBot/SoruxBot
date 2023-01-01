@@ -1,12 +1,4 @@
-﻿using Newtonsoft.Json;
-using Sorux.Framework.Bot.Core.Kernel.Interface;
-using Sorux.Framework.Bot.Core.Kernel.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 {
     /// <summary>

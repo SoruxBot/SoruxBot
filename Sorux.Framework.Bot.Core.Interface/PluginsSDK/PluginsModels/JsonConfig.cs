@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels
 {
     public class JsonConfig
     {

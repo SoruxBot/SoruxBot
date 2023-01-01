@@ -4,7 +4,7 @@ using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using Sorux.Framework.Bot.Core.Kernel.Models;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {

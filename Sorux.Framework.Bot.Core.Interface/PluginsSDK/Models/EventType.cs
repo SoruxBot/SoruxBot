@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Models
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models
 {
     /// <summary>
     /// 事件类型，表示消息的来源状态。

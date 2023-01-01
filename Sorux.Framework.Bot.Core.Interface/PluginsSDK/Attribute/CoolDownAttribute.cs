@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Attribute
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
 {
     /// <summary>
     /// Cool down a method carry time.
     /// </summary>
-    internal class CoolDownAttribute : System.Attribute
+    public class CoolDownAttribute : System.Attribute
     {
         //Target at special user type.
         public CoolDownAttribute(CoolDownTarget coolDownTarget, int time)

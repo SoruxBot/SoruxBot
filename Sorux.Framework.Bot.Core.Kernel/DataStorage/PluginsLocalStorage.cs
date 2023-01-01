@@ -1,8 +1,7 @@
 ﻿using Sorux.Framework.Bot.Core.Kernel.Interface;
-using Sorux.Framework.Bot.Core.Kernel.Models;
 using System.Data;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
-using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.DataStorage

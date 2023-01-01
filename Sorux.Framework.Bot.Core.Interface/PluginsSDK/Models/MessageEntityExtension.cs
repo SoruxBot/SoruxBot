@@ -1,4 +1,4 @@
-﻿namespace Sorux.Framework.Bot.Core.Kernel.Models;
+﻿namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 /// <summary>
 /// MessageEntity 的帮助类，用于辅助处理图片信息
 /// </summary>

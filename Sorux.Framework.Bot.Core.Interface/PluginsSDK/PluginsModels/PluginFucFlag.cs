@@ -1,4 +1,4 @@
-﻿namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+﻿namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 
 public enum PluginFucFlag
 {

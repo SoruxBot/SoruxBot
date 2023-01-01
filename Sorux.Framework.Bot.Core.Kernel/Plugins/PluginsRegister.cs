@@ -1,13 +1,14 @@
 ﻿using Newtonsoft.Json;
 using Sorux.Framework.Bot.Core.Kernel.DataStorage;
-using Sorux.Framework.Bot.Core.Kernel.Plugins.Interface;
-using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
+
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins
 {

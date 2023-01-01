@@ -8,4 +8,5 @@ public class PluginsDispatcher
     //前者针对某个特定 EventType 的某个特定的语句触发某个特定的方法
     //后者针对某个通用的 EventType 进行触发
     
+    
 }

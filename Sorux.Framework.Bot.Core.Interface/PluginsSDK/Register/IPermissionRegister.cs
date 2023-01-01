@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Interface
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
+public class IPermissionRegister
 {
-    public class IPermissionRegister
-    {
 
-    }
 }
+

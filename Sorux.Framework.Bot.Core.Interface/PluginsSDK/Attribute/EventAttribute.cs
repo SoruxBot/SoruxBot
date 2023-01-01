@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Attribute
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
 {
     /// <summary>
     /// For special event
     /// </summary>
     public class EventAttribute : System.Attribute
     {
-        public EventAttribute(EventAttribute eventAttribute) { }
+        public EventAttribute(EventType eventType) { }
 
     }
 }

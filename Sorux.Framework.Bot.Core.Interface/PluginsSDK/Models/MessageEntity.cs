@@ -1,6 +1,6 @@
-﻿using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+﻿using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 
-namespace Sorux.Framework.Bot.Core.Kernel.Models;
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 
 public class MessageEntity
 {

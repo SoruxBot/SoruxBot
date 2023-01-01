@@ -1,10 +1,4 @@
-﻿using Sorux.Framework.Bot.Core.Kernel.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+﻿using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Interface

@@ -1,4 +1,4 @@
-﻿namespace Sorux.Framework.Bot.Core.Kernel.Models;
+﻿namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 /// <summary>
 /// 用于替代非真实个体，类似于掩码号
 /// </summary>

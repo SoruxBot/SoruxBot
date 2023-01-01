@@ -1,6 +1,5 @@
-﻿using Sorux.Framework.Bot.Core.Kernel.Models;
-
-namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+﻿
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 /// <summary>
 /// MessageContext 类 --- 负责传递对应的消息细节
 /// </summary>

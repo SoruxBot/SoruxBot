@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sorux.Framework.Bot.Core.Kernel.Attribute
+﻿
+namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
 {
     /// <summary>
     /// Mark for commands
@@ -12,7 +7,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Attribute
     /// the parameter in the <> will be fill automatically with the suitable command patameter
     /// the parameter in the [] is optional ,which means the parameter waiting for the data have default value
     /// </summary>
-    internal class CommandAttribute : System.Attribute
+    public class CommandAttribute : System.Attribute
     {
         public CommandAttribute(Prefix prefix = Prefix.Global,params string[] command) { }
 
