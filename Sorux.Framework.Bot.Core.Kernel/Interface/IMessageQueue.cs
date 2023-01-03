@@ -3,11 +3,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
 {
     public interface IMessageQueue
     {
-        //Get request in the queue.
+        //得到队列中的 Message
         public string? GetNextMessageRequest();
-        //Put request in the queue
+        //向队列中放入Message
         public void SetNextMsg(string value);
-        //Temp storage in order to prevent abnormal event.
+        //存储临时信息
         public void RestoreFromLocalStorage();
         public void SaveIntoLocalStorage();
         public void DisposeFromLocalStorage();

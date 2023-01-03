@@ -10,6 +10,7 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
     /// <summary>
     /// For special event
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
     public class EventAttribute : System.Attribute
     {
         public EventAttribute(EventType eventType) { }

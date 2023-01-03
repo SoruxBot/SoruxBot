@@ -33,6 +33,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         public static string GetStoragePath()
             => Directory.GetCurrentDirectory();
+        public static string GetResponseQueuePath()
+            => Directory.GetCurrentDirectory() + "\\Config\\ResponseQueue.sb";
 
     }
 }

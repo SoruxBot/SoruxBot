@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Framework.Bot.Core.Wr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EpicMo.Example.ChatPlugins", "PluginsExample\EpicMo.Example.ChatPlugins\EpicMo.Example.ChatPlugins.csproj", "{9CE4F535-1755-4344-984F-8B3B7D44EE71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorux.Framework.Bot.Core.Shell", "Sorux.Framework.Bot.Core.Shell\Sorux.Framework.Bot.Core.Shell.csproj", "{B196BF31-AE65-4DD4-9B70-876B61E00882}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorux.Framework.Bot.Core.Interface", "Sorux.Framework.Bot.Core.Interface\Sorux.Framework.Bot.Core.Interface.csproj", "{87EDD936-32EA-40B5-8D31-8302A6F9E747}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{9CE4F535-1755-4344-984F-8B3B7D44EE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CE4F535-1755-4344-984F-8B3B7D44EE71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CE4F535-1755-4344-984F-8B3B7D44EE71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B196BF31-AE65-4DD4-9B70-876B61E00882}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B196BF31-AE65-4DD4-9B70-876B61E00882}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B196BF31-AE65-4DD4-9B70-876B61E00882}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B196BF31-AE65-4DD4-9B70-876B61E00882}.Release|Any CPU.Build.0 = Release|Any CPU
 		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Release|Any CPU.ActiveCfg = Release|Any CPU

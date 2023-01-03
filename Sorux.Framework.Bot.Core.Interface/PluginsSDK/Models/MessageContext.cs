@@ -49,5 +49,64 @@ public class MessageContext
     /// 请仅在无法通过参数注入的情况下使用本命令。
     /// 参数的 Key 为特性注入时提供的参数 Key
     /// </summary>
-    public Dictionary<string,string?> CommandParas { get; init; }
+    public Dictionary<string,string?>? CommandParas { get; init; }
+    /// <summary>
+    /// 表示消息附带的属性，此属性不被框架使用，为消息预留
+    /// </summary>
+    public string TiedAttribute { get; set; }
+    /// <summary>
+    /// 表示消息携带的针对于平台的属性
+    /// </summary>
+    public Dictionary<string,string> UnderProperty { get; init; }
+    public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, MessageEntity message)
+    {
+        Action = action;
+        BotAccount = botAccount;
+        TargetPlatform = targetPlatform;
+        MessageEventType = messageEventType;
+        TriggerId = triggerId;
+        TriggerPlatformId = triggerPlatformId;
+        TiedId = tiedId;
+        Message = message;
+    }
+
+    public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, LongMessageContext? longMessageContext, MessageEntity message)
+    {
+        Action = action;
+        BotAccount = botAccount;
+        TargetPlatform = targetPlatform;
+        MessageEventType = messageEventType;
+        TriggerId = triggerId;
+        TriggerPlatformId = triggerPlatformId;
+        TiedId = tiedId;
+        LongMessageContext = longMessageContext;
+        Message = message;
+    }
+
+    public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, MessageEntity message, Dictionary<string, string?>? commandParas)
+    {
+        Action = action;
+        BotAccount = botAccount;
+        TargetPlatform = targetPlatform;
+        MessageEventType = messageEventType;
+        TriggerId = triggerId;
+        TriggerPlatformId = triggerPlatformId;
+        TiedId = tiedId;
+        Message = message;
+        CommandParas = commandParas;
+    }
+
+    public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, LongMessageContext? longMessageContext, MessageEntity message, Dictionary<string, string?>? commandParas)
+    {
+        Action = action;
+        BotAccount = botAccount;
+        TargetPlatform = targetPlatform;
+        MessageEventType = messageEventType;
+        TriggerId = triggerId;
+        TriggerPlatformId = triggerPlatformId;
+        TiedId = tiedId;
+        LongMessageContext = longMessageContext;
+        Message = message;
+        CommandParas = commandParas;
+    }
 }

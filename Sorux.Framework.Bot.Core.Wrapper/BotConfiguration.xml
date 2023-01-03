@@ -12,6 +12,10 @@
       <Path>$BotFramework</Path>
       <Namespace>MessageQueue.MqDictionary</Namespace>
     </MessageQueue>
+    <ResponseQueue>
+      <Path>$BotFramework</Path>
+      <Namespace>MessageQueue.ResponseQueue</Namespace>
+    </ResponseQueue>
     <Logger>
       <Path>$BotFramework</Path>
       <Namespace>$None</Namespace>
@@ -59,16 +63,23 @@
       <Event>
         <Config>
           <!--[聊天平台].[版本号]-->
-          <TargetPlatform>qq.2.6.3</TargetPlatform>
-          <!--被注册的事件，需要将注册的事件全部枚举出，对应的Meta信息为Action项-->
+          <TargetPlatform>qq.263</TargetPlatform>
+          <!--被注册的事件，需要将注册的事件全部枚举出，对应的 Meta 信息为 Action 项-->
           <TargetAction>
             <Register>self-joingroup</Register>
             <Register>luckymoney</Register>
           </TargetAction>
         </Config>
-        <!--处理此类消息的FutureTest路径-->
-        <Path>qq.2.6.3.futuretest.example.dll</Path>
+        <!--处理此类消息的 FutureTest 程序集路径-->
+        <Path>qq.263.futuretest.example.dll</Path>
       </Event>
     </ThirdEventSupport>
   </FutureTest>
+  <CommunicateTrigger>
+    <!--这个节点用于配置触发条件-->
+    <!--可为 Enable 或者 Disable 用于表示是否启用消息前缀触发-->
+    <State>Enable</State>
+    <!--可为任意英文字母，特殊符号，但不可为 @ 。-->
+    <TriggerChar>#</TriggerChar>
+  </CommunicateTrigger>
 </BotConfiguration>

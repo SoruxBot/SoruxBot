@@ -1,7 +1,9 @@
 ﻿using Sorux.Framework.Bot.Core.Kernel.Interface;
 using System.Data;
+using Microsoft.Extensions.DependencyInjection;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Sorux.Framework.Bot.Core.Kernel.Plugins;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
@@ -29,7 +31,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         {
             DataTable pluginsInformationTable = new DataTable("pluginsInfotmation");
             DataColumn dataColumn;
-            //插件信息表生成
+            #region 插件信息生成
             dataColumn = new DataColumn();
             dataColumn.ColumnName = "name";
             dataColumn.DataType = typeof(string);
@@ -74,6 +76,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             dataColumn.Unique = true;
             pluginsInformationTable.Columns.Add(dataColumn);
             
+            #endregion
             _dataSet.Tables.Add(pluginsInformationTable);
             this.pluginsInformationTable = _dataSet.Tables["pluginsInfotmation"]!;
         }
@@ -102,6 +105,19 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             _loggerService.Info("PluginsLocalStorage","Plugin:" + name + " is loaded exactly.");
             _loggerService.Info(name,"Loading from framework. Author:" + author + " ,version:" + version+ ", with privilege:" + privilege);
             _loggerService.Info(name,"Description:" + description);
+            
+            //插件内部信息表的生成
+            DataTable dataTable = new DataTable(name);
+            DataColumn dataColumn;
+            
+            dataColumn = new DataColumn();
+            dataColumn.ColumnName = "key";
+            dataTable.Columns.Add(dataColumn);
+
+            dataColumn = new DataColumn();
+            dataColumn.ColumnName = "value";
+            dataTable.Columns.Add(dataColumn);
+            _dataSet.Tables.Add(dataTable);
             return true;
         }
 
@@ -243,5 +259,40 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         public bool IsExists(string name) 
             => pluginsInformationTable.AsEnumerable().FirstOrDefault(p => ((string)p["name"]).Equals(name)) == null;
+
+        public bool SetPluginsInfor(string name,string key, string value)
+        {
+            if (_dataSet.Tables[name] is null)
+            {
+                _loggerService.Warn("PluginsLocalStorage","Unexpected Error in the system. Error call for " +
+                                                          name + " in the pluginsStorageDataSet.");
+                return false;
+            }
+            DataRow dataRow = _dataSet.Tables[name]!.NewRow();
+            dataRow["key"] = key;
+            dataRow["value"] = value;
+            _dataSet.Tables[name]!.Rows.Add(dataRow);
+            return true;
+        }
+
+        public string GetPluginsInfor(string name, string key)
+            => (string)_dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp[name].Equals(name))!["value"];
+
+        public bool TryGetPluginsInfor(string name, string key, out string? value)
+        {
+            value = null;
+            if (_dataSet.Tables[name] is null)
+            {
+                return false;
+            }
+
+            DataRow? dataRow = _dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp[name].Equals(name));
+            if (dataRow is null)
+            {
+                return false;
+            }
+            value = (string)dataRow["value"];
+            return true;
+        }
     }
 }

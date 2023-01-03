@@ -126,5 +126,26 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// <param name="name"></param>
         /// <returns></returns>
         public bool IsExists(string name);
+        /// <summary>
+        /// 设置插件的内部设置信息
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public bool SetPluginsInfor(string name,string key, string value);
+        /// <summary>
+        /// 得到插件的内部设置信息
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="key"></param>
+        public string GetPluginsInfor(string name,string key);
+        /// <summary>
+        /// 尝试获取插件的内部设置信息，如果插件名称错误，那么返回 False
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryGetPluginsInfor(string name, string key, out string? value);
     }
 }

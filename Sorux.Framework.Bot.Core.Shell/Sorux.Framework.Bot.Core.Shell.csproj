@@ -11,17 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="BotConfiguration.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Sorux.Framework.Bot.Core.Kernel\Sorux.Framework.Bot.Core.Kernel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers" />
   </ItemGroup>
 
 </Project>

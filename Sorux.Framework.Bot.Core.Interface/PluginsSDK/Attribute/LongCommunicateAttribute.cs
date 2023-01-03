@@ -10,6 +10,7 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
     /// The method marked this attribute will enable its long communicate fuction.
     /// The framework will provide some fuction to waiting for user's next input.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
     public class LongCommunicateAttribute : System.Attribute
     {
         public LongCommunicateAttribute() { }
@@ -17,12 +18,9 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
         //If you need to lmit user please use CommandPermission and mark LongCommunicatePermissionBinding
         public enum LongCommunicateType
         {
-            None = 0,
-            SingleUserListener = 1,
-            AllUserListener = 2,
-            PermissionBinding = 3,
-            CoolDownTimeBinding = 4,
-            PermissionBindingAndCoolDownTimeBinding = 5,
+            None = 0, //【保留值】
+            SingleUserListener = 1, //对单个用户进行监听，这个用户指触发长消息模块中 MessageContext 里面的 TriggerId
+            AllUserListener = 2, //对所有用户进行监听
         }
     }
 }

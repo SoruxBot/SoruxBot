@@ -74,6 +74,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             //直接绑定
             string? mqPath = section.GetSection("MessageQueue")["Path"];
             string? mqModule = section.GetSection("MessageQueue")["Namespace"];
+            string? rqPath = section.GetSection("ResponseQueue")["Path"];
+            string? rqModule = section.GetSection("ResponseQueue")["Namespace"];
             string? loggerPath = section.GetSection("Logger")["Path"];
             string? loggerModule = section.GetSection("Logger")["Namespace"];
             string? pluginsDataStoragePath = section.GetSection("PluginsDataStorage")["Path"];
@@ -104,6 +106,31 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IMessageQueue>(s => (IMessageQueue)Activator.CreateInstance(type)!);
                 }
             }
+            //回复通信
+            if (rqPath == "$BotFramework")
+            {
+                switch (rqModule)
+                {
+                    case "MessageQueue.ResponseQueue":
+                        services.AddSingleton<IResponseQueue,MessageQueue.ReponseQueue>();
+                        break;
+                    case "$None":
+                        break;
+                    default:
+                        throw new DllNotFoundException();       
+                }
+            }
+            else
+            {
+                if (!rqModule!.Equals("$None"))
+                {
+                    rqPath = rqPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
+                    Assembly assembly = Assembly.Load(rqPath);
+                    Type type = assembly.GetType(rqModule!) ?? throw new DllNotFoundException();
+                    services.AddSingleton<IResponseQueue>(s => (IResponseQueue)Activator.CreateInstance(type)!);
+                }
+            }
+            
             //日志实现
             if (loggerPath == "$BotFramework")
             {

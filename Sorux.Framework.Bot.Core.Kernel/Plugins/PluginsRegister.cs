@@ -3,11 +3,13 @@ using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Ability;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
+using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins
@@ -90,6 +92,29 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                      basicInformationRegister.GetVersion(),
                                      basicInformationRegister.GetDescription(),
                                      newPrivilege);
+
+            Type[] types = type.GetInterfaces();
+            pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.PluginsUUIDRegister.ToString(), "false");
+            pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPermission.ToString(), "false");
+            pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPrefix.ToString(), "false");
+            foreach (var subInterface in types)
+            {
+                if (subInterface == typeof(IPluginsUUIDRegister))
+                {
+                    pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.PluginsUUIDRegister.ToString(), "true");
+                }
+
+                if (subInterface == typeof(ICommandPermission))
+                {
+                    pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPermission.ToString(), "true");
+                }
+                
+                if (subInterface == typeof(ICommandPrefix))
+                {
+                    pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPrefix.ToString(), "true");
+                }
+            }
+            _botContext.GetProvider().GetRequiredService<PluginsDispatcher>().RegisterCommandRoute(path,name);
         }
     }
 }
