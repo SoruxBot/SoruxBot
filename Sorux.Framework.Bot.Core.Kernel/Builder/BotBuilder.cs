@@ -22,6 +22,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         private IServiceCollection _services;
         //机器人实例的生成工厂
         private BotContext _servicesFactory = BotContext.Instance;
+        
         public BotBuilder()
         {
             _services = new ServiceCollection();
@@ -43,7 +44,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 services.AddSingleton(_servicesFactory);
                 services.AddSingleton(_appConfiguration!);
             });
-            return _servicesFactory.GetProvider().GetRequiredService<IBot>();
+            _servicesFactory.BuildContainer();
+            return _servicesFactory.ServiceProvider.GetRequiredService<IBot>();
         }
         private void InitServices()
         {
@@ -52,8 +54,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             {
                 configureServicesAction(_appConfiguration!, services);
             }
-            _services= _servicesFactory.BuildContainer(services);
-            _serviceProvider = _servicesFactory.GetProvider();
+            _servicesFactory.CreateContainer(services);
         }
 
         private void InitContextBuild() 
@@ -68,7 +69,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             {
                 runtimeSystemType = RuntimeSystemType.MacOS;
             }
-            else if (System.OperatingSystem.IsLinux())
+            else if (System.OperatingSystem.IsAndroid())
             {
                 runtimeSystemType = RuntimeSystemType.Android;
             }

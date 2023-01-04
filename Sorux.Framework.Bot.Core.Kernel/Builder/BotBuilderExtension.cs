@@ -5,12 +5,13 @@ using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
+using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
     public static class BotBuilderExtension
     {
-        public static IBotBuilder CreateDefaultBotConfigure(this BotBuilder builder, string[]? args)
+        public static IBotBuilder CreateDefaultBotConfigure(this IBotBuilder builder, string[]? args)
             => builder.ConfigureRuntimeConfiguration(config => ApplyDefaultRuntimeConfiguration(config, args))
                       //注入Bot配置信息，用于存储基本的框架配置信息
                       .ConfigureBotConfiguration((context, config) => ApplyDefaultBotConfiguration(context, config))
@@ -26,6 +27,10 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                           var loggerFactory = LoggerFactory.Create(builder =>
                           {
                               builder.AddConsole();
+                              if (config["LoggerDebug"] != null && config["LoggerDebug"]!.Equals("true"))
+                              {
+                                  builder.AddDebug();
+                              }
                           });
                           services.AddSingleton(loggerFactory);
                           services.AddSingleton(typeof(ILogger<>),typeof(Logger<>));

@@ -9,7 +9,6 @@ using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
-using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins
@@ -35,8 +34,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                                       "ErrorCode:EX0001");
                 return;
             }
-            
-            IBasicInformationRegister? basicInformationRegister = Activator.CreateInstance(type) as IBasicInformationRegister;
+            object intance = Activator.CreateInstance(type)!;
+            IBasicInformationRegister? basicInformationRegister = intance as IBasicInformationRegister;
             if (basicInformationRegister == null)
             {
                 _loggerService.Error("PluginsRegister","The plugin:" + name + "can not be loaded exactly" +
@@ -47,8 +46,22 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             JsonConfig jsonfile;
             try
             {
-                jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
-                    File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
+                switch (_botContext.ServiceProvider.GetService<IConfiguration>()!["ContextRuntimeSystem"])
+                {
+                    case "Windows":
+                        jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
+                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
+                        break;
+                    case "Linux":
+                    case "MacOS":
+                        jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
+                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/" + name.Replace(".dll", ".json")));
+                        break;
+                    default:
+                        _loggerService.Fatal("PluginsRegister","The system kind is not known! Exit...");
+                        return;
+                }
+                
             }
             catch (Exception e)
             {
@@ -56,9 +69,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                                        "ErrorCode:EX0003");
                 return;
             }
-            IPluginsStorage pluginsStorage = _botContext.GetProvider().GetRequiredService<IPluginsStorage>();
+            IPluginsStorage pluginsStorage = _botContext.ServiceProvider.GetRequiredService<IPluginsStorage>();
             //判断privilege是否合法：
-            IConfiguration configuration = _botContext.GetProvider()
+            IConfiguration configuration = _botContext.ServiceProvider
                                                       .GetRequiredService<IBot>()
                                                       .Configuration
                                                       .GetRequiredSection("PluginsDispatcher")
@@ -92,29 +105,43 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                      basicInformationRegister.GetVersion(),
                                      basicInformationRegister.GetDescription(),
                                      newPrivilege);
-
+            
+            //Register 注册可选特性
             Type[] types = type.GetInterfaces();
-            pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.PluginsUUIDRegister.ToString(), "false");
-            pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPermission.ToString(), "false");
-            pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPrefix.ToString(), "false");
+            pluginsStorage.SetPluginInfor(name, "PluginsUUIDRegister", "false");
+            pluginsStorage.SetPluginInfor(name, "CommandPermission", "false");
+            pluginsStorage.SetPluginInfor(name, "CommandPrefix", "false");
             foreach (var subInterface in types)
             {
                 if (subInterface == typeof(IPluginsUUIDRegister))
                 {
-                    pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.PluginsUUIDRegister.ToString(), "true");
+                    pluginsStorage.SetPluginInfor(name, "PluginsUUIDRegister", "true");
+                    IPluginsUUIDRegister uuid = intance as IPluginsUUIDRegister;
+                    pluginsStorage.SetPluginInfor(name, "UUID", uuid.GetUUID());
                 }
-
+                
                 if (subInterface == typeof(ICommandPermission))
                 {
-                    pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPermission.ToString(), "true");
+                    pluginsStorage.SetPluginInfor(name, "CommandPermission", "true");
+                    ICommandPermission permission = intance as ICommandPermission;
+                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoAt",
+                        permission.IsPermissionDeniedAutoAt().ToString());
+                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoReply",
+                        permission.IsPermissionDeniedAutoReply().ToString());
+                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedLeakOut",
+                        permission.IsPermissionDeniedLeakOut().ToString());
+                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedMessage",
+                        permission.GetPermissionDeniedMessage());
                 }
                 
                 if (subInterface == typeof(ICommandPrefix))
                 {
-                    pluginsStorage.SetPluginsInfor(name, PluginsDescriptor.CommandPrefix.ToString(), "true");
+                    pluginsStorage.SetPluginInfor(name, "CommandPrefix", "true");
+                    ICommandPrefix prefix = intance as ICommandPrefix;
+                    pluginsStorage.SetPluginInfor(name, "CommandPrefixContent", prefix.GetCommandPrefix());
                 }
             }
-            _botContext.GetProvider().GetRequiredService<PluginsDispatcher>().RegisterCommandRoute(path,name);
+            _botContext.ServiceProvider.GetRequiredService<PluginsDispatcher>().RegisterCommandRoute(path,name);
         }
     }
 }

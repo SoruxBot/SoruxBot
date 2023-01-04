@@ -8,15 +8,18 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         private static readonly BotContext instance = new BotContext();
         private BotContext() { }
         public static BotContext Instance { get { return instance; } }
-
+        
         //IOC 工厂
         private IServiceCollection? _services;
-        public IServiceCollection BuildContainer(IServiceCollection services)
+
+        private IServiceProvider _serviceProvider;
+        public IServiceProvider ServiceProvider
         {
-            if (_services != null)
-                throw new Exception("重复显式调用BotFactory构造Service Collection方法");
-            this._services = services;
-            return this._services;
+            get { return _serviceProvider; }
+        }
+        public void CreateContainer(IServiceCollection serviceCollection)
+        {
+            this._services = serviceCollection;
         }
 
         public BotContext ConfigureService(Action<IServiceCollection> services) 
@@ -25,7 +28,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             return this;
         }
 
-        public IServiceProvider GetProvider()
-            => _services!.BuildServiceProvider();
+        public void BuildContainer()
+            => this._serviceProvider = _services!.BuildServiceProvider();
     }
 }

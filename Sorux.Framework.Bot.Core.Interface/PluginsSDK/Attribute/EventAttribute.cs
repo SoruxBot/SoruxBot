@@ -13,7 +13,12 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
     [AttributeUsage(AttributeTargets.Method)]
     public class EventAttribute : System.Attribute
     {
-        public EventAttribute(EventType eventType) { }
+        public EventType EventType { get; init; }
+
+        public EventAttribute(EventType eventType)
+        {
+            EventType = eventType;
+        }
 
     }
 }

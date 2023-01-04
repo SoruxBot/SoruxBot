@@ -24,15 +24,5 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         /// </summary>
         /// <returns></returns>
         void AddMsgRequest(string msg);
-        /// <summary>
-        /// 初始化机器人管道
-        /// </summary>
-        void InitializePipe();
-        /// <summary>
-        /// 配置初始化信息
-        /// </summary>
-        /// <param name="delegates"></param>
-        /// <returns></returns>
-        IBot ConfigureInitialize(Action<BotContext, IConfiguration> delegates);
     }
 }

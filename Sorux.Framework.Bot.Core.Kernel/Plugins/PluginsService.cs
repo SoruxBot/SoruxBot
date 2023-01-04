@@ -27,7 +27,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             new DirectoryInfo(DsLocalStorage.GetPluginsDirectory())
                     .GetFiles()
                     .ToList()
-                    .ForEach(plugin => _botContext.GetProvider()
+                    .ForEach(plugin => _botContext.ServiceProvider
                                                          .GetRequiredService<PluginsRegister>()
                                                          .Register(plugin.FullName,plugin.Name));
         }
@@ -35,18 +35,13 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
         /// 配置插件服务，在Shell不启用插件的时候不进行加载，以防止向容器注入插件服务，反而导致错误在同游其他地方的子模块报错
         /// </summary>
         /// <param name="context"></param>
-        public static void ConfigurePluginsServices(BotContext context)
+        public static void ConfigurePluginsServices(IServiceCollection services)
         {
-            context.ConfigureService(services =>
-            {
-                //注册基础服务
-                services.AddSingleton<PluginsService>();
-                services.AddSingleton<PluginsRegister>();
-                services.AddSingleton<PluginsDispatcher>();
-                //注册可选项服务
-                //TODO: 此处需要改成根据 Configuration 进行选项式配置服务
-                services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();
-            });
+            //注册基础服务
+            services.AddSingleton<PluginsService>();
+            services.AddSingleton<PluginsRegister>();
+            services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();
+            services.AddSingleton<PluginsDispatcher>();
         }
     }
 }

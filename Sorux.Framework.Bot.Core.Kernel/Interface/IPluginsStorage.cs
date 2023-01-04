@@ -132,13 +132,13 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// <param name="name"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public bool SetPluginsInfor(string name,string key, string value);
+        public bool SetPluginInfor(string name,string key, string value);
         /// <summary>
         /// 得到插件的内部设置信息
         /// </summary>
         /// <param name="name"></param>
         /// <param name="key"></param>
-        public string GetPluginsInfor(string name,string key);
+        public string GetPluginInfor(string name,string key);
         /// <summary>
         /// 尝试获取插件的内部设置信息，如果插件名称错误，那么返回 False
         /// </summary>
@@ -146,6 +146,26 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public bool TryGetPluginsInfor(string name, string key, out string? value);
+        public bool TryGetPluginInfor(string name, string key, out string? value);
+        /// <summary>
+        /// 存储插件实例
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public bool SetPluginInstance(string name, object instance);
+        /// <summary>
+        /// 取出插件实例
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public object GetPluginInstance(string name);
+        /// <summary>
+        /// 尝试取出插件实例，如果插件名称错误，那么返回 False
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public bool TryGetPluginInstance(string name, out object instance);
     }
 }

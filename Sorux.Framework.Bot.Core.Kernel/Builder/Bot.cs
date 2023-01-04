@@ -6,7 +6,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
     public class Bot : IBot
     {
-        private List<Action<BotContext, IConfiguration>> _initializeAction = new();
         public BotContext Context { get; init; }
         public IConfiguration Configuration { get; init; }
         public Bot(BotContext context,IConfiguration configuration) 
@@ -25,19 +24,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         
         public void AddMsgRequest(string msg)
         {
-            this.Context.GetProvider().GetRequiredService<IMessageQueue>().SetNextMsg(msg);
-        }
-        public void InitializePipe()
-        {
-            foreach (var actions in _initializeAction)
-            {
-                actions(Context, Configuration);
-            }
-        }
-        public IBot ConfigureInitialize(Action<BotContext, IConfiguration> delegates)
-        {
-            _initializeAction.Add(delegates);
-            return this;
+            this.Context.ServiceProvider.GetRequiredService<IMessageQueue>().SetNextMsg(msg);
         }
         //private IHost _host;
         // public void Dispose()

@@ -4,7 +4,6 @@ using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.FutureTest.QQ;
-using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace EpicMo.Example.ChatPlugins.Controller;
@@ -22,7 +21,7 @@ public class PrivateMessageController : BotController
     }
     
     [Event(EventType.SoloMessage)]
-    [Command(CommandAttribute.Prefix.None,"echo")]
+    [Command(CommandAttribute.Prefix.None,"echoa")]
     [CoolDown(10,CoolDownAttribute.CoolDownLevel.SinglePerson)]
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context)
@@ -32,7 +31,7 @@ public class PrivateMessageController : BotController
     }
 
     [Event(EventType.SoloMessage)]
-    [Command(CommandAttribute.Prefix.None,"echo [msg] <optional>")]
+    [Command(CommandAttribute.Prefix.None,"echob [msg] <optional>")]
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context,string msg,int? optional)
     {
@@ -42,7 +41,7 @@ public class PrivateMessageController : BotController
     }
     
     [Event(EventType.SoloMessage)]
-    [Command(CommandAttribute.Prefix.None, "echo [msg]")]
+    [Command(CommandAttribute.Prefix.None, "echoc [msg]")]
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context,string msg)
     {
@@ -51,7 +50,7 @@ public class PrivateMessageController : BotController
     }
 
     [Event(EventType.SoloMessage)]
-    [Command(CommandAttribute.Prefix.Single,"echoPrivilege [msg]")]
+    [Command(CommandAttribute.Prefix.Single,"echoPrivileged [msg]")]
     [Permission("solomsg.echoprivilege")]
     [BeforeMethod]
     [AfterMethod]

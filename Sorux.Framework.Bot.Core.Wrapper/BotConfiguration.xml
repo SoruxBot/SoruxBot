@@ -8,6 +8,7 @@
         如框架无法离开消息队列组件而正常工作。在不提供具体实现但是可能不会导致出现异常的子配置节点我们会
         添加Nullable的注释，但是这并不意味着他不会出现异常。我们推荐你在开发的时候启动$None节点而减少mock成本-->
     <!--$LocalRunPath为变量，其指向的是机器人的运行目录，即框架Wrapper编译后所在的目录-->
+    <!--BotFramework认为你提供的路径具有平台适配性，即框架不会根据平台修改你的路径，请自行确定在不同操作系统下路径的斜线与反斜线的具体语境-->
     <MessageQueue>
       <Path>$BotFramework</Path>
       <Namespace>MessageQueue.MqDictionary</Namespace>
@@ -82,4 +83,32 @@
     <!--可为任意英文字母，特殊符号，但不可为 @ 。-->
     <TriggerChar>#</TriggerChar>
   </CommunicateTrigger>
+  <MultipliedThread>
+    <!--这个节点用于配置框架多线程的相关信息，注意：长对话支持的插件不受本配置节点的影响-->
+    <!--可为 Enable 或者 Disable 用于表示是否启用多线程-->
+    <State>Enable</State>
+    <!--可为 True 或者 False 表示是否保持对话连贯性，即在同一个群发言时，是否严格遵守先触发命令的人先被回复，本项仅在上一个配置项启用时有效-->
+    <CommuincateConsistency>True</CommuincateConsistency>
+  </MultipliedThread>
+  <QueueShutdownSafety>
+    <!--这个节点用于配置消息队列的安全性问题-->
+    <!--可为True 或者 False 是否接受其他程序使用框架的消息队列-->
+    <AccecptThirdPartyQueue>True</AccecptThirdPartyQueue>
+    <!--可为 True 或者 False 是否在异常情况时候自动存储未处理的消息队列，这些消息会在机器人重启后继续处理-->
+    <AutoSaveUnDealWithQueue>True</AutoSaveUnDealWithQueue>
+  </QueueShutdownSafety>
+  <FrameworkQuickStart>
+    <!--这个节点用于配置框架快速启动的相关设置-->
+    <!--可为Enable或者Disable 表示是否启用-->
+    <State>Enable</State>
+    <!--可为 True 或者 False 表示是否允许热重载插件【可能导致未知后果】-->
+    <MemoryRestartPlugins>False</MemoryRestartPlugins>
+    <!--可为 True 或者 False 表示是否允许将临时文件存储在磁盘以方便快速启动【可能导致未知后果】-->
+    <StoreTempData>False</StoreTempData>
+  </FrameworkQuickStart>
+  <TestFuction>
+    <!--实验性功能 【该节点的所有功能均可能导致未知的后果】-->
+    <!--可为 True 或者 False 表示是否以更快的方式加载和扫描插件信息-->
+    <FasterPluginsLoad>False</FasterPluginsLoad>
+  </TestFuction>
 </BotConfiguration>

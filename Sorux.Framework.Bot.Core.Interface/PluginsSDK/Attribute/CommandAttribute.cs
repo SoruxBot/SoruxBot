@@ -10,7 +10,15 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandAttribute : System.Attribute
     {
-        public CommandAttribute(Prefix prefix = Prefix.Global,params string[] command) { }
+        public Prefix CommandPrefix { get; init; }
+        
+        public string[] Command { get; init; }
+
+        public CommandAttribute(Prefix prefix = Prefix.Global, params string[] command)
+        {
+            this.CommandPrefix = prefix;
+            this.Command = command;
+        }
         //If the prefix is single , the plugins should give the statement out in the Register process.
         //We do not support you use different command prefix in one plugin.
         public enum Prefix

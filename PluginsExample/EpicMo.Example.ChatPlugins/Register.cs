@@ -3,7 +3,7 @@ using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
 
 namespace EpicMo.Example.ChatPlugins
 {
-    public class Register : IBasicInformationRegister , IPluginsUUIDRegister , ICommandPrefix , ICommandPermission
+    public class Register : IBasicInformationRegister , ICommandPrefix , ICommandPermission , IPluginsUUIDRegister
     {
         public string GetAuthor() => "EpicMo"; //表示插件的作者信息
         public string GetName() => "SoruxBot示例插件"; //表示插件的名称，这个名称会被框架的日志记录

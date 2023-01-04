@@ -18,6 +18,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         private static DataSet _dataSet = new DataSet();
         private int lastPrivilege = 0;
         private DataTable pluginsInformationTable;
+        private Dictionary<string, object> _pluginsInstanceMap = new Dictionary<string, object>();
         public PluginsLocalStorage(BotContext context, ILoggerService loggerService)
         {
             this._botContext = context;
@@ -29,7 +30,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         private void InitDataSet()
         {
-            DataTable pluginsInformationTable = new DataTable("pluginsInfotmation");
+            DataTable pluginsInformationTable = new DataTable("pluginsInformation");
             DataColumn dataColumn;
             #region 插件信息生成
             dataColumn = new DataColumn();
@@ -78,7 +79,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             
             #endregion
             _dataSet.Tables.Add(pluginsInformationTable);
-            this.pluginsInformationTable = _dataSet.Tables["pluginsInfotmation"]!;
+            this.pluginsInformationTable = _dataSet.Tables["pluginsInformation"]!;
         }
         
         public bool AddPlugin(string name, string author, string filename, string version, string description, int privilege)
@@ -260,9 +261,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         public bool IsExists(string name) 
             => pluginsInformationTable.AsEnumerable().FirstOrDefault(p => ((string)p["name"]).Equals(name)) == null;
 
-        public bool SetPluginsInfor(string name,string key, string value)
+        public bool SetPluginInfor(string name,string key, string value)
         {
-            if (_dataSet.Tables[name] is null)
+            if (_dataSet.Tables[name] is null) //插件内部设置信息的具体表结构已经在 AddPlugins 的时候就设置过了
             {
                 _loggerService.Warn("PluginsLocalStorage","Unexpected Error in the system. Error call for " +
                                                           name + " in the pluginsStorageDataSet.");
@@ -272,13 +273,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             dataRow["key"] = key;
             dataRow["value"] = value;
             _dataSet.Tables[name]!.Rows.Add(dataRow);
+            _dataSet.Tables[name]!.AcceptChanges();
             return true;
         }
 
-        public string GetPluginsInfor(string name, string key)
-            => (string)_dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp[name].Equals(name))!["value"];
+        public string GetPluginInfor(string name, string key)
+            => (string)_dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp["key"].Equals(key))!["value"];
 
-        public bool TryGetPluginsInfor(string name, string key, out string? value)
+        public bool TryGetPluginInfor(string name, string key, out string? value)
         {
             value = null;
             if (_dataSet.Tables[name] is null)
@@ -286,7 +288,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 return false;
             }
 
-            DataRow? dataRow = _dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp[name].Equals(name));
+            DataRow? dataRow = _dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp["key"].Equals(key));
             if (dataRow is null)
             {
                 return false;
@@ -294,5 +296,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             value = (string)dataRow["value"];
             return true;
         }
+
+        public bool SetPluginInstance(string name, object instance)
+            => _pluginsInstanceMap.TryAdd(name, instance);
+
+        public object GetPluginInstance(string name)
+            => _pluginsInstanceMap[name];
+
+        public bool TryGetPluginInstance(string name, out object instance)
+            => _pluginsInstanceMap.TryGetValue(name,out instance!);
     }
 }
