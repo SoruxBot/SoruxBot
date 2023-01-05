@@ -5,6 +5,8 @@ using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
+using Sorux.Framework.Bot.Core.Kernel.APIServices;
 using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
@@ -35,6 +37,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                           services.AddSingleton(loggerFactory);
                           services.AddSingleton(typeof(ILogger<>),typeof(Logger<>));
                           services.AddSingleton<ILoggerService, LoggerService>();
+
                       });
 
         private static void ApplyDefaultRuntimeConfiguration(IConfigurationBuilder config, string[]? args)

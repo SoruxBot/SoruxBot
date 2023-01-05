@@ -18,6 +18,7 @@ public class PrivateMessageController : BotController
         this._loggerService = loggerService;
         this._bot = bot;
         this._longMessageCommunicate = longMessageCommunicate;
+        _loggerService.Info("ExamplePlugins", "ExamplePlugins has been enable private message controller module");
     }
     
     [Event(EventType.SoloMessage)]

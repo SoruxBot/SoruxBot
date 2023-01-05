@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
+using Sorux.Framework.Bot.Core.Kernel.APIServices;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
@@ -42,6 +44,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             services.AddSingleton<PluginsRegister>();
             services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();
             services.AddSingleton<PluginsDispatcher>();
+            //添加API服务
+            services.AddSingleton<IBasicAPI, BasicAPI>();
+            services.AddSingleton<ILongMessageCommunicate, LongMessageCommunicate>();
         }
     }
 }
