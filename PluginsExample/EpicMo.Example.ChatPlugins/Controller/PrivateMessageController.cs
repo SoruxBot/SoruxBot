@@ -18,7 +18,7 @@ public class PrivateMessageController : BotController
         this._loggerService = loggerService;
         this._bot = bot;
         this._longMessageCommunicate = longMessageCommunicate;
-        _loggerService.Info("ExamplePlugins", "ExamplePlugins has been enable private message controller module");
+        _loggerService.Info("ExamplePlugins", "ExamplePlugins has been enable private message controller module\n");
     }
     
     [Event(EventType.SoloMessage)]
@@ -27,7 +27,8 @@ public class PrivateMessageController : BotController
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context)
     {
-        _bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
+        //_loggerService.Info("ExamplePlugins","Triggered!!!! -> echoa");
+        //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
         return PluginFucFlag.MsgFlag;
     }
 
@@ -55,7 +56,7 @@ public class PrivateMessageController : BotController
     [Permission("solomsg.echoprivilege")]
     [BeforeMethod]
     [AfterMethod]
-    [PlatformConstraint("qq")]
+    [PlatformConstraint("qq","FriendPrivateMessage")]
     //在框架内存储的节点为 “epicmo.example.chatplugins.solomsg.echoprivilege”
     //也就是会自动加上前缀
     public PluginFucFlag EchoPrivilege(MessageContext context,string msg)

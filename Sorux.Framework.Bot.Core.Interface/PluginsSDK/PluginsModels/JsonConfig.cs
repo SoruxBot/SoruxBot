@@ -10,13 +10,5 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels
     {
         public string Name;
         public int Privilege;
-        public PermissionNodeConfig Permission;
-        public string PermissionDeniedMsg;
-    }
-
-    public class PermissionNodeConfig 
-    {
-        string Node;
-        string Group;
     }
 }

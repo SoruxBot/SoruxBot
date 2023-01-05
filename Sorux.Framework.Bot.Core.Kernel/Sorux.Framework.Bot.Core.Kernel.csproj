@@ -24,11 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Network\" />
-    <Folder Include="Protocol\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Sorux.Framework.Bot.Core.Interface\Sorux.Framework.Bot.Core.Interface.csproj" />
   </ItemGroup>
 
