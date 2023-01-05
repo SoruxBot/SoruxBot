@@ -79,7 +79,8 @@ public class PluginsDispatcher
                     }
                     #endregion
                 }
-                _pluginsStorage.SetPluginInstance(name+ "." + className.Name, Activator.CreateInstance(className,objects.ToArray())!);
+                _pluginsStorage.SetPluginInstance(name+ "." + className.Name, 
+                                 Activator.CreateInstance(className,objects.ToArray())!);
                 
                 MethodInfo[] methods = className.GetMethods();
                 foreach (var methodInfo in methods)
@@ -138,10 +139,11 @@ public class PluginsDispatcher
                         pluginsActionDescriptor.IsParameterBinded = true;  //绑定成功 [其实绑定失败了就无法 Invoke了]
                         //e.g. public PluginFucFlag EchoPrivilege(MessageContext context,string msg)
                         List<Type> methodParaAll = new List<Type>();
-
-                        var method = new DynamicMethod(methodInfo.Name, typeof(PluginFucFlag), 
-                            pluginsActionDescriptor.ActionParameters.Select(s => s.ParameterType).ToArray());
+                        methodParaAll.Add(className);//push 自身
+                        methodParaAll.AddRange(pluginsActionDescriptor.ActionParameters.Select( s => s.ParameterType));
+                        var method = new DynamicMethod(methodInfo.Name, typeof(PluginFucFlag), methodParaAll.ToArray());
                         var il = method.GetILGenerator();
+                        il.Emit(OpCodes.Ldarg,0);//this
                         int emitCount = 1;
                         List<Type> optionalTypes = new List<Type>();
                         pluginsActionDescriptor.ActionParameters.ForEach(sp =>
@@ -150,39 +152,29 @@ public class PluginsDispatcher
                             {
                                 optionalTypes.Add(sp.ParameterType);
                             }
-                            il.Emit(emitCount switch
-                                                {
-                                                    1 => OpCodes.Ldarg_1,
-                                                    2 => OpCodes.Ldarg_2,
-                                                    3 => OpCodes.Ldarg_3,
-                                                    _ => OpCodes.Ldarg_S
-                                                });
+                            il.Emit(OpCodes.Ldarg,count);
                             emitCount++;
                         });
                         il.Emit(OpCodes.Callvirt,methodInfo);
-
-                        //il.EmitCall(OpCodes.Call,methodInfo,optionalTypes.ToArray());
-                        il.Emit(OpCodes.Pop);
                         il.Emit(OpCodes.Ret);
                         pluginsActionDescriptor.ActionDelegate = (parameters.Length) switch
                         {
-                            1 => method.CreateDelegate(typeof(Func<,>).MakeGenericType(parameters[0].ParameterType,typeof(PluginFucFlag))),
-                            2 => method.CreateDelegate(typeof(Func<,,>).MakeGenericType(parameters[0].ParameterType,
+                            1 => method.CreateDelegate(typeof(Func<,,>).MakeGenericType(className,parameters[0].ParameterType,typeof(PluginFucFlag))),
+                            2 => method.CreateDelegate(typeof(Func<,,,>).MakeGenericType(className,parameters[0].ParameterType,
                                 parameters[1].ParameterType),typeof(PluginFucFlag)),
-                            3 => method.CreateDelegate(typeof(Func<,,,>).MakeGenericType(parameters[0].ParameterType,
+                            3 => method.CreateDelegate(typeof(Func<,,,,>).MakeGenericType(className,parameters[0].ParameterType,
                                 parameters[1].ParameterType, parameters[2].ParameterType,typeof(PluginFucFlag))),
-                            4 => method.CreateDelegate(typeof(Func<,,,,>).MakeGenericType(parameters[0].ParameterType,
+                            4 => method.CreateDelegate(typeof(Func<,,,,,>).MakeGenericType(className,parameters[0].ParameterType,
                                 parameters[1].ParameterType, parameters[2].ParameterType,parameters[3].ParameterType,typeof(PluginFucFlag))),
                             _ => throw new Exception("Cannot match type")
                         };
                         //Test Var
-                        MessageContext messageContext = new MessageContext(
-                            "action","botaccount","qq",
-                            EventType.SoloMessage,"172","123",
-                            "123",new MessageEntity()
-                            );
-                        pluginsActionDescriptor.ActionDelegate.DynamicInvoke(messageContext);
-                        
+                        //MessageContext messageContext = new MessageContext(
+                        //    "action","botaccount","qq",
+                        //    EventType.SoloMessage,"172","123",
+                        //    "123",new MessageEntity()
+                        //    );
+                        //pluginsActionDescriptor.ActionDelegate.DynamicInvoke(new object[]{Activator.CreateInstance(className,objects.ToArray())!,messageContext});
                         foreach (var s in methodEventCommand!.Command) //Command(Prefix,"123")
                         {
                             //添加进入路由
