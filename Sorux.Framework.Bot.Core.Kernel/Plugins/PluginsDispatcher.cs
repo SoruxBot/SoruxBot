@@ -36,7 +36,9 @@ public class PluginsDispatcher
     //插件按照触发条件可以分为选项式命令触发和事件触发
     //前者针对某个特定 EventType 的某个特定的语句触发某个特定的方法
     //后者针对某个通用的 EventType 进行触发
-    private Dictionary<string, PluginsActionDescriptor> _matchList = new ();
+    private Dictionary<string, List<PluginsActionDescriptor>> _matchList = new ();
+    
+    
     /// <summary>
     /// 注册指令路由
     /// </summary>
@@ -165,17 +167,54 @@ public class PluginsDispatcher
                         pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
                         pluginsActionDescriptor.InstanceTypeName = name + "." + className.Name;
                         
-                        foreach (var s in methodEventCommand!.Command)
+                        foreach (var s in methodEventCommand.Command)
                         {
                             //添加进入路由
                             //[Type];[Platform];[Action]/<Prefix>[Command]
                             //Command这个地方用 Delegate 来记录
-                            _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
-                                pluginsActionDescriptor);
+                            if (_matchList.TryGetValue(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
+                                    out List<PluginsActionDescriptor>? list))
+                            {
+                                list.Add(pluginsActionDescriptor);
+                            }
+                            else
+                            {
+                                list = new List<PluginsActionDescriptor>();
+                                list.Add(pluginsActionDescriptor);
+                                _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
+                                    list);
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// 得到路由被注册后的委托方法
+    /// </summary>
+    /// <returns></returns>
+    public List<PluginsActionDescriptor>? GetAction(string route)
+    {
+        var list = new List<PluginsActionDescriptor>();
+        string routeHeader = route.Split("/")[0];
+        string[] waittingList = routeHeader.Split(";");
+        switch (waittingList.Length)
+        {
+            case 1://通用匹配
+                return _matchList[waittingList[0]];
+            case 2://平台特定的匹配，自然包含了通用匹配
+                list.AddRange(_matchList[waittingList[1]]);
+                list.AddRange(_matchList[waittingList[0]]);
+                return list;
+            case 3://平台及平台方法特定的匹配
+                list.AddRange(_matchList[waittingList[2]]);
+                list.AddRange(_matchList[waittingList[1]]);
+                list.AddRange(_matchList[waittingList[0]]);
+                return list;
+            default:
+                throw new Exception("Error Route");
         }
     }
 }

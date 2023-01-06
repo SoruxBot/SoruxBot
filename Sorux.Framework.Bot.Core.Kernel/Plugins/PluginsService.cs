@@ -44,6 +44,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             services.AddSingleton<PluginsRegister>();
             services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();
             services.AddSingleton<PluginsDispatcher>();
+            services.AddSingleton<PluginsCommandLexer>();
             //添加API服务
             services.AddSingleton<IBasicAPI, BasicAPI>();
             services.AddSingleton<ILongMessageCommunicate, LongMessageCommunicate>();
