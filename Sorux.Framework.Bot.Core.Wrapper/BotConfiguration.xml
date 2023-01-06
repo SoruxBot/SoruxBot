@@ -54,28 +54,18 @@
       <EnableMutipliedPrivilege>Disable</EnableMutipliedPrivilege>
     </PrivilegeSchedule>
   </PluginsDispatcher>
-  <FutureTest>
-    <!--这个节点配置Future Test功能的具体细节-->
-    <!--可为Enable或者是Disable，默认为Enable，表示是否支持在标准事件/功能集以外的特定于平台的事件，若为是则表示支持。-->
-    <State>Enable</State>
-    <!--这个节点配置第三方事件支持的对象存在的地址，若遇到第三方事件那么会移交给被配置的库处理。-->
-    <ThirdEventSupport>
-      <!--实际路径为程序根目录下的FutureTest目录，需要遵循SoruxBot Future开发规范。-->
-      <Event>
-        <Config>
-          <!--[聊天平台].[版本号]-->
-          <TargetPlatform>qq.263</TargetPlatform>
-          <!--被注册的事件，需要将注册的事件全部枚举出，对应的 Meta 信息为 Action 项-->
-          <TargetAction>
-            <Register>self-joingroup</Register>
-            <Register>luckymoney</Register>
-          </TargetAction>
-        </Config>
-        <!--处理此类消息的 FutureTest 程序集路径-->
-        <Path>qq.263.futuretest.example.dll</Path>
-      </Event>
-    </ThirdEventSupport>
-  </FutureTest>
+  <ProviderConfig>
+    <!--这个节点用于配置 Provider 的设置-->
+    <ProviderItem>
+      <!--这个节点表示一般性节点，代表一个 Provider 的配置项-->
+      <!--表示平台标识，同一个平台只允许使用一个 Provider-->
+      <Platform>qq</Platform>
+      <!--表示框架的API请求地址，框架以 HttpPost 的方式发送信息，本地址应该是基于 SoruxBot Framework 规范开发的 Provider-->
+      <HttpPostJsonPath>https://localhost:7290/APIPost</HttpPostJsonPath>
+      <!--表示特定平台的 Future Test 事件和功能，本地址应该是协议层的直接地址-->
+      <NetWorkHttpPostPath>https://localhost:5700/</NetWorkHttpPostPath>
+    </ProviderItem>
+  </ProviderConfig>
   <CommunicateTrigger>
     <!--这个节点用于配置触发条件-->
     <!--可为 Enable 或者 Disable 用于表示是否启用消息前缀触发-->
@@ -87,8 +77,6 @@
     <!--这个节点用于配置框架多线程的相关信息，注意：长对话支持的插件不受本配置节点的影响-->
     <!--可为 Enable 或者 Disable 用于表示是否启用多线程-->
     <State>Enable</State>
-    <!--可为 True 或者 False 表示是否保持对话连贯性，即在同一个群发言时，是否严格遵守先触发命令的人先被回复，本项仅在上一个配置项启用时有效-->
-    <CommuincateConsistency>True</CommuincateConsistency>
   </MultipliedThread>
   <QueueShutdownSafety>
     <!--这个节点用于配置消息队列的安全性问题-->

@@ -24,10 +24,9 @@ public class PrivateMessageController : BotController
     [Event(EventType.SoloMessage)]
     [Command(CommandAttribute.Prefix.None,"echoa")]
     [CoolDown(10,CoolDownAttribute.CoolDownLevel.SinglePerson)]
-    [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context)
     {
-        _loggerService.Info("ExamplePlugins","Triggered!!!! -> echoa");
+        _loggerService.Info("ExamplePlugins","无参数的插件方法被调用了！");
         //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
         return PluginFucFlag.MsgFlag;
     }
@@ -37,7 +36,10 @@ public class PrivateMessageController : BotController
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context,string msg,int? optional)
     {
-        //_bot.SendPrivateMessage(context,"你好！你想要发送的消息是：" + msg 
+        _loggerService.Info("ExamplePlugins","可选参数类型的方法接受到了一条消息：" + msg + (optional == null ? "null":optional));
+        //_bot.SendPrivateMessage(context,"你好！你想要发送的消息是：" + m
+        //
+        //sg 
          //                                               + (optional == null ? " 且没有携带额外信息":" 且携带了一条额外信息:" + optional));
         return PluginFucFlag.MsgFlag;
     }
@@ -47,6 +49,7 @@ public class PrivateMessageController : BotController
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context,string msg)
     {
+        _loggerService.Info("ExamplePlugins","接收到一个消息：" + msg);
         //_bot.SendPrivateMessage(context,"你好，" + context.GetSenderNick() + "!你想要发送：" + msg);
         return PluginFucFlag.MsgFlag;
     }
@@ -56,7 +59,7 @@ public class PrivateMessageController : BotController
     [Permission("solomsg.echoprivilege")]
     [BeforeMethod]
     [AfterMethod]
-    [PlatformConstraint("qq","FriendPrivateMessage")]
+    [PlatformConstraint("qq","friend-privatemessage")]
     //在框架内存储的节点为 “epicmo.example.chatplugins.solomsg.echoprivilege”
     //也就是会自动加上前缀
     public PluginFucFlag EchoPrivilege(MessageContext context,string msg)

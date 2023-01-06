@@ -10,12 +10,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue;
 /// <summary>
 /// 内置的 ResponseQueue 实现
 /// </summary>
-public class ReponseQueue : IResponseQueue
+public class ResponseQueue : IResponseQueue
 {
     private BotContext _botContext;
     private ILoggerService _loggerService;
     private Queue<MessageContext> _Queue = new Queue<MessageContext>();
-    public ReponseQueue(BotContext botContext , ILoggerService loggerService)
+    public ResponseQueue(BotContext botContext , ILoggerService loggerService)
     {
         this._botContext = _botContext;
         this._loggerService = loggerService;
@@ -26,11 +26,10 @@ public class ReponseQueue : IResponseQueue
 
     public void SetNextReponse(MessageContext context)
     {
-        _loggerService.Info("ResponseQueue","reponse enqueue.",context);
         _Queue.Enqueue(context);
     }
 
-    public MessageContext? GetNextResponse(MessageContext context) 
+    public MessageContext? GetNextResponse() 
                         => _Queue.TryDequeue(out MessageContext? value) == true ? value : null;
 
     public void RestoreFromLocalStorage()

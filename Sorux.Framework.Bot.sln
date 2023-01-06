@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Framework.Bot.Core.In
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Framework.Bot.Provider.CqHttp", "Sorux.Framework.Bot.Provider.CqHttp\Sorux.Framework.Bot.Provider.CqHttp.csproj", "{E167CF82-7E7F-4951-A306-929567B1DB73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorux.Framework.Bot.WebgRpc", "Sorux.Framework.Bot.WebgRpc\Sorux.Framework.Bot.WebgRpc.csproj", "{D40A4EC0-0E72-46F8-88D2-D5EC3B834F08}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{E167CF82-7E7F-4951-A306-929567B1DB73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E167CF82-7E7F-4951-A306-929567B1DB73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E167CF82-7E7F-4951-A306-929567B1DB73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D40A4EC0-0E72-46F8-88D2-D5EC3B834F08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D40A4EC0-0E72-46F8-88D2-D5EC3B834F08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D40A4EC0-0E72-46F8-88D2-D5EC3B834F08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D40A4EC0-0E72-46F8-88D2-D5EC3B834F08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

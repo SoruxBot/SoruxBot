@@ -22,7 +22,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
         
         public void SetNextMsg(MessageContext value)
         {
-            _loggerService.Info("MqDictionary","Message enqueue.",value);
             _Queue.Enqueue(value);
         }
         public MessageContext? GetNextMessageRequest() => _Queue.TryDequeue(out MessageContext? value) == true ? value : null;

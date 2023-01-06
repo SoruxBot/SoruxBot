@@ -121,7 +121,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 switch (rqModule)
                 {
                     case "MessageQueue.ResponseQueue":
-                        services.AddSingleton<IResponseQueue,MessageQueue.ReponseQueue>();
+                        services.AddSingleton<IResponseQueue,MessageQueue.ResponseQueue>();
                         break;
                     case "$None":
                         break;

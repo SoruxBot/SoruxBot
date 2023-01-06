@@ -11,7 +11,7 @@ public class MessageEntity
     /// <summary>
     /// 消息的状态
     /// </summary>
-    public PluginFucFlag MsgState { get; init; }
+    public PluginFucFlag MsgState { get; set; }
     /// <summary>
     /// 获得 Meta 中的原始消息
     /// </summary>

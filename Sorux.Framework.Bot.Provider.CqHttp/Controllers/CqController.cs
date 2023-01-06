@@ -56,7 +56,6 @@ public class CqController : ControllerBase
             Message = new MessageEntity()
             {
                 Meta = jsonObject["raw_message"]!.ToString(),
-                MsgState = PluginFucFlag.MsgPassed
             },
             MessageEventType = EventType.SoloMessage,
             TargetPlatform = "qq",

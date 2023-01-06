@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq.Expressions;
+using System.Reflection;
 using System.Reflection.Emit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -140,31 +141,39 @@ public class PluginsDispatcher
                             count++;
                         }
                         pluginsActionDescriptor.IsParameterBinded = true;  //绑定成功 [其实绑定失败了就无法 Invoke了]
-                        
-                        List<Type> methodParaAll = new List<Type>();
-                        methodParaAll.Add(className);
-                        methodParaAll.AddRange(pluginsActionDescriptor.ActionParameters.Select( s => s.ParameterType));
-                        
-                        List<Type> objparas = new List<Type>();
-                        methodParaAll.ToList().ForEach( _ => objparas.Add(typeof(object)));
-                        var method = new DynamicMethod(methodInfo.Name,typeof(PluginFucFlag), new Type[]{typeof(object),typeof(object[])});
-                        var il = method.GetILGenerator();
-                        il.Emit(OpCodes.Ldarg,0);
-                        il.Emit(OpCodes.Ldarg,1);
-                        int paraCount = 0;
-                        pluginsActionDescriptor.ActionParameters.ForEach(sp =>
-                        {
-                            il.Emit(OpCodes.Ldc_I4,paraCount);
-                            il.Emit(OpCodes.Ldelem_Ref);
-                            if (sp.ParameterType.IsValueType)
-                            {
-                                il.Emit(OpCodes.Unbox_Any, sp.ParameterType);
-                            }
-                        });
-                        
-                        il.Emit(OpCodes.Call,methodInfo);
-                        il.Emit(OpCodes.Ret);
-                        pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
+                        var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
+                        Type delegateType;
+                        args.Add(methodInfo.ReturnType);
+                        delegateType = Expression.GetFuncType(args.ToArray());
+                        pluginsActionDescriptor.ActionDelegate = 
+                            methodInfo.CreateDelegate(delegateType,
+                                _pluginsStorage.GetPluginInstance(name+ "." + className.Name));
+                        #region EMIT
+                        //List<Type> methodParaAll = new List<Type>();
+                        //methodParaAll.Add(className);
+                        //methodParaAll.AddRange(pluginsActionDescriptor
+                        //             .ActionParameters.Select( s => s.ParameterType));
+                        //List<Type> objparas = new List<Type>();
+                        //methodParaAll.ToList().ForEach( _ => objparas.Add(typeof(object)));
+                        //var method = new DynamicMethod(methodInfo.Name,typeof(PluginFucFlag),
+                        //    new Type[]{typeof(object),typeof(object[])});
+                        //var il = method.GetILGenerator();
+                        //il.Emit(OpCodes.Ldarg,0);
+                        //il.Emit(OpCodes.Ldarg,1);
+                        //int paraCount = 0;
+                        //pluginsActionDescriptor.ActionParameters.ForEach(sp =>
+                        //{
+                        //    il.Emit(OpCodes.Ldc_I4,paraCount);
+                        //    il.Emit(OpCodes.Ldelem_Ref);
+                        //    if (sp.ParameterType.IsValueType)
+                        //    {
+                        //        il.Emit(OpCodes.Unbox_Any, sp.ParameterType);
+                        //    }
+                        //});
+                        //il.Emit(OpCodes.Call,methodInfo);
+                        //il.Emit(OpCodes.Ret);
+                        //pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
+                        #endregion
                         pluginsActionDescriptor.InstanceTypeName = name + "." + className.Name;
                         
                         foreach (var s in methodEventCommand.Command)
@@ -198,21 +207,44 @@ public class PluginsDispatcher
     public List<PluginsActionDescriptor>? GetAction(string route)
     {
         var list = new List<PluginsActionDescriptor>();
-        string routeHeader = route.Split("/")[0];
-        string[] waittingList = routeHeader.Split(";");
+        string[] parts = route.Split("/");
+        string[] waittingList = parts[0].Split(";");
         switch (waittingList.Length)
         {
             case 1://通用匹配
-                return _matchList[waittingList[0]];
+                if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out list))
+                    return list;
+                return null;
             case 2://平台特定的匹配，自然包含了通用匹配
-                list.AddRange(_matchList[waittingList[1]]);
-                list.AddRange(_matchList[waittingList[0]]);
-                return list;
-            case 3://平台及平台方法特定的匹配
-                list.AddRange(_matchList[waittingList[2]]);
-                list.AddRange(_matchList[waittingList[1]]);
-                list.AddRange(_matchList[waittingList[0]]);
-                return list;
+                if (_matchList.TryGetValue(waittingList[0] + ";" + waittingList[1] + "/" + parts[1], out var tempA))
+                {
+                    list.AddRange(tempA);
+                }else if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out var tempB))
+                {
+                    list.AddRange(tempB);
+                }
+                if (list.Count != 0)
+                    return list;
+                return null;
+            case 3: //平台及平台方法特定的匹配
+                if (_matchList.TryGetValue(waittingList[0] + ";" +
+                                           waittingList[1] + ";" + waittingList[2] + "/" +
+                                           parts[1], out var tempC))
+                {
+                    list.AddRange(tempC);
+                }
+                else if (_matchList.TryGetValue(waittingList[0] + ";" + waittingList[1] + "/" + parts[1],
+                             out var tempD))
+                {
+                    list.AddRange(tempD);
+                }
+                else if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out var tempE))
+                {
+                    list.AddRange(tempE);
+                }
+                if (list.Count != 0)
+                    return list;
+                return null;
             default:
                 throw new Exception("Error Route");
         }

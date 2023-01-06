@@ -4,6 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Sorux.Framework.Bot.Core.Kernel.Plugins;
 using Sorux.Framework.Bot.WebgRpc.Services;
 using Grpc.Core;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
+using Sorux.Framework.Bot.Core.Kernel.Interface;
+using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 using Sorux.Framework.Bot.WebgRpc;
 
@@ -30,9 +34,30 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             };
             server.Start();
             
+            IMessageQueue messageQueue = app.Context.ServiceProvider.GetRequiredService<IMessageQueue>();
+            PluginsDispatcher pluginsDispatcher = app.Context.ServiceProvider.GetRequiredService<PluginsDispatcher>();
+            PluginsCommandLexer pluginsCommandLexer =
+                app.Context.ServiceProvider.GetRequiredService<PluginsCommandLexer>();
             while (true)
             {
-                
+                MessageContext? messageContext = messageQueue.GetNextMessageRequest();
+                if (messageContext != null)
+                {
+                    string route = messageContext.ActionRoute + "/" +
+                                   messageContext.Message.GetRawMessage().Split(" ")[0];
+                    List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route);
+                    if (list != null)
+                        list.ForEach(sp =>
+                        {
+                            if (messageContext.Message.MsgState != PluginFucFlag.MsgIgnored)
+                                messageContext.Message.MsgState = pluginsCommandLexer.PluginAction(messageContext, sp);
+                        });
+                    //Task.Run( () =>
+                    //{
+                    //    
+                    //});
+                }
+                Thread.Sleep(0);
             }
         }
 
