@@ -33,6 +33,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                               {
                                   builder.AddDebug();
                               }
+                              services.AddSingleton(builder);
                           });
                           services.AddSingleton(loggerFactory);
                           services.AddSingleton(typeof(ILogger<>),typeof(Logger<>));

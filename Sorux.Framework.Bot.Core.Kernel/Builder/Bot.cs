@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
@@ -22,7 +23,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             //     .Build();
         }
         
-        public void AddMsgRequest(string msg)
+        public void AddMsgRequest(MessageContext msg)
         {
             this.Context.ServiceProvider.GetRequiredService<IMessageQueue>().SetNextMsg(msg);
         }

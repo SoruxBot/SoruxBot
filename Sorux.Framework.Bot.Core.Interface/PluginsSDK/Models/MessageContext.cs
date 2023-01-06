@@ -6,9 +6,9 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 public class MessageContext
 {
     /// <summary>
-    /// 事件的名称
+    /// 事件的路由
     /// </summary>
-    public string Action { get; init; } 
+    public string ActionRoute { get; init; } 
     /// <summary>
     /// 接受触发的机器人账号
     /// </summary>
@@ -55,14 +55,17 @@ public class MessageContext
     /// 表示消息附带的属性，此属性不被框架使用，为消息预留
     /// </summary>
     public string TiedAttribute { get; set; }
-
     /// <summary>
     /// 表示消息携带的针对于平台的属性
     /// </summary>
-    public Dictionary<string, string> UnderProperty { get; } = new Dictionary<string, string>();
+    public Dictionary<string, string> UnderProperty { get; init; } = new Dictionary<string, string>();
+    /// <summary>
+    /// 表示消息产生的时间戳
+    /// </summary>
+    public string MessageTime { get; init; }
     public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, MessageEntity message)
     {
-        Action = action;
+        ActionRoute = action;
         BotAccount = botAccount;
         TargetPlatform = targetPlatform;
         MessageEventType = messageEventType;
@@ -74,7 +77,7 @@ public class MessageContext
 
     public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, LongMessageContext? longMessageContext, MessageEntity message)
     {
-        Action = action;
+        ActionRoute = action;
         BotAccount = botAccount;
         TargetPlatform = targetPlatform;
         MessageEventType = messageEventType;
@@ -87,7 +90,7 @@ public class MessageContext
 
     public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, MessageEntity message, Dictionary<string, string?>? commandParas)
     {
-        Action = action;
+        ActionRoute = action;
         BotAccount = botAccount;
         TargetPlatform = targetPlatform;
         MessageEventType = messageEventType;
@@ -100,7 +103,7 @@ public class MessageContext
 
     public MessageContext(string action, string botAccount, string targetPlatform, EventType messageEventType, string triggerId, string triggerPlatformId, string tiedId, LongMessageContext? longMessageContext, MessageEntity message, Dictionary<string, string?>? commandParas)
     {
-        Action = action;
+        ActionRoute = action;
         BotAccount = botAccount;
         TargetPlatform = targetPlatform;
         MessageEventType = messageEventType;
@@ -110,5 +113,10 @@ public class MessageContext
         LongMessageContext = longMessageContext;
         Message = message;
         CommandParas = commandParas;
+    }
+
+    public MessageContext()
+    {
+        
     }
 }

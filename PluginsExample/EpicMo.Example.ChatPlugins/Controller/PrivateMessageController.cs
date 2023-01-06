@@ -60,10 +60,11 @@ public class PrivateMessageController : BotController
     //在框架内存储的节点为 “epicmo.example.chatplugins.solomsg.echoprivilege”
     //也就是会自动加上前缀
     public PluginFucFlag EchoPrivilege(MessageContext context,string msg)
-    {  
+    {
         //_bot.SendPrivateMessage(context,"你好，你发送的消息是" + msg);
         //_bot.SendPrivateMessage(context,"在你发送这个消息的时候，你具有的权限是\"epicmo.example.chatplugins.solomsg.echoprivilege\"");
         return PluginFucFlag.MsgFlag;
+        
     }
 
     [Event(EventType.SoloMessage)]

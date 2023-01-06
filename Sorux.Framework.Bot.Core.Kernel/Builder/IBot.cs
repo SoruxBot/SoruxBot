@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
 {
@@ -23,6 +24,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         /// 添加消息进入消息队列
         /// </summary>
         /// <returns></returns>
-        void AddMsgRequest(string msg);
+        void AddMsgRequest(MessageContext msg);
     }
 }

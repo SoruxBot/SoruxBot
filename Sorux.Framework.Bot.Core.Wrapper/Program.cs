@@ -1,8 +1,11 @@
 ﻿using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Sorux.Framework.Bot.Core.Kernel.Plugins;
+using Sorux.Framework.Bot.WebgRpc.Services;
+using Grpc.Core;
+using Sorux.Framework.Bot.Core.Kernel.Utils;
+using Sorux.Framework.Bot.WebgRpc;
 
 namespace Sorux.Framework.Bot.Core.Wrapper
 {
@@ -13,6 +16,24 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             var app = CreateDefaultBotBuilder(args).Build();
             //插件注册
             app.Context.ServiceProvider.GetRequiredService<PluginsService>().RegisterPlugins();
+
+            if (!int.TryParse(app.Configuration["WebListenerPort"], out int port))
+                throw new Exception("Error Port");
+
+            Server server = new Server
+            {
+
+                Services = { Message.BindService(
+                    new MessageTransmission(app,app.Context.ServiceProvider.GetRequiredService<ILoggerService>())) },
+                Ports = { new ServerPort("localhost", port, ServerCredentials.Insecure) }
+
+            };
+            server.Start();
+            
+            while (true)
+            {
+                
+            }
         }
 
         private static IBotBuilder CreateDefaultBotBuilder(string[] args)
@@ -22,7 +43,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                              {
                                  configure.AddInMemoryCollection(new[]
                                  {
-                                     new KeyValuePair<string, string?>("WebListenerPort","7999"),
+                                     new KeyValuePair<string, string?>("WebListenerPort","7151"),
                                      new KeyValuePair<string, string?>("LoggerDebug","true")
                                  });
                              }).CreateDefaultBotConfigure(args)
