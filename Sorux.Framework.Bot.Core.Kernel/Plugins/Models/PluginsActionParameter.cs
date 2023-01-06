@@ -1,4 +1,5 @@
-﻿namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+﻿
+namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 
 public class PluginsActionParameter
 {

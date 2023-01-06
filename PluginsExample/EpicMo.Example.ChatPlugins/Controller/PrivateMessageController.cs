@@ -27,7 +27,7 @@ public class PrivateMessageController : BotController
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context)
     {
-        //_loggerService.Info("ExamplePlugins","Triggered!!!! -> echoa");
+        _loggerService.Info("ExamplePlugins","Triggered!!!! -> echoa");
         //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
         return PluginFucFlag.MsgFlag;
     }

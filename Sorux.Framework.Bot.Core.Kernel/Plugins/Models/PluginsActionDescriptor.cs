@@ -12,4 +12,6 @@ public class PluginsActionDescriptor
     public bool IsParameterBinded { get; set; }
     
     public Delegate ActionDelegate { get; set; }
+    
+    public string InstanceTypeName { get; set; }
 }
