@@ -15,12 +15,13 @@ public class CqController : ControllerBase
 {
     private ILogger<CqController> _logger;
 
-    GrpcChannel? channel = GrpcChannel.ForAddress("http://localhost:7151");
+    GrpcChannel? channel = null;
     Message.MessageClient client = null;
 
-    public CqController(ILogger<CqController> logger)
+    public CqController(ILogger<CqController> logger,IConfiguration configuration)
     {
         this._logger = logger;
+        channel = GrpcChannel.ForAddress(configuration["gRPCHost"]);
         client = new Message.MessageClient(channel);
     }
     [HttpPost]

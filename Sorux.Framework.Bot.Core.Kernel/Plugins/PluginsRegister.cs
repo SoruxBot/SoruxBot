@@ -104,7 +104,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                      basicInformationRegister.GetDLL(),
                                      basicInformationRegister.GetVersion(),
                                      basicInformationRegister.GetDescription(),
-                                     newPrivilege);
+                                         newPrivilege);
+            
+            _loggerService.Info("PluginsRegister","Catch plugin:" + name);
             
             //Register 注册可选特性
             Type[] types = type.GetInterfaces();

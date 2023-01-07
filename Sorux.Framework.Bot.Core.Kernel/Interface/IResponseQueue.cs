@@ -7,8 +7,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface;
 /// </summary>
 public interface IResponseQueue
 {
-    public void SetNextReponse(MessageContext context);
-    public MessageContext? GetNextResponse();
+    public void SetNextReponse(ResponseContext context);
+    public ResponseContext? GetNextResponse();
     public void RestoreFromLocalStorage();
     public void SaveIntoLocalStorage();
     public void DisposeFromLocalStorage();

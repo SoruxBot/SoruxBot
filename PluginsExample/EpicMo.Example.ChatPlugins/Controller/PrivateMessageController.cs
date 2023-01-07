@@ -27,6 +27,7 @@ public class PrivateMessageController : BotController
     public PluginFucFlag Echo(MessageContext context)
     {
         _loggerService.Info("ExamplePlugins","无参数的插件方法被调用了！");
+        
         //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
         return PluginFucFlag.MsgFlag;
     }
@@ -50,6 +51,8 @@ public class PrivateMessageController : BotController
     public PluginFucFlag Echo(MessageContext context,string msg)
     {
         _loggerService.Info("ExamplePlugins","接收到一个消息：" + msg);
+        _bot.SendPrivateMessage(context,"你好！你发送了这样的一个消息：" + msg);
+        _bot.SendPrivateMessage(context, "我接受到了：" + _bot.SendPrivateMessageAsync(context, "你好！").Result.ToString());
         //_bot.SendPrivateMessage(context,"你好，" + context.GetSenderNick() + "!你想要发送：" + msg);
         return PluginFucFlag.MsgFlag;
     }

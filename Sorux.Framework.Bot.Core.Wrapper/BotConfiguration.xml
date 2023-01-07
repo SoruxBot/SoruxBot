@@ -1,5 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <BotConfiguration>
+  <WebLister>
+    <!--这个节点用于配置 Web 服务-->
+    <!--填写 gRPC 服务建立的地址-->
+    <WebListenerUrl>localhost</WebListenerUrl>
+    <!--填写 gRPC 服务的端口地址-->
+    <WebListenerPort>7151</WebListenerPort>
+  </WebLister>
   <RuntimeAdapter>
     <!--这个节点配置项在初始化时仅提供给SoruxFramework本身，用于组装适配器-->
     <!--如果你需要配置低配置项(即针对于特定的操作系统平台，亦或是会会影响组件，请使用Runtime配置项)-->
@@ -61,9 +68,9 @@
       <!--表示平台标识，同一个平台只允许使用一个 Provider-->
       <Platform>qq</Platform>
       <!--表示框架的API请求地址，框架以 HttpPost 的方式发送信息，本地址应该是基于 SoruxBot Framework 规范开发的 Provider-->
-      <HttpPostJsonPath>https://localhost:7290/APIPost</HttpPostJsonPath>
+      <HttpPostJsonPath>https://localhost:7290</HttpPostJsonPath>
       <!--表示特定平台的 Future Test 事件和功能，本地址应该是协议层的直接地址-->
-      <NetWorkHttpPostPath>https://localhost:5700/</NetWorkHttpPostPath>
+      <NetWorkHttpPostPath>https://localhost:5700</NetWorkHttpPostPath>
     </ProviderItem>
   </ProviderConfig>
   <CommunicateTrigger>
