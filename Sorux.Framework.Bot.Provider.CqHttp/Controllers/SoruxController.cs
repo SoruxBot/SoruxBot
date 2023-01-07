@@ -19,7 +19,6 @@ public class SoruxController : ControllerBase
     {
         this._logger = logger;
         _host = new RestClient(configuration["GoCqHost"]);
-        logger.LogInformation("Listening:" + configuration["GoCqHost"]);
     }
 
     [HttpPost]
