@@ -74,6 +74,15 @@ public class PrivateMessageController : BotController
         
     }
 
+    [Event(EventType.GroupMessage)]
+    [Command(CommandAttribute.Prefix.Single,"say [msg]")]
+    public PluginFucFlag GroupMessageType(MessageContext context, string msg)
+    {
+        _bot.SendGroupMessage(context,"你想让我说：" + msg + "对吗？");
+        return PluginFucFlag.MsgIntercepted;
+    }
+    
+    
     [Event(EventType.SoloMessage)]
     [Command(CommandAttribute.Prefix.Single,"longCommunicate")]
     public PluginFucFlag LongCommunicate(MessageContext context)

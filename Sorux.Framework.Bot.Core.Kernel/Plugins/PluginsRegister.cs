@@ -43,7 +43,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                                                        "ErrorCode:EX0002");
                 return;
             }
-            JsonConfig jsonfile;
+            JsonConfig? jsonfile;
             try
             {
                 switch (_botContext.ServiceProvider.GetService<IConfiguration>()!["ContextRuntimeSystem"])

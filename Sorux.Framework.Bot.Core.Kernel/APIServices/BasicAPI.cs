@@ -20,7 +20,13 @@ public class BasicApi : IBasicAPI
         this._pluginsHost = pluginsHost;
         this._responseQueue = responseQueue;
     }
-    
+
+    public void Action(ResponseContext response) => _responseQueue.SetNextReponse(response);
+
+    public Task<string> ActionAsync(ResponseContext response) => _pluginsHost.ActionAysnc(response);
+
+    public string ActionCompute(ResponseContext response) => _pluginsHost.ActionCompute(response);
+
     public void SendPrivateMessage(MessageContext context, string content)
     {
         ResponseModel responseModel = new()
@@ -39,6 +45,58 @@ public class BasicApi : IBasicAPI
         _responseQueue.SetNextReponse(response);
     }
 
+    public void SendGroupMessage(MessageContext context, string content)
+    {
+        ResponseModel responseModel = new()
+        {
+            Receiver = context.TriggerPlatformId,
+            MessageContent = content,
+            ResopnseRoute = "sendGroupMessage"
+        };
+        ResponseContext response = new()
+        {
+            Message = context,
+            ResponseData = responseModel,
+            ResponseRoute = "common;sendGroupMessage"
+        };
+        _responseQueue.SetNextReponse(response);
+    }
+
+    public Task<string> SendGroupMessageAsync(MessageContext context, string content)
+    {
+        ResponseModel responseModel = new()
+        {
+            Receiver = context.TriggerPlatformId,
+            MessageContent = content,
+            ResopnseRoute = "sendGroupMessage"
+        };
+        ResponseContext response = new()
+        {
+            Message = context,
+            ResponseData = responseModel,
+            ResponseRoute = "common;sendGroupMessage"
+        };
+        return _pluginsHost.ActionAysnc(response);
+    }
+
+    public string SendGroupMessageCompute(MessageContext context, string content)
+    {
+        ResponseModel responseModel = new()
+        {
+            Receiver = context.TriggerPlatformId,
+            MessageContent = content,
+            ResopnseRoute = "sendGroupMessage"
+        };
+        ResponseContext response = new()
+        {
+            Message = context,
+            ResponseData = responseModel,
+            ResponseRoute = "common;sendGroupMessage"
+        };
+        return _pluginsHost.ActionCompute(response);
+    }
+
+
     public Task<string> SendPrivateMessageAsync(MessageContext context, string content)
     {
         ResponseModel responseModel = new()
@@ -55,5 +113,23 @@ public class BasicApi : IBasicAPI
             ResponseRoute = "common;sendPrivateMessage"
         };
         return _pluginsHost.ActionAysnc(response);
+    }
+
+    public string SendPrivateMessageCompute(MessageContext context, string content)
+    {
+        ResponseModel responseModel = new()
+        {
+            Receiver = context.TriggerId,
+            MessageContent = content,
+            ResopnseRoute = "sendPrivateMessage"
+        };
+        
+        ResponseContext response = new()
+        {
+            Message = context,
+            ResponseData = responseModel,
+            ResponseRoute = "common;sendPrivateMessage"
+        };
+        return _pluginsHost.ActionCompute(response);
     }
 }

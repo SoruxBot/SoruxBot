@@ -43,7 +43,7 @@ public class MessageContext
     /// <summary>
     /// 消息实体，使用本对象应该遵循语义为主的处理方式
     /// </summary>
-    public MessageEntity Message { get; set; }
+    public MessageEntity? Message { get; set; }
 
     /// <summary>
     /// 原始命令参数列表，本列表会存储任何原始的参数信息（不含有母命名头）。

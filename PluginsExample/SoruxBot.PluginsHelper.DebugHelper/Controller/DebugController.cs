@@ -34,4 +34,5 @@ public class DebugController : BotController
                 return PluginFucFlag.MsgIntercepted;
         }
     }
+    
 }

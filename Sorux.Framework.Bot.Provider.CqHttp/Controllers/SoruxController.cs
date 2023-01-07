@@ -30,11 +30,24 @@ public class SoruxController : ControllerBase
         {
             case "sendPrivateMessage":
                 return SendPrivateMessage(responseModel);
+            case "sendGroupMessage":
+                return SendGroupMessage(responseModel);
             default:
-                return "";
+                return "Error Request for goHttp, please check your version.";
         }
     }
 
+    private string SendGroupMessage(ResponseModel responseModel)
+    {
+        var request = new RestRequest("send_group_msg",Method.Post);
+        request.AddJsonBody(new
+        {
+            group_id = responseModel.Receiver,
+            message = responseModel.MessageContent
+        });
+        var result = _host.Execute(request);
+        return result.Content!;
+    }
 
     private string SendPrivateMessage(ResponseModel responseModel)
     {
