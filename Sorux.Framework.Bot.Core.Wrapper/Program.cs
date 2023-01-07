@@ -68,7 +68,10 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                 if(responseContext != null)
                 {
                     //调度返回值，注意，这里调用的是没有返回值的
-                    pluginsHost.Dispatch(responseContext);
+                    Task.Run(() =>
+                    {
+                        pluginsHost.Dispatch(responseContext);
+                    });
                 }
             }
         }

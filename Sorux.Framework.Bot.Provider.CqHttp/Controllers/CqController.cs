@@ -24,6 +24,7 @@ public class CqController : ControllerBase
         channel = GrpcChannel.ForAddress(configuration["gRPCHost"]);
         client = new Message.MessageClient(channel);
     }
+    
     [HttpPost]
     [Route("")]
     public void Post([FromBody] JsonObject jsonObject)

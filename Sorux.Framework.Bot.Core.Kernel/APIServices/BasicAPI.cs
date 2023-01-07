@@ -54,6 +54,6 @@ public class BasicApi : IBasicAPI
             ResponseData = responseModel,
             ResponseRoute = "common;sendPrivateMessage"
         };
-        return _pluginsHost.Action(response);
+        return _pluginsHost.ActionAysnc(response);
     }
 }

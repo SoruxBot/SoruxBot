@@ -92,7 +92,7 @@ public class PluginsHost
     /// </summary>
     /// <param name="response"></param>
     /// <returns></returns>
-    public async Task<string> Action(ResponseContext response)
+    public async Task<string> ActionAysnc(ResponseContext response)
     {
         if (response.ResponseRoute.Split(";")[0].Equals("common")) //common表示平台抽象的协议
         {
@@ -106,6 +106,30 @@ public class PluginsHost
             var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
             request.AddJsonBody(response.ResponseData);
             var result = await _host[response.Message.TargetPlatform].FutureHost.ExecuteAsync(request);
+            return result.Content!;
+        }
+    }
+    /// <summary>
+    /// 直接执行 Action
+    /// 由本方法执行的 API 请求会返回 JSON 格式的返回值
+    /// 本方法以同步执行
+    /// </summary>
+    /// <param name="response"></param>
+    /// <returns></returns>
+    public string ActionCompute(ResponseContext response)
+    {
+        if (response.ResponseRoute.Split(";")[0].Equals("common")) //common表示平台抽象的协议
+        {
+            var request = new RestRequest("APIPost",Method.Post);
+            request.AddJsonBody(response.ResponseData);
+            var result = _host[response.Message.TargetPlatform].CommonHost.Execute(request);
+            return result.Content!;
+        }
+        else
+        {
+            var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
+            request.AddJsonBody(response.ResponseData);
+            var result = _host[response.Message.TargetPlatform].FutureHost.Execute(request);
             return result.Content!;
         }
     }

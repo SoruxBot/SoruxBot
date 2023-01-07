@@ -24,21 +24,20 @@ public class SoruxController : ControllerBase
 
     [HttpPost]
     [Route("APIPost")]
-    public void Post([FromBody] JsonObject jsonObject)
+    public string Post([FromBody] JsonObject jsonObject)
     {
         ResponseModel responseModel = JsonConvert.DeserializeObject<ResponseModel>(jsonObject.ToJsonString())!;
         switch (responseModel.ResopnseRoute)
         {
             case "sendPrivateMessage":
-                SendPrivateMessage(responseModel);
-                break;
+                return SendPrivateMessage(responseModel);
             default:
-                break;
+                return "";
         }
     }
 
 
-    private HttpResponseMessage SendPrivateMessage(ResponseModel responseModel)
+    private string SendPrivateMessage(ResponseModel responseModel)
     {
         var request = new RestRequest("send_private_msg",Method.Post);
         request.AddJsonBody(new
@@ -47,10 +46,6 @@ public class SoruxController : ControllerBase
             message = responseModel.MessageContent
         });
         var result = _host.Execute(request);
-        HttpResponseMessage response = new HttpResponseMessage
-        {
-            Content = new StringContent(result.Content!, Encoding.UTF8, "application/json")
-        };
-        return response;
+        return result.Content!;
     }
 }

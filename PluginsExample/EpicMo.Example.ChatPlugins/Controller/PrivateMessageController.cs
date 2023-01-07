@@ -52,7 +52,8 @@ public class PrivateMessageController : BotController
     {
         _loggerService.Info("ExamplePlugins","接收到一个消息：" + msg);
         _bot.SendPrivateMessage(context,"你好！你发送了这样的一个消息：" + msg);
-        _bot.SendPrivateMessage(context, "我接受到了：" + _bot.SendPrivateMessageAsync(context, "你好！").Result.ToString());
+        string callbackmsg = _bot.SendPrivateMessageAsync(context, "你好！").Result;
+        _bot.SendPrivateMessage(context, "我接受到了：" + callbackmsg);
         //_bot.SendPrivateMessage(context,"你好，" + context.GetSenderNick() + "!你想要发送：" + msg);
         return PluginFucFlag.MsgFlag;
     }
