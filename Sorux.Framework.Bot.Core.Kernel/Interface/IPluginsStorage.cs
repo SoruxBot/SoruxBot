@@ -47,18 +47,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// </summary>
         void RemoveAllPlugins();
         /// <summary>
-        /// 得到对应的委托方法列表，按照优先级排序。
-        /// </summary>
-        /// <param name="eventType"></param>
-        /// <returns></returns>
-        //TODO EventType 进行修改，匹配逻辑修改为 头信息匹配+表达式目录树的逻辑匹配。
-        // 头信息匹配：决定进入哪一个方法，例如 EventType 的通用匹配或者是母命令的精确匹配
-        // 通用匹配：TriggerMessage 为 %*% ，触发所有的规则，然后根据 EventType Filter 进行过滤
-        // 精确匹配：TriggerMessage 为 指定消息 ， 触发指定的消息，然后根据 EventType Filter 进行过滤
-        // 根据 EventType Filter 来建立方法的等待表
-        // 逻辑匹配：归结到 Filter 中，做成扩展方法，用于判断消息是否进入指定的方法中
-        List<Func<bool,MessageContext,ILoggerService,IPluginsDataStorage>> GetAction(EventType eventType,string TriggerMessage);
-        /// <summary>
         /// 得到指定插件的作者名称
         /// </summary>
         /// <param name="name"></param>

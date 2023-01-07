@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Grpc.Net.Client;
+using Newtonsoft.Json.Linq;
 using Sorux.Framework.Bot.WebgRpc;
 
 namespace Sorux.Framework.Bot.Provider.CqHttp.Controllers;
@@ -538,6 +539,7 @@ public class CqController : ControllerBase
         dictionary["message_id"] = jsonObject["message_id"]!.ToString();
         dictionary["message"] = jsonObject["message"]!.ToString();
         dictionary["font"] = jsonObject["font"]!.ToString();
+        dictionary["sender"] = jsonObject["sender"]!.ToString();
         dictionary["temp_source"] = jsonObject["temp_source"] == null ? "" : jsonObject["temp_source"]!.ToString();
         MessageContext messageContext = new MessageContext()
         {

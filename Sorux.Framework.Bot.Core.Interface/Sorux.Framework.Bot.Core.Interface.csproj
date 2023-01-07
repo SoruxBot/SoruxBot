@@ -10,4 +10,8 @@
       <Folder Include="PluginsSDK\SDK\BasicModels" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    </ItemGroup>
+
 </Project>

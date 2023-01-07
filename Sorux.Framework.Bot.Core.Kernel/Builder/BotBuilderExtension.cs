@@ -85,8 +85,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             string? mqModule = section.GetSection("MessageQueue")["Namespace"];
             string? rqPath = section.GetSection("ResponseQueue")["Path"];
             string? rqModule = section.GetSection("ResponseQueue")["Namespace"];
-            string? loggerPath = section.GetSection("Logger")["Path"];
-            string? loggerModule = section.GetSection("Logger")["Namespace"];
             string? pluginsDataStoragePath = section.GetSection("PluginsDataStorage")["Path"];
             string? pluginsDataStorageModule = section.GetSection("PluginsDataStorage")["Namespace"];
             string? pluginsDataStoragePermenantPath = section.GetSection("PluginsStoragePermanent")["Path"];
@@ -140,27 +138,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 }
             }
             
-            //日志实现
-            if (loggerPath == "$BotFramework")
-            {
-                switch (loggerModule)
-                {
-                    case "$None":
-                        break;
-                    default:
-                        throw new DllNotFoundException();
-                }
-            }
-            else
-            {
-                if (!loggerModule!.Equals("$None"))
-                {
-                    loggerPath = loggerPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
-                    Assembly assembly = Assembly.Load(loggerPath);
-                    Type type = assembly.GetType(loggerModule!) ?? throw new DllNotFoundException();
-                    services.AddSingleton<ILogger>(s => (ILogger)Activator.CreateInstance(type)!);
-                }
-            }
             //插件数据文件储存
             if (pluginsDataStoragePath == "$BotFramework")
             {

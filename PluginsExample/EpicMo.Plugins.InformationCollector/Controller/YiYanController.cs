@@ -42,8 +42,6 @@ public class YiYanController: BotController
         else
         {
             _bot.SendGroupMessage(context,model.hitokoto);
-            
-            
         }
         return PluginFucFlag.MsgIntercepted;
     }

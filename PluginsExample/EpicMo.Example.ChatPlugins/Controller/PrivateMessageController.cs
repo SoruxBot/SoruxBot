@@ -1,4 +1,5 @@
-﻿using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
+﻿using System.Text.Json.Nodes;
+using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;

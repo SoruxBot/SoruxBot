@@ -192,12 +192,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         public void RemoveAllPlugins()
             => pluginsInformationTable.Clear();
 
-        public List<Func<bool, MessageContext, ILoggerService, IPluginsDataStorage>> GetAction
-                                                                    (EventType eventType,string TriggerMessage)
-        {
-            throw new NotImplementedException();
-        }
-
         public string? GetAuthor(string name)
             => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["author"];
 

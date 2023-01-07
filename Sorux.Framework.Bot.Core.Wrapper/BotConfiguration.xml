@@ -24,10 +24,6 @@
       <Path>$BotFramework</Path>
       <Namespace>MessageQueue.ResponseQueue</Namespace>
     </ResponseQueue>
-    <Logger>
-      <Path>$BotFramework</Path>
-      <Namespace>$None</Namespace>
-    </Logger>
     <PluginsDataStorage>
       <Path>$BotFramework</Path>
       <Namespace>$None</Namespace>
