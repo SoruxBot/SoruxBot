@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
-public class IPermissionRegister
+public interface IPermissionRegister
 {
 
 }

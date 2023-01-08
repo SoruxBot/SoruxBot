@@ -1,6 +1,8 @@
 # SoruxBot  
 A cross-chatting-platform bot framework implemented by CSharp.  
 The framework supports multiplied chatting platform such as QQ, WeChat, Telegram, Discord and so on.  
+Docs for SoruxBot: [Web](https://http://localhost:5173/SoruxBotDocs/)  
+SoruxBot文档地址: [Web](https://http://localhost:5173/SoruxBotDocs/)  
 # Feature  
 You can use C# feature to make a plugin of this framework easily, such as attribute which implement command route and permission verify.  
 This project is a easily-DIY framework which can be easily update according to your need by replacing the component of system.  
@@ -19,7 +21,7 @@ SoruxBot 处理消息的流程为：接受外界输入，加入消息管道，�
 - 框架支持解析特性，通过解析特性可以自动解析有特殊意义的文本，如艾特等，自动转换为可读文本。  
 - 框架支持长对话模式，通过协程实现长对话功能，框架根据指定平台抽象出Read()，以方便插件开发。
 - 框架支持扩展方法，通过指定API绕过框架指令路由直接与特定协议层通信。  
-- 框架支持内置组建的替换，框架内部耦合程度低，可以根据个人需求基于Interface开发框架组建。推荐开发如Redis支持的缓存消息管道，如Mysql支持的数据库存储模块。  
+- 框架支持内置组件的替换，框架内部耦合程度低，可以根据个人需求基于Interface开发框架组建。推荐开发如Redis支持的缓存消息管道，如Mysql支持的数据库存储模块。  
 - 框架支持模糊指令查询，可通过框架内置实现通过模糊字符查询可以匹配的特定插件向框架注册的命令。  
 - 框架支持插件数据存储，插件可以通过框架提供的API方便的存储数据文件。[可针对特定配置项设置用户是否可以修改]
 - 框架支持远程插件调用，通过接入PluginsWebSupport模块，可以远程调用指定插件的方法。
