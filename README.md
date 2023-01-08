@@ -1,8 +1,8 @@
 # SoruxBot  
 A cross-chatting-platform bot framework implemented by CSharp.  
 The framework supports multiplied chatting platform such as QQ, WeChat, Telegram, Discord and so on.  
-Docs for SoruxBot: [Web](https://http://localhost:5173/SoruxBotDocs/)  
-SoruxBot文档地址: [Web](https://http://localhost:5173/SoruxBotDocs/)  
+Docs for SoruxBot: [Web](https://liaosunny123.github.io/SoruxBotDocs/)  
+SoruxBot文档地址: [Web](https://liaosunny123.github.io/SoruxBotDocs/)  
 # Feature  
 You can use C# feature to make a plugin of this framework easily, such as attribute which implement command route and permission verify.  
 This project is a easily-DIY framework which can be easily update according to your need by replacing the component of system.  
