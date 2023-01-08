@@ -28,7 +28,8 @@ public class PrivateMessageController : BotController
     public PluginFucFlag Echo(MessageContext context)
     {
         _loggerService.Info("ExamplePlugins","无参数的插件方法被调用了！");
-        
+        _bot.SendPrivateMessage(context,QqMessageExtension.QqCreatePoke(context.TriggerId));
+        _bot.QqSendPrivateMessageCompute(context, context.TriggerId, null, "hello", false);
         //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
         return PluginFucFlag.MsgFlag;
     }

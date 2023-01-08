@@ -21,4 +21,9 @@ public class ResponseContext
     /// 框架预留的属性，用于记录额外信息
     /// </summary>
     public string Tag { get; set; }
+    /// <summary>
+    /// 为任意实体
+    /// 为Json格式的数据，当框架无法解析的时候，以此属性直接作为Json参数传递到指定的平台协议实体
+    /// </summary>
+    public object TargetPlatfromJson { get; set; }
 }

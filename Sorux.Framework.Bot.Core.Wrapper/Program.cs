@@ -51,8 +51,16 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                 {
                     Task.Run( () =>
                     {
-                        string route = messageContext.ActionRoute + "/" +
-                                       messageContext.Message.GetRawMessage().Split(" ")[0];
+                        string route = null;
+                        if (messageContext.Message != null)//消息，需要经过命名路由
+                        {
+                            route = messageContext.ActionRoute + "/" +
+                                    messageContext.Message.GetRawMessage().Split(" ")[0];
+                        }
+                        else//非消息，不需要经过命名路由
+                        {
+                            route = messageContext.ActionRoute + "/";
+                        }
                         List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route);
                         if (list != null)
                             list.ForEach(sp =>

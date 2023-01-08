@@ -79,7 +79,7 @@ public class PluginsHost
         else
         {
             var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
-            request.AddJsonBody(response.ResponseData);
+            request.AddJsonBody(response.TargetPlatfromJson);
             _host[response.Message.TargetPlatform].FutureHost.Execute(request);
         }
         
@@ -104,7 +104,7 @@ public class PluginsHost
         else
         {
             var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
-            request.AddJsonBody(response.ResponseData);
+            request.AddJsonBody(response.TargetPlatfromJson);
             var result = await _host[response.Message.TargetPlatform].FutureHost.ExecuteAsync(request);
             return result.Content!;
         }
@@ -128,7 +128,7 @@ public class PluginsHost
         else
         {
             var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
-            request.AddJsonBody(response.ResponseData);
+            request.AddJsonBody(response.TargetPlatfromJson);
             var result = _host[response.Message.TargetPlatform].FutureHost.Execute(request);
             return result.Content!;
         }

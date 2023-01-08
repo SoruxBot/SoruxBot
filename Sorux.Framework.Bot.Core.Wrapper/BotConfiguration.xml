@@ -66,7 +66,7 @@
       <!--表示框架的API请求地址，框架以 HttpPost 的方式发送信息，本地址应该是基于 SoruxBot Framework 规范开发的 Provider-->
       <HttpPostJsonPath>https://localhost:7290</HttpPostJsonPath>
       <!--表示特定平台的 Future Test 事件和功能，本地址应该是协议层的直接地址-->
-      <NetWorkHttpPostPath>https://localhost:5700</NetWorkHttpPostPath>
+      <NetWorkHttpPostPath>http://localhost:5700</NetWorkHttpPostPath>
     </ProviderItem>
   </ProviderConfig>
   <CommunicateTrigger>
