@@ -25,19 +25,15 @@
       <Namespace>MessageQueue.ResponseQueue</Namespace>
     </ResponseQueue>
     <PluginsDataStorage>
+      <!--Nullable-->
       <Path>$BotFramework</Path>
-      <Namespace>$None</Namespace>
+      <Namespace>DataStorage.PluginsDataStorage</Namespace>
     </PluginsDataStorage>
     <PluginsStoragePermanent>
       <!--Nullable-->
       <Path>$LocalRunPath\ExtensionsLibs\PluginsStoragePermanent</Path>
       <Namespace>$None</Namespace>
     </PluginsStoragePermanent>
-    <PluginsStorageWebSupport>
-      <!--Nullable-->
-      <Path>$LocalRunPath\ExtensionsLibs\PluginsStorageWebSupport</Path>
-      <Namespace>$None</Namespace>
-    </PluginsStorageWebSupport>
   </RuntimeAdapter>
   <LoggerConfig>
     <!--这个节点配置框架是否输出Log日志，如果输出，那么会在程序运行目录下的Logs文件夹内以天为单位输出日志-->

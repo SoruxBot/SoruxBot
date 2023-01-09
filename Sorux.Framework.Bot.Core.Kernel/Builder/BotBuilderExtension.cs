@@ -143,6 +143,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             {
                 switch (pluginsDataStorageModule)
                 {
+                    case "DataStorage.PluginsDataStorage":
+                        services.AddSingleton<IPluginsDataStorage, PluginsDataStorage>();
+                        break;
                     case "$None":
                         break;
                     default:

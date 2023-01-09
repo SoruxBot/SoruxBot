@@ -71,6 +71,36 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             }
         }
 
+        public static string GetPluginsDataDirectory(string name)
+        {
+            if (System.OperatingSystem.IsWindows())
+            {
+                return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name;
+            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            {
+                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name;
+            }
+            else
+            {
+                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name;
+            }
+        }
+        
+        public static string GetPluginsDataFile(string name,string key)
+        {
+            if (System.OperatingSystem.IsWindows())
+            {
+                return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name +"\\" + key + ".bin";
+            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            {
+                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name +"/" +key + ".bin";
+            }
+            else
+            {
+                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name + "/" +key + ".bin";
+            }
+        }
+        
         public static string GetPluginsConfigDirectory()
         {
             if (System.OperatingSystem.IsWindows())
@@ -101,11 +131,26 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             }
         }
 
-        public static string GetStoragePath()
+        public static string GetCurrentPath()
         {
             return Directory.GetCurrentDirectory();
         }
 
+        public static string GetPluginsSqliteDataPath()
+        {
+            if (System.OperatingSystem.IsWindows())
+            {
+                return Directory.GetCurrentDirectory() + "\\Lib\\pluginsData.bin";
+            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            {
+                return Directory.GetCurrentDirectory() + "/Lib/pluginsData.bin";
+            }
+            else
+            {
+                return Directory.GetCurrentDirectory() + "/Lib/pluginsData.bin";
+            }
+        }
+        
         public static string GetResponseQueuePath()
         {
             if (System.OperatingSystem.IsWindows())

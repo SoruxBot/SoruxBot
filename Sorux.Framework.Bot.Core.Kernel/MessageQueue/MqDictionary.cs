@@ -31,7 +31,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
             if (new FileInfo(DsLocalStorage.GetMessageQueuePath()).Exists)
             {
                 this._Queue = JsonConvert.DeserializeObject<Queue<MessageContext>>(
-                                File.ReadAllText(DsLocalStorage.GetMessageQueuePath()));
+                                File.ReadAllText(DsLocalStorage.GetMessageQueuePath()))!;
             }
         }
 
