@@ -155,5 +155,10 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
         /// <param name="instance"></param>
         /// <returns></returns>
         public bool TryGetPluginInstance(string name, out object instance);
+        /// <summary>
+        /// 根据优先级得到插件的排列顺序
+        /// </summary>
+        /// <returns></returns>
+        public List<(string name, string filepath)> GetPluginsListByPrivilege();
     }
 }

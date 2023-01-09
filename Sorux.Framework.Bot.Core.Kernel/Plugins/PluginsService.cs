@@ -26,12 +26,18 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
         public void RegisterPlugins()
         {
             _loggerService.Info("PluginsRegister","Built-in Plugins Services: version:1.0.0");
+            
+            PluginsRegister pluginsRegister = _botContext.ServiceProvider.GetRequiredService<PluginsRegister>();
             new DirectoryInfo(DsLocalStorage.GetPluginsDirectory())
                     .GetFiles()
                     .ToList()
-                    .ForEach(plugin => _botContext.ServiceProvider
-                                                         .GetRequiredService<PluginsRegister>()
-                                                         .Register(plugin.FullName,plugin.Name));
+                    .ForEach(plugin => pluginsRegister.Register(plugin.FullName,plugin.Name));
+            
+            _botContext.ServiceProvider.GetRequiredService<IPluginsStorage>()
+                       .GetPluginsListByPrivilege().ForEach(sp =>
+                       {
+                           pluginsRegister.RegisterRoute(sp.name,sp.filepath);
+                       });
         }
         /// <summary>
         /// 配置插件服务，在Shell不启用插件的时候不进行加载，以防止向容器注入插件服务，反而导致错误在同游其他地方的子模块报错

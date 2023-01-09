@@ -99,12 +99,19 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                     break;
             }
             
+            //效验插件的 DLL 信息是否正确，以防止篡改
+            if (!basicInformationRegister.GetDLL().Equals(name))
+            {
+                _loggerService.Warn("PluginsRegister", "Plugins Information Error for plugin:" + name + "\nYou " +
+                                                       "maybe using unsafe plugin,the SoruxBot will not load it.");
+                return;
+            }
             pluginsStorage.AddPlugin(name,
                                      basicInformationRegister.GetAuthor(),
-                                     basicInformationRegister.GetDLL(),
+                                     path,
                                      basicInformationRegister.GetVersion(),
                                      basicInformationRegister.GetDescription(),
-                                         newPrivilege);
+                                     newPrivilege);
             
             _loggerService.Info("PluginsRegister","Catch plugin:" + name);
             
@@ -143,6 +150,15 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                     pluginsStorage.SetPluginInfor(name, "CommandPrefixContent", prefix.GetCommandPrefix());
                 }
             }
+        }
+
+        /// <summary>
+        /// 注册路由
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        public void RegisterRoute(string name, string path)
+        {
             _botContext.ServiceProvider.GetRequiredService<PluginsDispatcher>().RegisterCommandRoute(path,name);
         }
     }

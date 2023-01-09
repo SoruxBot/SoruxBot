@@ -299,5 +299,20 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         public bool TryGetPluginInstance(string name, out object instance)
             => _pluginsInstanceMap.TryGetValue(name,out instance!);
+
+        public List<(string name, string filepath)> GetPluginsListByPrivilege()
+        {
+            DataView dataView = pluginsInformationTable.DefaultView;
+            dataView.Sort = "privilege ASC";
+            DataTable temp = dataView.ToTable();
+            List<(string, string)> list = new List<(string, string)>(); 
+            foreach (var dataRow in temp.AsEnumerable())
+            {
+                (string, string) group = new ((string)dataRow["name"],(string)dataRow["filename"]);
+                list.Add(group);
+            }
+
+            return list;
+        }
     }
 }

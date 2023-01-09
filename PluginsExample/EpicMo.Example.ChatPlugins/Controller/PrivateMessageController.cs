@@ -35,6 +35,16 @@ public class PrivateMessageController : BotController
     }
 
     [Event(EventType.SoloMessage)]
+    [Command(CommandAttribute.Prefix.None,"echoa")]
+    [CoolDown(10,CoolDownAttribute.CoolDownLevel.SinglePerson)]
+    public PluginFucFlag Echoa(MessageContext context)
+    {
+        _bot.QqSendPrivateMessageCompute(context, context.TriggerId, null, "hello -> 这是一个重复Route", false);
+        //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
+        return PluginFucFlag.MsgFlag;
+    }
+    
+    [Event(EventType.SoloMessage)]
     [Command(CommandAttribute.Prefix.None,"echob [msg] <optional>")]
     [PlatformConstraint("qq")]
     public PluginFucFlag Echo(MessageContext context,string msg,int? optional)

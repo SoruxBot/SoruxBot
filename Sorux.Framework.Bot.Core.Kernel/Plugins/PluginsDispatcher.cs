@@ -194,6 +194,7 @@ public class PluginsDispatcher
                                     list);
                             }
                         }
+                        
                     }
                 }
             }

@@ -45,6 +45,5 @@ public class YiYanController: BotController
         }
         return PluginFucFlag.MsgIntercepted;
     }
-    
-    
+
 }

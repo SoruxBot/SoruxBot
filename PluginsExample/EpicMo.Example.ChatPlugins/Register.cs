@@ -8,7 +8,7 @@ namespace EpicMo.Example.ChatPlugins
         public string GetAuthor() => "EpicMo"; //表示插件的作者信息
         public string GetName() => "SoruxBot示例插件"; //表示插件的名称，这个名称会被框架的日志记录
 
-        public string GetDLL() => "epicmo.example.chatplugins"; //必须对应插件编译后的 DLL 名称
+        public string GetDLL() => "EpicMo.Example.ChatPlugins.dll"; //必须对应插件编译后的 DLL 名称
 
         public string GetDescription() => "这是一个C#语境下的示例插件，请勿在正式群聊中启用本插件以防止打扰到群成员。" +
             "本插件不含任何有用的功能，但是会尽量详细地使用框架的特性，以及C#原生语境下的各个框架优化功能。" +
