@@ -27,6 +27,7 @@ public class PluginsCommandLexer
         List<object> objects = new List<object>();
         objects.Add(context);
         int parasCount = 1;
+        bool isValid = true;
         descriptor.ActionParameters.Skip(1).ToList().ForEach(sp =>
             {
                 if (parasCount < paras.Length)
@@ -56,13 +57,18 @@ public class PluginsCommandLexer
                 }
                 else
                 {
+                    if (sp.IsOptional == false)
+                    {
+                        isValid = false;//参数匹配失败
+                    }
                     objects.Add(null);
                 }
                 //转换不了
                 //else if (sp.ParameterType == typeof(bool))
                 //{}
             });
-
+        if (!isValid)
+            return context.Message == null ? PluginFucFlag.MsgPassed : context.Message.MsgState;
         return (PluginFucFlag)descriptor.ActionDelegate.DynamicInvoke(objects.ToArray())!;
     }
 }
