@@ -205,8 +205,11 @@ public class PluginsDispatcher
     /// 得到路由被注册后的委托方法
     /// </summary>
     /// <returns></returns>
-    public List<PluginsActionDescriptor>? GetAction(string route)
+    public List<PluginsActionDescriptor>? GetAction(string route,MessageContext messageContext)
     {
+        //Action捕获前
+        
+        //ActionGet
         var list = new List<PluginsActionDescriptor>();
         string[] parts = route.Split("/");
         string[] waittingList = parts[0].Split(";");
@@ -249,5 +252,8 @@ public class PluginsDispatcher
             default:
                 throw new Exception("Error Route");
         }
+        
+        //Action Filter
+        
     }
 }

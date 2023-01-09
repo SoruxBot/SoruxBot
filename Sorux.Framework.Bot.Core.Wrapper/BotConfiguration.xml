@@ -7,6 +7,14 @@
     <!--填写 gRPC 服务的端口地址-->
     <WebListenerPort>7151</WebListenerPort>
   </WebLister>
+  <LongCommunicateFunction>
+    <!--这个节点用于配置长对话模块的设置-->
+    <!--可以为 Enable 或者是 Disable ，表示启用或者不启用；若不启用那么插件使用长对话功能时可能出现无法预知的后果-->
+    <State>Disable</State>
+    <!--可以为 Enable 或者是 Disable ，表示检测到所有插件未在初始注册时请求长对话功能即自动关闭长对话监听模块-->
+    <!--若插件未请求服务即使用长对话模块可能会导致框架关闭而插件无法使用，同时可能与热重载等模式冲突-->
+    <AutoDisable>Enable</AutoDisable>
+  </LongCommunicateFunction>
   <RuntimeAdapter>
     <!--这个节点配置项在初始化时仅提供给SoruxFramework本身，用于组装适配器-->
     <!--如果你需要配置低配置项(即针对于特定的操作系统平台，亦或是会会影响组件，请使用Runtime配置项)-->

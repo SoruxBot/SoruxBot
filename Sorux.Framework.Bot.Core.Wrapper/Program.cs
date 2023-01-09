@@ -61,7 +61,8 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                         {
                             route = messageContext.ActionRoute + "/";
                         }
-                        List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route);
+                        
+                        List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route,messageContext);
                         if (list != null)
                             list.ForEach(sp =>
                             {
