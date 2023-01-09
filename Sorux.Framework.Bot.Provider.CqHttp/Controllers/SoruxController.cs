@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestSharp;
@@ -22,7 +23,7 @@ public class SoruxController : ControllerBase
     }
 
     [HttpPost]
-    [Route("APIPost")]
+    [Microsoft.AspNetCore.Mvc.Route("APIPost")]
     public string Post([FromBody] JsonObject jsonObject)
     {
         ResponseModel responseModel = JsonConvert.DeserializeObject<ResponseModel>(jsonObject.ToJsonString())!;

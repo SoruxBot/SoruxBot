@@ -10,10 +10,13 @@
   <LongCommunicateFunction>
     <!--这个节点用于配置长对话模块的设置-->
     <!--可以为 Enable 或者是 Disable ，表示启用或者不启用；若不启用那么插件使用长对话功能时可能出现无法预知的后果-->
-    <State>Disable</State>
+    <State>Enable</State>
     <!--可以为 Enable 或者是 Disable ，表示检测到所有插件未在初始注册时请求长对话功能即自动关闭长对话监听模块-->
     <!--若插件未请求服务即使用长对话模块可能会导致框架关闭而插件无法使用，同时可能与热重载等模式冲突-->
     <AutoDisable>Enable</AutoDisable>
+    <!--可以为任意正整数，最高不能超过 2147483647，单位为秒-->
+    <!--本设置项是为规范某些插件作者开发不规范导致的长对话线程泄露，表示最长等待时间，超时将会直接终止长对话请求-->
+    <DefaultTimeOutLimit>60</DefaultTimeOutLimit>
   </LongCommunicateFunction>
   <RuntimeAdapter>
     <!--这个节点配置项在初始化时仅提供给SoruxFramework本身，用于组装适配器-->
@@ -26,11 +29,11 @@
     <!--BotFramework认为你提供的路径具有平台适配性，即框架不会根据平台修改你的路径，请自行确定在不同操作系统下路径的斜线与反斜线的具体语境-->
     <MessageQueue>
       <Path>$BotFramework</Path>
-      <Namespace>MessageQueue.MqDictionary</Namespace>
+      <Namespace>MessageQueue.MqChannelWrapper</Namespace>
     </MessageQueue>
     <ResponseQueue>
       <Path>$BotFramework</Path>
-      <Namespace>MessageQueue.ResponseQueue</Namespace>
+      <Namespace>MessageQueue.ResponseChannelWrapper</Namespace>
     </ResponseQueue>
     <PluginsDataStorage>
       <!--Nullable-->

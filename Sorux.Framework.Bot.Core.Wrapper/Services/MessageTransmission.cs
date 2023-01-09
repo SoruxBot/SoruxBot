@@ -24,7 +24,7 @@ namespace Sorux.Framework.Bot.WebgRpc.Services
 
         public override Task<Empty> MessagePushStack(MessageRequest request, ServerCallContext context)
         {
-            _messageQueue.SetNextMsg(JsonConvert.DeserializeObject<MessageContext>(request.Payload));
+            _messageQueue.SetNextMsg(JsonConvert.DeserializeObject<MessageContext>(request.Payload)!);
             return Task.FromResult(new Empty());
         }
 

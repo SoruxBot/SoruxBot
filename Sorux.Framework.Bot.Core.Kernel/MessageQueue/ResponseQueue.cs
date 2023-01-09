@@ -38,7 +38,7 @@ public class ResponseQueue : IResponseQueue
         if (new FileInfo(DsLocalStorage.GetResponseQueuePath()).Exists)
         {
             this._Queue = JsonConvert.DeserializeObject<Queue<ResponseContext>>(
-                File.ReadAllText(DsLocalStorage.GetResponseQueuePath()));
+                File.ReadAllText(DsLocalStorage.GetResponseQueuePath()))!;
         }
     }
 

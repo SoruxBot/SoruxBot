@@ -14,15 +14,17 @@ public interface ILongMessageCommunicate
     /// </summary>
     /// <param name="type"></param>
     /// <param name="context"></param>
+    /// <param name="timeOut">最长等待时间</param>
     /// <returns></returns>
-    public Task<MessageContext> ReadNextPrivateMessageAsync(MessageContext context);
+    public Task<MessageContext?> ReadNextPrivateMessageAsync(MessageContext context,int? timeOut);
     /// <summary>
     /// 以异步方式快速创建一个根据指定类型监听群聊消息的监听器
     /// </summary>
     /// <param name="type"></param>
     /// <param name="context"></param>
+    /// <param name="timeOut">最长等待时间</param>
     /// <returns></returns>
-    public Task<MessageContext> ReadNextGroupMessageAsync(LongCommunicateType type,MessageContext context);
+    public Task<MessageContext?> ReadNextGroupMessageAsync(LongCommunicateType type,MessageContext context,int? timeOut);
     /// <summary>
     /// 以异步方式通过单条件自定义组装泛型监听器
     /// </summary>
@@ -32,8 +34,9 @@ public interface ILongMessageCommunicate
     /// <param name="action">委托，根据传入元素判断是否被监听</param>
     /// <param name="isIntercept">判断是否被拦截</param>
     /// <param name="flag">若不被拦截，消息在管道中的状态</param>
+    /// <param name="timeOut">最长等待时间</param>
     /// <returns></returns>
-    public Task<MessageContext> CreateGenericListenerAsync(EventType eventType,string? targetPlatform,string? targetAction,
-        Func<MessageContext,bool> action,bool isIntercept,PluginFucFlag? flag);
+    public Task<MessageContext?> CreateGenericListenerAsync(EventType eventType,string? targetPlatform,string? targetAction,
+        Func<MessageContext,bool> action,bool isIntercept,PluginFucFlag flag,int? timeOut);
     
 }

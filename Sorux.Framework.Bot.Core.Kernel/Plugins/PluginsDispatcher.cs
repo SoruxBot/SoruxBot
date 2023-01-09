@@ -23,14 +23,19 @@ public class PluginsDispatcher
     private ILoggerService _loggerService;
     private IPluginsStorage _pluginsStorage;
     private string _globalCommandPrefix;
-
-    public PluginsDispatcher(BotContext botContext,ILoggerService loggerService,IPluginsStorage pluginsStorage,IConfiguration configuration)
+    private PluginsListener _pluginsListener;
+    private bool _isLongCommunicateEnable;
+    public PluginsDispatcher(BotContext botContext,ILoggerService loggerService,
+        IPluginsStorage pluginsStorage,IConfiguration configuration,PluginsListener pluginsListener)
     {
         this._botContext = botContext;
         this._loggerService = loggerService;
         this._pluginsStorage = pluginsStorage;
+        this._pluginsListener = pluginsListener;
         IConfigurationSection section = configuration.GetRequiredSection("CommunicateTrigger");
         this._globalCommandPrefix = section["State"]!.Equals("True") ? section["TriggerChar"]! : "";
+        this._isLongCommunicateEnable = configuration.GetRequiredSection("LongCommunicateFunction")["State"]!
+            .Equals("Enable");
     }
 
     public delegate PluginFucFlag ActionDelegate(object instance,params object[] args);
@@ -205,10 +210,11 @@ public class PluginsDispatcher
     /// 得到路由被注册后的委托方法
     /// </summary>
     /// <returns></returns>
-    public List<PluginsActionDescriptor>? GetAction(string route,MessageContext messageContext)
+    public List<PluginsActionDescriptor>? GetAction(string route,ref MessageContext messageContext)
     {
         //Action捕获前
-        
+        if (_isLongCommunicateEnable && !_pluginsListener.Filter(messageContext,out messageContext))
+            return null;
         //ActionGet
         var list = new List<PluginsActionDescriptor>();
         string[] parts = route.Split("/");

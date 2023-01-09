@@ -33,7 +33,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             BotStart(app);
         }
 
-        private static void BotStart(IBot app)
+        private static async void BotStart(IBot app)
         {
             //入栈
             IMessageQueue messageQueue = app.Context.ServiceProvider.GetRequiredService<IMessageQueue>();
@@ -43,45 +43,54 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             //出栈
             IResponseQueue responseQueue = app.Context.ServiceProvider.GetRequiredService<IResponseQueue>();
             PluginsHost pluginsHost = app.Context.ServiceProvider.GetRequiredService<PluginsHost>();
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    //消息队列
+                    MessageContext? messageContext = messageQueue.GetNextMessageRequest();
+                    if (messageContext != null)
+                    {
+                        Task.Run( () =>
+                        {
+                            string route = null;
+                            if (messageContext.Message != null)//消息，需要经过命名路由
+                            {
+                                route = messageContext.ActionRoute + "/" +
+                                        messageContext.Message.GetRawMessage().Split(" ")[0];
+                            }
+                            else//非消息，不需要经过命名路由
+                            {
+                                route = messageContext.ActionRoute + "/";
+                            }
+                    
+                            List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route,ref messageContext);
+                            if (list != null)
+                                list.ForEach(sp =>
+                                {
+                                    if (messageContext.Message != null && 
+                                        messageContext.Message.MsgState != PluginFucFlag.MsgIgnored)
+                                        messageContext.Message.MsgState = pluginsCommandLexer.PluginAction(messageContext, sp);
+                                });
+                        });
+                    }
+                    Thread.Sleep(0);
+                }
+            });
             while (true)
             {
-                //消息队列
-                MessageContext? messageContext = messageQueue.GetNextMessageRequest();
-                if (messageContext != null)
-                {
-                    Task.Run( () =>
-                    {
-                        string route = null;
-                        if (messageContext.Message != null)//消息，需要经过命名路由
-                        {
-                            route = messageContext.ActionRoute + "/" +
-                                    messageContext.Message.GetRawMessage().Split(" ")[0];
-                        }
-                        else//非消息，不需要经过命名路由
-                        {
-                            route = messageContext.ActionRoute + "/";
-                        }
-                        
-                        List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route,messageContext);
-                        if (list != null)
-                            list.ForEach(sp =>
-                            {
-                                if (messageContext.Message.MsgState != PluginFucFlag.MsgIgnored)
-                                    messageContext.Message.MsgState = pluginsCommandLexer.PluginAction(messageContext, sp);
-                            });
-                    });
-                }
-                Thread.Sleep(0);
                 //请求队列
                 ResponseContext? responseContext = responseQueue.GetNextResponse();
                 if(responseContext != null)
                 {
                     //调度返回值，注意，这里调用的是没有返回值的
-                    Task.Run(() =>
+                    Task task = Task.Run(() =>
                     {
                         pluginsHost.Dispatch(responseContext);
                     });
+                    task.Wait();
                 }
+                Thread.Sleep(0);
             }
         }
         

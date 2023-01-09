@@ -34,11 +34,13 @@ public class PrivateMessageController : BotController
     }
 
     [Event(EventType.SoloMessage)]
-    [Command(CommandAttribute.Prefix.None,"echoa")]
-    [CoolDown(10,CoolDownAttribute.CoolDownLevel.SinglePerson)]
-    public PluginFucFlag Echoa(MessageContext context)
+    [Command(CommandAttribute.Prefix.None,"saystart")]
+    public PluginFucFlag EchoLong(MessageContext context)
     {
-        _bot.QqSendPrivateMessageCompute(context, context.TriggerId, null, "hello -> 这是一个重复Route", false);
+        _bot.SendPrivateMessage(context,"你好，我们现在开始长对话！");
+        _bot.SendPrivateMessage(context,"你觉得我厉害吗?");
+        string res = _longMessageCommunicate.ReadNextPrivateMessageAsync(context, null).Result.Message.GetRawMessage();
+        _bot.SendPrivateMessage(context,"哈哈，你说的是："+res);
         //_bot.SendPrivateMessage(context,"你好, " + context.GetSenderNick() + " !你发送的消息是：" + context.Message.GetRawMessage());
         return PluginFucFlag.MsgFlag;
     }

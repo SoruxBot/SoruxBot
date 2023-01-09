@@ -67,20 +67,20 @@ public class PluginsHost
     /// 由本方法执行的 API，表示插件主动舍弃对协议层 API 请求后的返回值
     /// </summary>
     /// <param name="response"></param>
-    public void Dispatch(ResponseContext response)
+    public async Task Dispatch(ResponseContext response)
     {
         //response 格式为  Platform;Url
         if (response.ResponseRoute.Split(";")[0].Equals("common")) //common表示平台抽象的协议
         {
             var request = new RestRequest("APIPost",Method.Post);
             request.AddJsonBody(response.ResponseData);
-            _host[response.Message.TargetPlatform].CommonHost.Execute(request);
+            await _host[response.Message.TargetPlatform].CommonHost.ExecuteAsync(request);
         }
         else
         {
             var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
             request.AddJsonBody(response.TargetPlatfromJson);
-            _host[response.Message.TargetPlatform].FutureHost.Execute(request);
+            await _host[response.Message.TargetPlatform].FutureHost.ExecuteAsync(request);
         }
         
     }

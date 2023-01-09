@@ -87,8 +87,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             string? rqModule = section.GetSection("ResponseQueue")["Namespace"];
             string? pluginsDataStoragePath = section.GetSection("PluginsDataStorage")["Path"];
             string? pluginsDataStorageModule = section.GetSection("PluginsDataStorage")["Namespace"];
-            string? pluginsDataStoragePermenantPath = section.GetSection("PluginsStoragePermanent")["Path"];
-            string? pluginsDataStoragePermenantModule = section.GetSection("PluginsStoragePermanent")["Namespace"];
             //管道通信
             if (mqPath == "$BotFramework")
             {
@@ -96,6 +94,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 {
                     case "MessageQueue.MqDictionary":
                         services.AddSingleton<IMessageQueue, MessageQueue.MqDictionary>();
+                        break;
+                    case "MessageQueue.MqChannelWrapper":
+                        services.AddSingleton<IMessageQueue, MessageQueue.MqChannelWrapper>();
                         break;
                     case "$None":
                         break;
@@ -120,6 +121,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                 {
                     case "MessageQueue.ResponseQueue":
                         services.AddSingleton<IResponseQueue,MessageQueue.ResponseQueue>();
+                        break;
+                    case "MessageQueue.ResponseChannelWrapper":
+                        services.AddSingleton<IResponseQueue, MessageQueue.ResponseChannelWrapper>();
                         break;
                     case "$None":
                         break;
@@ -162,28 +166,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IPluginsDataStorage>(s => (IPluginsDataStorage)Activator.CreateInstance(type)!);
                 }
             }
-            //插件永久数据存储实现
-            if (pluginsDataStoragePermenantPath == "$BotFramework")
-            {
-                switch (pluginsDataStorageModule)
-                {
-                    case "$None":
-                        break;
-                    default:
-                        throw new DllNotFoundException();
-                }
-            }
-            else
-            {
-                if (!pluginsDataStorageModule!.Equals("$None"))
-                {
-                    pluginsDataStoragePermenantPath = pluginsDataStoragePermenantPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
-                    Assembly assembly = Assembly.Load(pluginsDataStoragePermenantPath);
-                    Type type = assembly.GetType(pluginsDataStoragePermenantModule!) ?? throw new DllNotFoundException();
-                    services.AddSingleton<IPluginsStoragePermanentAble>(s => (IPluginsStoragePermanentAble)Activator.CreateInstance(type)!);
-                }
-            }
-
         }
     }
 }
