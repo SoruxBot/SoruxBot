@@ -1,14 +1,17 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
+using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
@@ -25,8 +28,10 @@ public class PluginsDispatcher
     private string _globalCommandPrefix;
     private PluginsListener _pluginsListener;
     private bool _isLongCommunicateEnable;
-    public PluginsDispatcher(BotContext botContext,ILoggerService loggerService,
-        IPluginsStorage pluginsStorage,IConfiguration configuration,PluginsListener pluginsListener)
+    private PermissionStorage _permissionStorage;
+
+    public PluginsDispatcher(BotContext botContext,ILoggerService loggerService, IPluginsStorage pluginsStorage,
+        IConfiguration configuration,PluginsListener pluginsListener,PermissionStorage permissionStorage)
     {
         this._botContext = botContext;
         this._loggerService = loggerService;
@@ -36,6 +41,7 @@ public class PluginsDispatcher
         this._globalCommandPrefix = section["State"]!.Equals("True") ? section["TriggerChar"]! : "";
         this._isLongCommunicateEnable = configuration.GetRequiredSection("LongCommunicateFunction")["State"]!
             .Equals("Enable");
+        this._permissionStorage = permissionStorage;
     }
 
     public delegate PluginFucFlag ActionDelegate(object instance,params object[] args);
@@ -54,6 +60,33 @@ public class PluginsDispatcher
     {
         Assembly assembly = Assembly.LoadFile(filepath);
         Type[] types = assembly.GetExportedTypes();
+        Dictionary<string, PermissionNode> matchPermissionNodes = new Dictionary<string, PermissionNode>();
+        //注册权限系统
+        PluginsPermissionList? pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
+            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" 
+                                                                        + name.Replace(".dll", ".json")));
+        if (pluginsPermissionList != null && pluginsPermissionList.PermissionNode != null)
+        {
+            pluginsPermissionList.PermissionNode.ForEach(sp =>
+            {
+                matchPermissionNodes.Add(sp.Node,sp);
+            });
+        }
+        //注册默认权限
+        if (pluginsPermissionList != null && pluginsPermissionList.PermissionDefaultConfig != null)
+        {
+            pluginsPermissionList.PermissionDefaultConfig.ForEach(sp =>
+            {
+                //qq&&TriggerId114514 -> 记录人
+                //Node/qq/TriggerId114515 -> 触发节点
+                _permissionStorage
+                    .AddPermission(sp.Platform +  "SoruxBot" + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition,
+                        sp.Node,
+                        sp.Node +  "SoruxBot" + sp.Platform +  "SoruxBot" 
+                        + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition);
+            });
+        }
+        
         foreach (var className in types)
         {
             if (className.BaseType == typeof(BotController))
@@ -85,6 +118,9 @@ public class PluginsDispatcher
                     }else if (parameterInfo.ParameterType == typeof(IPluginsStoragePermanentAble))
                     {
                         objects.Add(serviceProvider.GetRequiredService<IPluginsStoragePermanentAble>());
+                    }else if (parameterInfo.ParameterType == typeof(IPermission))
+                    {
+                        objects.Add(serviceProvider.GetRequiredService<IPermission>());
                     }
                     #endregion
                 }
@@ -115,6 +151,49 @@ public class PluginsDispatcher
                             var methodPlatformConstraint = methodInfo.GetCustomAttribute<PlatformConstraintAttribute>();
                             commandTriggerType = commandTriggerType + ";" + methodPlatformConstraint!.PlatformConstraint;
                         }
+                        
+                        PluginsActionDescriptor pluginsActionDescriptor = new();
+                        //权限模块设置
+                        if (methodInfo.IsDefined(typeof(PermissionAttribute)))
+                        {
+                            var permissionAttribute = methodInfo.GetCustomAttribute<PermissionAttribute>();
+                            PermissionNode permissionNode =
+                                matchPermissionNodes[permissionAttribute!.PermissionNode];
+                            PluginsPermissionDescriptor pluginsPermissionDescriptor = new PluginsPermissionDescriptor();
+                            pluginsPermissionDescriptor.PermissionNode = permissionAttribute.PermissionNode;
+                            pluginsPermissionDescriptor.Description = permissionNode.Description;
+                            if (permissionNode.ConditionType.Equals("BasicModel"))
+                            {
+                                switch (permissionNode.ConditionChar)
+                                {
+                                    case "TriggerId":
+                                        pluginsPermissionDescriptor.FilterAction = 
+                                            context => "TriggerId" + context.TriggerId;
+                                        pluginsActionDescriptor.PluginsPermissionDescriptor =
+                                            pluginsPermissionDescriptor;
+                                        break;
+                                    case "TriggerPlatformId":
+                                        pluginsPermissionDescriptor.FilterAction = 
+                                            context => "TriggerPlatformId" + context.TriggerPlatformId;
+                                        pluginsActionDescriptor.PluginsPermissionDescriptor =
+                                            pluginsPermissionDescriptor;
+                                        break;
+                                    default:
+                                        _loggerService.Warn("PluginsPermission","Plugins:" + name + 
+                                            "'s jsonFile use unsupported permissionConditionChar");
+                                        return;
+                                }
+                            }
+                            else
+                            {
+                                pluginsPermissionDescriptor.FilterAction =
+                                    context => permissionNode.ConditionChar 
+                                               + context.UnderProperty[permissionNode.ConditionChar];
+                                pluginsActionDescriptor.PluginsPermissionDescriptor =
+                                    pluginsPermissionDescriptor;
+                            }
+                        }
+                        
                         string commandPrefix = methodEventCommand.CommandPrefix switch
                            {
                                CommandAttribute.Prefix.None   => "",
@@ -123,7 +202,6 @@ public class PluginsDispatcher
                                _                              => ""
                            };
                         //生成 Controller 的委托
-                        PluginsActionDescriptor pluginsActionDescriptor = new();
                         ParameterInfo[] parameters = methodInfo.GetParameters();
                         string[] paras = methodEventCommand!.Command[0].Split(" ").Skip(1).ToArray();
                         int count = 0;
@@ -140,7 +218,7 @@ public class PluginsDispatcher
                             //默认插件作者提供的命令列表的参数顺序和 Action 的函数顺序一致，否者绑定失败需要作者自己从 Context获取
                             PluginsActionParameter pluginsActionParameter = new PluginsActionParameter();
                             pluginsActionParameter.IsOptional = paras[count].Substring(0, 1).Equals("<");
-                            pluginsActionParameter.Name = paras[count].Substring(1, paras[count].Length - 1);
+                            pluginsActionParameter.Name = paras[count].Substring(1, paras[count].Length - 2);//[message] 故全长-2
                             pluginsActionParameter.ParameterType = parameterInfo.ParameterType;
                             pluginsActionDescriptor.ActionParameters.Add(pluginsActionParameter);
                             count++;
@@ -258,8 +336,5 @@ public class PluginsDispatcher
             default:
                 throw new Exception("Error Route");
         }
-        
-        //Action Filter
-        
     }
 }

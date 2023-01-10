@@ -14,4 +14,6 @@ public class PluginsActionDescriptor
     public Delegate ActionDelegate { get; set; }
     
     public string InstanceTypeName { get; set; }
+    
+    public PluginsPermissionDescriptor? PluginsPermissionDescriptor { get; set; }
 }

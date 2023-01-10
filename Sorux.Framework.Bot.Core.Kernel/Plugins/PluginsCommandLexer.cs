@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
@@ -14,14 +15,23 @@ public class PluginsCommandLexer
 
     private ILoggerService _loggerService;
     private IPluginsStorage _pluginsStorage;
-    public PluginsCommandLexer(ILoggerService loggerService,IPluginsStorage pluginsStorage)
+    private bool _isPermissionEnable;
+    private PluginsPermissionDispatcher _pluginsPermissionDispatcher;
+    public PluginsCommandLexer(ILoggerService loggerService,IPluginsStorage pluginsStorage,
+        IConfiguration configuration,PluginsPermissionDispatcher pluginsPermissionDispatcher)
     {
         this._loggerService = loggerService;
         this._pluginsStorage = pluginsStorage;
+        this._isPermissionEnable = configuration.GetRequiredSection("PermissionSystem")["State"]!
+            .Equals("Enable");
+        this._pluginsPermissionDispatcher = pluginsPermissionDispatcher;
     }
     
     public PluginFucFlag PluginAction(MessageContext context, PluginsActionDescriptor descriptor)
     {
+        //Permission Filter
+        if (_isPermissionEnable && !_pluginsPermissionDispatcher.IsContinue(context,descriptor))
+            return context.Message!.MsgState;
         string rawMessage = context.Message.GetRawMessage();
         string[] paras = rawMessage.Split(" ");
         List<object> objects = new List<object>();
@@ -68,7 +78,7 @@ public class PluginsCommandLexer
                 //{}
             });
         if (!isValid)
-            return context.Message == null ? PluginFucFlag.MsgPassed : context.Message.MsgState;
+            return context.Message.MsgState;
         return (PluginFucFlag)descriptor.ActionDelegate.DynamicInvoke(objects.ToArray())!;
     }
 }

@@ -21,7 +21,6 @@ namespace EpicMo.Example.ChatPlugins
         //Prefix -> 实现了 Prefix 接口才可以使用插件单独定制的 Prefix
         public string GetCommandPrefix() => "#"; //插件的触发头，必须为一个字符，且仅仅在 Prefix.Single 时被启用
         public string GetPermissionDeniedMessage() => "您并不含有权限节点相应的执行权限."; //用户执行时因为权限被拒绝而发送的消息
-
         public bool IsPermissionDeniedAutoAt() => true; //权限不够时是否会艾特用户
         public bool IsPermissionDeniedLeakOut() => true; //权限不够时是否通知用户对应的权限节点是什么
         public bool IsPermissionDeniedAutoReply() => true; //权限不够时是否自动反馈权限不够的提示

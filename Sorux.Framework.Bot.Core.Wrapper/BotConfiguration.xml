@@ -18,6 +18,11 @@
     <!--本设置项是为规范某些插件作者开发不规范导致的长对话线程泄露，表示最长等待时间，超时将会直接终止长对话请求-->
     <DefaultTimeOutLimit>60</DefaultTimeOutLimit>
   </LongCommunicateFunction>
+  <PermissionSystem>
+    <!--这个节点用于配置插件的权限系统-->
+    <!--可以为 Enable 或者是 Disable ,表示是否启用权限系统，若不启用那么插件使用权限系统时可能出现无法预知的后果-->
+    <State>Enable</State>
+  </PermissionSystem>
   <RuntimeAdapter>
     <!--这个节点配置项在初始化时仅提供给SoruxFramework本身，用于组装适配器-->
     <!--如果你需要配置低配置项(即针对于特定的操作系统平台，亦或是会会影响组件，请使用Runtime配置项)-->

@@ -75,8 +75,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                             if (list != null)
                                 list.ForEach(sp =>
                                 {
-                                    if (messageContext.Message != null && 
-                                        messageContext.Message.MsgState != PluginFucFlag.MsgIgnored)
+                                    if (messageContext.Message.MsgState != PluginFucFlag.MsgIgnored)
                                         messageContext.Message.MsgState = pluginsCommandLexer.PluginAction(messageContext, sp);
                                 });
                         });

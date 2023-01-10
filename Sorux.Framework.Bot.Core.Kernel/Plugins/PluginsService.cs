@@ -9,6 +9,7 @@ using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
 using Sorux.Framework.Bot.Core.Kernel.APIServices;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
+using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins
@@ -49,6 +50,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             services.AddSingleton<PluginsService>();
             services.AddSingleton<PluginsRegister>();
             services.AddSingleton<IPluginsStorage, PluginsLocalStorage>();
+            //添加权限服务
+            services.AddSingleton<PluginsPermissionDispatcher>();
+            services.AddSingleton<PermissionStorage>();
+            services.AddSingleton<IPermission, PermissionService>();
+            //注册基础服务    
             services.AddSingleton<PluginsDispatcher>();
             services.AddSingleton<PluginsCommandLexer>();
             services.AddSingleton<PluginsHost>();

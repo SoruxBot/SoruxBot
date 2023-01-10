@@ -9,7 +9,6 @@ public class PluginsDataStorage : IPluginsDataStorage
 {
 
     private SQLiteConnection _sqLiteConnection;
-
     public PluginsDataStorage()
     {
         _sqLiteConnection = new SQLiteConnection("Data Source=" + DsLocalStorage.GetPluginsSqliteDataPath());
@@ -28,31 +27,35 @@ public class PluginsDataStorage : IPluginsDataStorage
         CreateTableIfNotExist(pluginMark);
         string sql = $"insert into {pluginMark} (key, value) values ('{key}','{value}')";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
-        return command.ExecuteNonQuery() == 1;
+        int res = command.ExecuteNonQuery();
+        return res == 1;
     }
 
     public bool RemoveStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
-        string sql = $"delete from {pluginMark} where key = {key}";
+        string sql = $"delete from {pluginMark} where key = '{key}'";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
-        return command.ExecuteNonQuery() == 1;
+        int res = command.ExecuteNonQuery();
+        return res == 1;
     }
 
     public string GetStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
-        string sql = $"select value from {pluginMark} where key = {key}";
+        string sql = $"select value from {pluginMark} where key = '{key}'";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
-        return (string)command.ExecuteScalar();
+        string res = (string)command.ExecuteScalar();
+        return res;
     }
 
     public bool EditStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
-        string sql = $"update {pluginMark} set value = {value} where key = {key}";
+        string sql = $"update {pluginMark} set value = {value} where key = '{key}'";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
-        return command.ExecuteNonQuery() == 1;
+        int res = command.ExecuteNonQuery();
+        return res == 1;
     }
 
     public bool AddBinarySettings(string pluginMark, string key, byte[] value)

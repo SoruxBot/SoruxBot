@@ -13,17 +13,19 @@ public class PrivateMessageController : BotController
     private ILoggerService _loggerService;
     private IBasicAPI _bot;
     private ILongMessageCommunicate _longMessageCommunicate;
-    public PrivateMessageController(ILoggerService loggerService,IBasicAPI bot,ILongMessageCommunicate longMessageCommunicate)
+    private IPermission _permission;
+    public PrivateMessageController(ILoggerService loggerService,IBasicAPI bot,
+        ILongMessageCommunicate longMessageCommunicate,IPermission permission)
     {
         this._loggerService = loggerService;
         this._bot = bot;
         this._longMessageCommunicate = longMessageCommunicate;
+        this._permission = permission;
         _loggerService.Info("ExamplePlugins", "ExamplePlugins has been enable private message controller module\n");
     }
     
     [Event(EventType.SoloMessage)]
     [Command(CommandAttribute.Prefix.None,"echoa")]
-    [CoolDown(10,CoolDownAttribute.CoolDownLevel.SinglePerson)]
     public PluginFucFlag Echo(MessageContext context)
     {
         _loggerService.Info("ExamplePlugins","无参数的插件方法被调用了！");
@@ -73,15 +75,18 @@ public class PrivateMessageController : BotController
 
     [Event(EventType.SoloMessage)]
     [Command(CommandAttribute.Prefix.Single,"echoPrivileged [msg]")]
-    [Permission("solomsg.echoprivilege")]
-    [BeforeMethod]
-    [AfterMethod]
-    [PlatformConstraint("qq","friend-privatemessage")]
+    [Permission("EpicMo.Example.ChatPlugins.GroupSay")]
     //在框架内存储的节点为 “epicmo.example.chatplugins.solomsg.echoprivilege”
     //也就是会自动加上前缀
     public PluginFucFlag EchoPrivilege(MessageContext context,string msg)
     {
-        //_bot.SendPrivateMessage(context,"你好，你发送的消息是" + msg);
+        _bot.SendPrivateMessage(context,"你好，你发送的消息是" + msg);
+        _bot.SendPrivateMessage(context,"你具有的权限有："+_permission.GetTriggerIdPermission(context,"1728913755"));
+        Thread.Sleep(500);
+        _bot.SendPrivateMessage(context,"现在让我删除你的权限");
+        _permission.RemoveGenericPermission(context, PermissionType.BasicPermission, "TriggerId"
+            , "EpicMo.Example.ChatPlugins.GroupSay");
+        _bot.SendGroupMessage(context,"你具有的权限有："+_permission.GetTriggerIdPermission(context,"1278913755"));
         //_bot.SendPrivateMessage(context,"在你发送这个消息的时候，你具有的权限是\"epicmo.example.chatplugins.solomsg.echoprivilege\"");
         return PluginFucFlag.MsgFlag;
         

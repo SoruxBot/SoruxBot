@@ -50,12 +50,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                 {
                     case "Windows":
                         jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
-                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" + name.Replace(".dll", ".json")));
+                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" 
+                                + name.Replace(".dll", ".json")));
                         break;
                     case "Linux":
                     case "MacOS":
                         jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
-                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/" + name.Replace(".dll", ".json")));
+                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/" 
+                                + name.Replace(".dll", ".json")));
                         break;
                     default:
                         _loggerService.Fatal("PluginsRegister","The system kind is not known! Exit...");

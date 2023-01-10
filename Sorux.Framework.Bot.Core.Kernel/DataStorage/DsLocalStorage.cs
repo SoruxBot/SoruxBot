@@ -151,6 +151,21 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             }
         }
         
+        public static string GetPluginsPermissionDataPath()
+        {
+            if (System.OperatingSystem.IsWindows())
+            {
+                return Directory.GetCurrentDirectory() + "\\Lib\\pluginsPermission.bin";
+            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            {
+                return Directory.GetCurrentDirectory() + "/Lib/pluginsPermission.bin";
+            }
+            else
+            {
+                return Directory.GetCurrentDirectory() + "/Lib/pluginsPermission.bin";
+            }
+        }
+        
         public static string GetResponseQueuePath()
         {
             if (System.OperatingSystem.IsWindows())
