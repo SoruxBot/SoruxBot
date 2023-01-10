@@ -15,6 +15,8 @@ namespace Sorux.Framework.Bot.Core.Wrapper
 {
     internal class Program
     {
+        private static int _gloabalPluginsLimitTime;
+        private static ILoggerService _loggerService;
         static void Main(string[] args)
         {
             //机器人创建
@@ -29,11 +31,16 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             Server server = BuildGrpcServer(app);
             //运行 gRPC服务
             server.Start();
+            //获取超时时间配置
+            _gloabalPluginsLimitTime
+                = int.Parse(app.Configuration.GetRequiredSection("PluginsDispatcher")["DefaultPluginResponseLimit"]!);
+            //日志服务
+            _loggerService = app.Context.ServiceProvider.GetRequiredService<ILoggerService>();
             //机器人启动 启动在主线程看为阻塞式，BotStart 方法不会返回
             BotStart(app);
         }
 
-        private static async void BotStart(IBot app)
+        private static void BotStart(IBot app)
         {
             //入栈
             IMessageQueue messageQueue = app.Context.ServiceProvider.GetRequiredService<IMessageQueue>();
@@ -84,11 +91,10 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                 if(responseContext != null)
                 {
                     //调度返回值，注意，这里调用的是没有返回值的
-                    Task task = Task.Run(() =>
+                    Task.Run(() =>
                     {
                         pluginsHost.Dispatch(responseContext);
                     });
-                    task.Wait();
                 }
                 Thread.Sleep(0);
             }
@@ -143,6 +149,6 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             //return app.Configuration["WebListenerUrl"]!;
             return app.Configuration.GetRequiredSection("WebLister")["WebListenerUrl"]!;
         }
-
+        
     }
 }

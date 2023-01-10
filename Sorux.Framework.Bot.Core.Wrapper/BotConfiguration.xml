@@ -63,6 +63,9 @@
       <!--注意：若开启，无法预测优先级相同的插件的具体执行顺序！！！-->
       <EnableMutipliedPrivilege>Disable</EnableMutipliedPrivilege>
     </PrivilegeSchedule>
+    <!--可为正整数，单位为秒，表示一次消息最多被处理的时间，如果超时即停止这个消息的后续处理-->
+    <!--一次消息的处理往往只包括全部的通用消息处理和某个插件的某个或几个Action，因此出现控制台警报时请检查某个插件是否出现了问题-->
+    <DefaultPluginResponseLimit>60</DefaultPluginResponseLimit>
   </PluginsDispatcher>
   <ProviderConfig>
     <!--这个节点用于配置 Provider 的设置-->
