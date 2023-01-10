@@ -62,9 +62,34 @@ public class PluginsDispatcher
         Type[] types = assembly.GetExportedTypes();
         Dictionary<string, PermissionNode> matchPermissionNodes = new Dictionary<string, PermissionNode>();
         //注册权限系统
-        PluginsPermissionList? pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
-            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" 
-                                                                        + name.Replace(".dll", ".json")));
+        PluginsPermissionList? pluginsPermissionList = null;
+        try
+        {
+            switch (_botContext.ServiceProvider.GetService<IConfiguration>()!["ContextRuntimeSystem"])
+            {
+                case "Windows":
+                    pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
+                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" 
+                            + name.Replace(".dll", ".json")));
+                    break;
+                case "Linux":
+                case "MacOS":
+                    pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
+                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/" 
+                            + name.Replace(".dll", ".json")));
+                    break;
+                default:
+                    _loggerService.Fatal("PluginsRegister","The system kind is not known! Exit...");
+                    return;
+            }
+                
+        }
+        catch (Exception e)
+        {
+            _loggerService.Error("PluginsRegister","The plugin:" + name + " loses json file:"+name.Replace(".dll", ".json")  +
+                                                   "ErrorCode:EX0003");
+            return;
+        }
         if (pluginsPermissionList != null && pluginsPermissionList.PermissionNode != null)
         {
             pluginsPermissionList.PermissionNode.ForEach(sp =>
