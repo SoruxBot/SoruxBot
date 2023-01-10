@@ -13,7 +13,7 @@ public class Register: IBasicInformationRegister , ICommandPrefix
 
     public string GetVersion() => "1.0.0-release";
 
-    public string GetDLL() => "epicmo.plugins.informationcollector";
+    public string GetDLL() => "EpicMo.Plugins.InformationCollector.dll";
 
     public string GetCommandPrefix() => "#";
 }
