@@ -8,10 +8,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue;
 public class ResponseChannelWrapper : IResponseQueue
 {
     private ResponseChannel _rpChannel;
+    private ILoggerService _loggerService;
     
     public ResponseChannelWrapper(ILoggerService loggerService,BotContext botContext)
     {
         _rpChannel = new ResponseChannel(loggerService,botContext);
+        this._loggerService = loggerService;
     }
 
     public void SetNextReponse(ResponseContext context)
@@ -26,16 +28,16 @@ public class ResponseChannelWrapper : IResponseQueue
 
     public void RestoreFromLocalStorage()
     {
-        throw new NotImplementedException();
+        _loggerService.Error("ResponseChannelWrapper","This version of Response Queue didn't implement LocalStorage");
     }
 
     public void SaveIntoLocalStorage()
     {
-        throw new NotImplementedException();
+        _loggerService.Error("ResponseChannelWrapper","This version of Response Queue didn't implement LocalStorage");
     }
 
     public void DisposeFromLocalStorage()
     {
-        throw new NotImplementedException();
+        _loggerService.Error("ResponseChannelWrapper","This version of Response Queue didn't implement LocalStorage");
     }
 }

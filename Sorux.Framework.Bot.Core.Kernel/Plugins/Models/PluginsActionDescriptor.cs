@@ -16,4 +16,6 @@ public class PluginsActionDescriptor
     public string InstanceTypeName { get; set; }
     
     public PluginsPermissionDescriptor? PluginsPermissionDescriptor { get; set; }
+
+    public bool IsParameterLexerDisable { get; set; } = false;
 }

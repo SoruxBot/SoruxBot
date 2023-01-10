@@ -8,10 +8,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue;
 public class MqChannelWrapper : IMessageQueue
 {
     private MqChannel _mqChannel;
-    
+    private ILoggerService _loggerService;
     public MqChannelWrapper(ILoggerService loggerService,BotContext botContext)
     {
         _mqChannel = new MqChannel(loggerService,botContext);
+        this._loggerService = loggerService;
     }
     
     public MessageContext? GetNextMessageRequest()
@@ -26,16 +27,16 @@ public class MqChannelWrapper : IMessageQueue
 
     public void RestoreFromLocalStorage()
     {
-        throw new NotImplementedException();
+        _loggerService.Error("MessageChannelWrapper","This version of Message Queue didn't implement LocalStorage");
     }
 
     public void SaveIntoLocalStorage()
     {
-        throw new NotImplementedException();
+        _loggerService.Error("MessageChannelWrapper","This version of Message Queue didn't implement LocalStorage");
     }
 
     public void DisposeFromLocalStorage()
     {
-        throw new NotImplementedException();
+        _loggerService.Error("MessageChannelWrapper","This version of Message Queue didn't implement LocalStorage");
     }
 }

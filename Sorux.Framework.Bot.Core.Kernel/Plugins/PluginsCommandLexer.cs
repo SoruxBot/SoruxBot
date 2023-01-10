@@ -38,7 +38,14 @@ public class PluginsCommandLexer
         objects.Add(context);
         int parasCount = 1;
         bool isValid = true;
-        descriptor.ActionParameters.Skip(1).ToList().ForEach(sp =>
+        PluginsActionParameter? first = descriptor.ActionParameters.Skip(1).FirstOrDefault();
+        if (descriptor.IsParameterLexerDisable) //通用匹配
+        {
+            objects.Add(rawMessage);
+        }
+        else
+        {
+            descriptor.ActionParameters.Skip(1).ToList().ForEach(sp =>
             {
                 if (parasCount < paras.Length)
                 {
@@ -77,6 +84,7 @@ public class PluginsCommandLexer
                 //else if (sp.ParameterType == typeof(bool))
                 //{}
             });
+        }
         if (!isValid)
             return context.Message.MsgState;
         return (PluginFucFlag)descriptor.ActionDelegate.DynamicInvoke(objects.ToArray())!;

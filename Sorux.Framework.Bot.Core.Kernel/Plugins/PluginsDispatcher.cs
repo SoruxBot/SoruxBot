@@ -203,34 +203,49 @@ public class PluginsDispatcher
                            };
                         //生成 Controller 的委托
                         ParameterInfo[] parameters = methodInfo.GetParameters();
-                        string[] paras = methodEventCommand!.Command[0].Split(" ").Skip(1).ToArray();
-                        int count = 0;
-                        
-                        //添加必然存在的参数 MessageContext
-                        PluginsActionParameter messageContextPara = new PluginsActionParameter();
-                        messageContextPara.IsOptional = false;
-                        messageContextPara.Name = "context";
-                        messageContextPara.ParameterType = typeof(MessageContext);
-                        pluginsActionDescriptor.ActionParameters.Add(messageContextPara);
-                        
-                        foreach (var parameterInfo in parameters.Skip(1))
+
+                        if (methodEventCommand!.Command[0].Equals("[SF-ALL]"))
                         {
-                            //默认插件作者提供的命令列表的参数顺序和 Action 的函数顺序一致，否者绑定失败需要作者自己从 Context获取
-                            PluginsActionParameter pluginsActionParameter = new PluginsActionParameter();
-                            pluginsActionParameter.IsOptional = paras[count].Substring(0, 1).Equals("<");
-                            pluginsActionParameter.Name = paras[count].Substring(1, paras[count].Length - 2);//[message] 故全长-2
-                            pluginsActionParameter.ParameterType = parameterInfo.ParameterType;
-                            pluginsActionDescriptor.ActionParameters.Add(pluginsActionParameter);
-                            count++;
+                            pluginsActionDescriptor.IsParameterLexerDisable = true;
+                            var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
+                            Type delegateType;
+                            args.Add(methodInfo.ReturnType);
+                            delegateType = Expression.GetFuncType(args.ToArray());
+                            pluginsActionDescriptor.ActionDelegate = 
+                                methodInfo.CreateDelegate(delegateType,
+                                    _pluginsStorage.GetPluginInstance(name+ "." + className.Name));
                         }
-                        pluginsActionDescriptor.IsParameterBinded = true;  //绑定成功 [其实绑定失败了就无法 Invoke了]
-                        var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
-                        Type delegateType;
-                        args.Add(methodInfo.ReturnType);
-                        delegateType = Expression.GetFuncType(args.ToArray());
-                        pluginsActionDescriptor.ActionDelegate = 
-                            methodInfo.CreateDelegate(delegateType,
-                                _pluginsStorage.GetPluginInstance(name+ "." + className.Name));
+                        else
+                        {
+                            string[] paras = methodEventCommand!.Command[0].Split(" ").Skip(1).ToArray();
+                            int count = 0;
+                        
+                            //添加必然存在的参数 MessageContext
+                            PluginsActionParameter messageContextPara = new PluginsActionParameter();
+                            messageContextPara.IsOptional = false;
+                            messageContextPara.Name = "context";
+                            messageContextPara.ParameterType = typeof(MessageContext);
+                            pluginsActionDescriptor.ActionParameters.Add(messageContextPara);
+                            
+                            foreach (var parameterInfo in parameters.Skip(1))
+                            {
+                                //默认插件作者提供的命令列表的参数顺序和 Action 的函数顺序一致，否者绑定失败需要作者自己从 Context获取
+                                PluginsActionParameter pluginsActionParameter = new PluginsActionParameter();
+                                pluginsActionParameter.IsOptional = paras[count].Substring(0, 1).Equals("<");
+                                pluginsActionParameter.Name = paras[count].Substring(1, paras[count].Length - 2);//[message] 故全长-2
+                                pluginsActionParameter.ParameterType = parameterInfo.ParameterType;
+                                pluginsActionDescriptor.ActionParameters.Add(pluginsActionParameter);
+                                count++;
+                            }
+                            pluginsActionDescriptor.IsParameterBinded = true;  //绑定成功 [其实绑定失败了就无法 Invoke了]
+                            var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
+                            Type delegateType;
+                            args.Add(methodInfo.ReturnType);
+                            delegateType = Expression.GetFuncType(args.ToArray());
+                            pluginsActionDescriptor.ActionDelegate = 
+                                methodInfo.CreateDelegate(delegateType,
+                                    _pluginsStorage.GetPluginInstance(name+ "." + className.Name));
+                        }
                         #region EMIT
                         //List<Type> methodParaAll = new List<Type>();
                         //methodParaAll.Add(className);
@@ -258,13 +273,10 @@ public class PluginsDispatcher
                         //pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
                         #endregion
                         pluginsActionDescriptor.InstanceTypeName = name + "." + className.Name;
-                        
-                        foreach (var s in methodEventCommand.Command)
+                        //特判匹配
+                        if (pluginsActionDescriptor.IsParameterLexerDisable)
                         {
-                            //添加进入路由
-                            //[Type];[Platform];[Action]/<Prefix>[Command]
-                            //Command这个地方用 Delegate 来记录
-                            if (_matchList.TryGetValue(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
+                            if (_matchList.TryGetValue(commandTriggerType + "/[SF-ALL]",
                                     out List<PluginsActionDescriptor>? list))
                             {
                                 list.Add(pluginsActionDescriptor);
@@ -273,9 +285,30 @@ public class PluginsDispatcher
                             {
                                 list = new List<PluginsActionDescriptor>();
                                 list.Add(pluginsActionDescriptor);
-                                _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
+                                _matchList.Add(commandTriggerType + "/[SF-ALL]",
                                     list);
                             }
+                        }
+                        else
+                        {
+                            foreach (var s in methodEventCommand.Command)
+                            {
+                                //添加进入路由
+                                //[Type];[Platform];[Action]/<Prefix>[Command]
+                                //Command这个地方用 Delegate 来记录
+                                if (_matchList.TryGetValue(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
+                                        out List<PluginsActionDescriptor>? list))
+                                {
+                                    list.Add(pluginsActionDescriptor);
+                                }
+                                else
+                                {
+                                    list = new List<PluginsActionDescriptor>();
+                                    list.Add(pluginsActionDescriptor);
+                                    _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
+                                        list);
+                                }
+                            }    
                         }
                         
                     }
@@ -290,7 +323,7 @@ public class PluginsDispatcher
     /// <returns></returns>
     public List<PluginsActionDescriptor>? GetAction(string route,ref MessageContext messageContext)
     {
-        //Action捕获前
+        //Action捕获前，判断是否是长对话
         if (_isLongCommunicateEnable && !_pluginsListener.Filter(messageContext,out messageContext))
             return null;
         //ActionGet
@@ -300,10 +333,21 @@ public class PluginsDispatcher
         switch (waittingList.Length)
         {
             case 1://通用匹配
+                if (_matchList.TryGetValue(waittingList[0] + "/[SF-ALL]", out var tempAA))
+                {
+                    list.AddRange(tempAA);
+                }
+                
+                
                 if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out list))
                     return list;
                 return null;
             case 2://平台特定的匹配，自然包含了通用匹配
+                if (_matchList.TryGetValue(waittingList[0] + "/[SF-ALL]", out var tempBB))
+                {
+                    list.AddRange(tempBB);
+                }
+                
                 if (_matchList.TryGetValue(waittingList[0] + ";" + waittingList[1] + "/" + parts[1], out var tempA))
                 {
                     list.AddRange(tempA);
@@ -315,6 +359,11 @@ public class PluginsDispatcher
                     return list;
                 return null;
             case 3: //平台及平台方法特定的匹配
+                if (_matchList.TryGetValue(waittingList[0] + "/[SF-ALL]", out var tempCC))
+                {
+                    list.AddRange(tempCC);
+                }
+
                 if (_matchList.TryGetValue(waittingList[0] + ";" +
                                            waittingList[1] + ";" + waittingList[2] + "/" +
                                            parts[1], out var tempC))
