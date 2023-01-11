@@ -33,7 +33,6 @@ public class YiYanController: BotController
             request.AddQueryParameter("c", type);
         }
         var result = _client.Execute(request);
-        _loggerService.Info("sss",result.Content!);
         YiYan model = JsonConvert.DeserializeObject<YiYan>(result.Content!)!;
         if (!string.IsNullOrEmpty(model.from_who))
         {

@@ -61,9 +61,9 @@ public class PrivateMessageController : BotController
     }
     
     [Event(EventType.SoloMessage)]
-    [Command(CommandAttribute.Prefix.None, "echoc [msg]")]
+    [Command(CommandAttribute.Prefix.None, "echoc [msg] [msds]")]
     [PlatformConstraint("qq")]
-    public PluginFucFlag Echo(MessageContext context,string msg)
+    public PluginFucFlag Echo(MessageContext context,string msg,string msds)
     {
         _loggerService.Info("ExamplePlugins","接收到一个消息：" + msg);
         _bot.SendPrivateMessage(context,"你好！你发送了这样的一个消息：" + msg);
@@ -89,7 +89,6 @@ public class PrivateMessageController : BotController
         _bot.SendGroupMessage(context,"你具有的权限有："+_permission.GetTriggerIdPermission(context,"1278913755"));
         //_bot.SendPrivateMessage(context,"在你发送这个消息的时候，你具有的权限是\"epicmo.example.chatplugins.solomsg.echoprivilege\"");
         return PluginFucFlag.MsgFlag;
-        
     }
 
     [Event(EventType.GroupMessage)]

@@ -271,7 +271,7 @@ public static class QqMessageExtension
         {
             arg.Append(",timeout=" + DealWithSpecialCode(timeout));
         }
-        return "[CQ:recode" + arg + "]";
+        return "[CQ:record" + arg + "]";
     }
     /// <summary>
     /// 

@@ -38,7 +38,7 @@ public class PluginsDispatcher
         this._pluginsStorage = pluginsStorage;
         this._pluginsListener = pluginsListener;
         IConfigurationSection section = configuration.GetRequiredSection("CommunicateTrigger");
-        this._globalCommandPrefix = section["State"]!.Equals("True") ? section["TriggerChar"]! : "";
+        this._globalCommandPrefix = section["State"]!.Equals("Enable") ? section["TriggerChar"]! : "";
         this._isLongCommunicateEnable = configuration.GetRequiredSection("LongCommunicateFunction")["State"]!
             .Equals("Enable");
         this._permissionStorage = permissionStorage;
