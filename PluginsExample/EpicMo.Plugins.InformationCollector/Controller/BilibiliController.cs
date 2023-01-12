@@ -61,12 +61,27 @@ public class BilibiliController : BotController
         else if(content.Contains("b23.tv"))
         {
             RestRequest restRequest = new RestRequest("/bilibili/api.php?");
-            int index = content.IndexOf("b23.tv/");
-            if (index == -1)
-                return PluginFucFlag.MsgPassed;
-            index = index + "b23.tv/".Length;
+            int index;
             string id;
-            id = content.Substring(index, 7);//Bv是7位
+            if (content.Contains("b23.tv\\/"))
+            {
+                index = content.IndexOf("b23.tv\\/");
+                if (index == -1)
+                    return PluginFucFlag.MsgPassed;
+                index = index + "b23.tv\\/".Length;
+                id = content.Substring(index, 7);//Bv是7位
+            }else if (content.Contains("b23.tv/"))
+            {
+                index = content.IndexOf("b23.tv/");
+                if (index == -1)
+                    return PluginFucFlag.MsgPassed;
+                index = index + "b23.tv/".Length;
+                id = content.Substring(index, 7);//Bv是7位
+            }
+            else
+            {
+                return PluginFucFlag.MsgPassed;
+            }
             string url = "https://b23.tv/" + id;
             restRequest.AddQueryParameter("url", url);
             var result = restClient.Execute(restRequest);
