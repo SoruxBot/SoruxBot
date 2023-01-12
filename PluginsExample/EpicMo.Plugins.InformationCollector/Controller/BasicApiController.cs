@@ -27,26 +27,29 @@ public class BasicApiController : BotController
     [Command(CommandAttribute.Prefix.Single,"today")]
     public PluginFucFlag TodayGet(MessageContext context)
     {
-        RestRequest request = new RestRequest("/morning-paper/?");
-        request.AddQueryParameter("type", "full");
-        var res = restClient.Execute(request);
         _bot.SendGroupMessage(context, QqMessageExtension
-                .QqCreatePicture(res.Content!,null,"0",null,false,"40000",null));
+                .QqCreatePicture("https://api.szfx.top/morning-paper/?type=full",null,"0",null,false,"40000",null));
+        return PluginFucFlag.MsgIntercepted;
+    }
+
+    [Event(EventType.GroupMessage)]
+    [Command(CommandAttribute.Prefix.Single,"qrcodetext [msg]")]
+    public PluginFucFlag QrcodeMsgyGet(MessageContext context,string msg)
+    {
+        _bot.SendGroupMessage(context, QqMessageExtension
+            .QqCreatePicture("https://api.szfx.top/qrcode/?size=100&text=" + msg,null,"0",null,false,"40000",null));
         return PluginFucFlag.MsgIntercepted;
     }
     
     [Event(EventType.GroupMessage)]
-    [Command(CommandAttribute.Prefix.Single,"qrcode [url]")]
-    public PluginFucFlag QrcodeGet(MessageContext context,string url)
+    [Command(CommandAttribute.Prefix.Single,"qrcodeurl [url]")]
+    public PluginFucFlag QrcodeUrlGet(MessageContext context,string url)
     {
-        RestRequest request = new RestRequest("/qrcode/?");
-        request.AddQueryParameter("txt",url);
-        var res = restClient.Execute(request);
         _bot.SendGroupMessage(context, QqMessageExtension
-            .QqCreatePicture(res.Content!,null,"0",null,false,"40000",null));
+            .QqCreatePicture("https://api.szfx.top/qrcode/?size=100&url="+url,null,"0",null,false,"40000",null));
         return PluginFucFlag.MsgIntercepted;
     }
-    
+
     [Event(EventType.GroupMessage)]
     [Command(CommandAttribute.Prefix.Single,"infourl [url]")]
     public PluginFucFlag UrlGet(MessageContext context,string url)
@@ -68,7 +71,6 @@ public class BasicApiController : BotController
         _bot.SendGroupMessage(context, res.Content!);
         return PluginFucFlag.MsgIntercepted;
     }
-    
     [Event(EventType.GroupMessage)]
     [Command(CommandAttribute.Prefix.Single,"music163 [name]")]
     public PluginFucFlag Music163Get(MessageContext context,string name)
@@ -78,8 +80,40 @@ public class BasicApiController : BotController
         var res = restClient.Execute(request);
         Music163 music163 = JsonConvert.DeserializeObject<Music163>(res.Content!)!;
         _bot.SendGroupMessage(context,"找到歌曲Id:"+music163.id+"\n歌手:"+music163.singer+"名称："+music163.song);
+        var client = new RestClient(music163.url.Replace("\\",""));
+        string path;
+        if (System.OperatingSystem.IsWindows())
+        {
+            path = Directory.GetCurrentDirectory() + "\\gocq\\data\\voices\\" + music163.song.GetSha256();
+        }
+        else
+        {
+            path = Directory.GetCurrentDirectory() + "/gocq/data/voices/" + music163.song.GetSha256();
+        }
+        FileInfo fileInfo = new FileInfo(path);
+        if (fileInfo.Exists)
+        {
+            fileInfo.Delete();
+        }
+        using (var writer = File.OpenWrite(path))
+        {
+            var req = new RestRequest("")
+            {
+                ResponseWriter = responseStream =>
+                {
+                    using (responseStream)
+                    {
+                        responseStream.CopyTo(writer);
+                    }
+                    return null;
+                }
+            };
+            var response = client.DownloadData(req);
+        }
+
+        Directory.GetCurrentDirectory();
         _bot.SendGroupMessage(context,
-            QqMessageExtension.QqCreateRecord(music163.url.Replace("\\",""),null,null,null,null,null));
+            QqMessageExtension.QqCreateRecord(music163.song.GetSha256(),null,null,null,null,null));
         _bot.SendGroupMessage(context, QqMessageExtension
                 .QqCreatePicture(music163.img.Replace("\\",""),null,"0",null,false,"40000",null));
         return PluginFucFlag.MsgIntercepted;

@@ -31,9 +31,9 @@ public class HelpController : BotController
                  +"Github功能，被动使用，当检测到Github链接时会自动回复链接的详细信\n"
                  +"EveryDay功能，主动使用，通过'#today'来使用，获取当天的相关消息\n"
                  +"YiYan功能，主动使用，通过'#saying <type>'来使用，其中type可选，可为a-f的字母\n"
-                 +"QrCode功能，主动使用，通过'#qrcode [msg]'来使用，其中msg可以为文字或者是链接\n"
                  +"Ip查询，主动使用，通过'#infoip [ip]'来使用，获取详细信息\n"
                  +"Url查询，主动使用，通过'#infourl [url]'来使用，获取详细信息\n"
+                 +"Qrcode功能，主动使用，通过'#qrcodetext [msg],#qrcodeurl [url]'来使用，制作一个二维码\n"
                  +"歌曲查询，主动使用，通过'#music163 [name]'来查询歌曲\n");
         }
         return PluginFucFlag.MsgIntercepted;

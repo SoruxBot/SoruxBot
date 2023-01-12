@@ -30,6 +30,8 @@ public class CqController : ControllerBase
     [Route("")]
     public void Post([FromBody] JsonObject jsonObject)
     {
+        Task.Run(() =>
+        {
         string postType = jsonObject["post_type"]!.ToString();
         switch (postType)
         {
@@ -111,6 +113,7 @@ public class CqController : ControllerBase
             default:
                 break;
         }
+        });
     }
 
     public void AddGroupHandler(JsonObject jsonObject)

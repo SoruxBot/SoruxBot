@@ -53,7 +53,7 @@ public class BilibiliController : BotController
                     QqMessageExtension.QqCreateReply(context.UnderProperty["message_id"]
                         ,null,null,null,null)
                     + "视频标题：" + bilibili.title + "\nUp主名称:" + bilibili.upname + "\n描述：" + bilibili.desc +
-                    "\n视频Bid" + bilibili.bvid + ";Aid:" + bilibili.aid
+                    "\n视频Bid" + bilibili.bvid + "\nAid:" + bilibili.aid
                     +QqMessageExtension.QqCreatePicture(bilibili.cover,null,"0",null,false,"40000",null));
             }
             return PluginFucFlag.MsgIntercepted;
@@ -66,7 +66,7 @@ public class BilibiliController : BotController
                 return PluginFucFlag.MsgPassed;
             index = index + "b23.tv/".Length;
             string id;
-            id = content.Substring(index, 6);//Bid是10位
+            id = content.Substring(index, 7);//Bv是7位
             string url = "https://b23.tv/" + id;
             restRequest.AddQueryParameter("url", url);
             var result = restClient.Execute(restRequest);

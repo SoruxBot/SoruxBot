@@ -27,6 +27,8 @@ public class GithubController: BotController
         {
             RestClient restClient = new RestClient(content);
             RestRequest restRequest = new RestRequest("",Method.Get);
+            restRequest.AddHeader("accept",
+                "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
             var result = restClient.Execute(restRequest);
             var url = TextGainCenter("meta property=\"og:image\" content=\"", "\" /><meta property=\"og:image:alt",
                 result.Content!);
