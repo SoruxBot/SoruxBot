@@ -3,6 +3,8 @@ A cross-chatting-platform bot framework implemented by CSharp.
 
 The framework supports multiplied chatting platform such as QQ, WeChat, Telegram, Discord and so on.  
 
+QQGroup:117541796  
+
 Docs for SoruxBot: [Web](https://liaosunny123.github.io/SoruxBotDocs/)  
   
 SoruxBot文档地址: [Web](https://liaosunny123.github.io/SoruxBotDocs/)  
