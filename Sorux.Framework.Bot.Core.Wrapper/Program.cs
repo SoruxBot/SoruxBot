@@ -19,23 +19,22 @@ namespace Sorux.Framework.Bot.Core.Wrapper
         private static ILoggerService _loggerService;
         static async Task Main(string[] args)
         {
-            //机器人创建
+            //机器人创建:负责初始化机器人的实例
             var app = CreateDefaultBotBuilder(args).Build();
-            //插件注册
+            
+            //插件注册:负责注册机器人的插件服务
             app.Context.ServiceProvider.GetRequiredService<PluginsService>().RegisterPlugins();
-            //协议层 Wrapper 注册
+            
+            //协议层注册:负责注册机器人的消息回调解析服务
             app.Context.ServiceProvider.GetRequiredService<PluginsHost>().Register();
-            //gRPC 端口合法性审核，审核通过则返回 Port
-            int port = TryGetPort(app);
-            //构建 gRPC服务
-            Server server = BuildGrpcServer(app);
-            //运行 gRPC服务
-            server.Start();
+
+            //构建 gRPC服务:负责机器人的正向解析
+            BuildGrpcServer(app).Start();
+
             //获取超时时间配置
             _gloabalPluginsLimitTime
                 = int.Parse(app.Configuration.GetRequiredSection("PluginsDispatcher")["DefaultPluginResponseLimit"]!);
-            //日志服务
-            _loggerService = app.Context.ServiceProvider.GetRequiredService<ILoggerService>();
+
             //机器人启动 启动在主线程看为阻塞式，BotStart 方法不会返回
             await BotStart(app);
         }
@@ -114,7 +113,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                                      //本两个设置默认不起作用，如果想要启用请根据 GetUrl 和 TryGetPort 方法内的注释修改代码以启用本设置
                                      new KeyValuePair<string, string?>("WebListenerUrl","localhost"),
                                      new KeyValuePair<string, string?>("WebListenerPort","7151"),
-                                     //本设置默认关闭且不可以通过配置项打开，如有需要可以打开本行
+
                                      //本设置的 Debug 针对于框架内部，一般情况下不需要开启本项，即使是生产环境的调试，如果是开发框架，建议打开
                                      new KeyValuePair<string, string?>("LoggerDebug","false")
                                  });
@@ -135,23 +134,21 @@ namespace Sorux.Framework.Bot.Core.Wrapper
         
         private static int TryGetPort(IBot app)
         {
-            //取消上面两行的注释，并注释返回前的两行可以转而使用框架启动流程内注册的 WebListenerPort 以方便调试
-            //对外发布或者 Pr 的时候请注意调整成为 Release状态 ，即从配置文件获取地址
-            
             //if (!int.TryParse(app.Configuration["WebListenerPort"], out int port))
             //   throw new Exception("Error Port");
             if (!int.TryParse(app.Configuration.GetRequiredSection("WebLister")["WebListenerPort"], out int port))
                 throw new Exception("Error Port");
             return port;
+            //取消上面两行的注释，并注释返回前的两行可以转而使用框架启动流程内注册的 WebListenerPort 以方便调试
+            //对外发布或者 Pr 的时候请注意调整成为 Release状态 ，即从配置文件获取地址
         }
 
         private static string GetUrl(IBot app)
         {
-            //取消上面一行的注释，并注释返回前的一行可以转而使用框架启动流程内注册的 WebListenerUrl 以方便调试
-            //对外发布或者 Pr 的时候请注意调整成为 Release状态 ，即从配置文件获取地址
-            
             //return app.Configuration["WebListenerUrl"]!;
             return app.Configuration.GetRequiredSection("WebLister")["WebListenerUrl"]!;
+            //取消上面一行的注释，并注释返回前的一行可以转而使用框架启动流程内注册的 WebListenerUrl 以方便调试
+            //对外发布或者 Pr 的时候请注意调整成为 Release状态 ，即从配置文件获取地址
         }
         
     }
