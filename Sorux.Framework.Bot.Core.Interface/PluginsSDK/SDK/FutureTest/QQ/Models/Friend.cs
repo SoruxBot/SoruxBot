@@ -9,3 +9,4 @@ public class Friend
     /// </summary>
     public string remark { get; set; }
 }
+

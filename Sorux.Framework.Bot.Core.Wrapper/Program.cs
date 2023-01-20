@@ -17,7 +17,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
     {
         private static int _gloabalPluginsLimitTime;
         private static ILoggerService _loggerService;
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //机器人创建
             var app = CreateDefaultBotBuilder(args).Build();
@@ -37,10 +37,10 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             //日志服务
             _loggerService = app.Context.ServiceProvider.GetRequiredService<ILoggerService>();
             //机器人启动 启动在主线程看为阻塞式，BotStart 方法不会返回
-            BotStart(app);
+            await BotStart(app);
         }
 
-        private static void BotStart(IBot app)
+        private static async Task BotStart(IBot app)
         {
             //入栈
             IMessageQueue messageQueue = app.Context.ServiceProvider.GetRequiredService<IMessageQueue>();
@@ -50,7 +50,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             //出栈
             IResponseQueue responseQueue = app.Context.ServiceProvider.GetRequiredService<IResponseQueue>();
             PluginsHost pluginsHost = app.Context.ServiceProvider.GetRequiredService<PluginsHost>();
-            Task.Run(() =>
+            var messageTask= Task.Run(() =>
             {
                 while (true)
                 {
@@ -83,20 +83,25 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                     Thread.Sleep(0);
                 }
             });
-            while (true)
+            var responseTask = Task.Run(() =>
             {
-                //请求队列
-                ResponseContext? responseContext = responseQueue.GetNextResponse();
-                if(responseContext != null)
+                while (true)
                 {
-                    //调度返回值，注意，这里调用的是没有返回值的
-                    Task.Run(() =>
+                    //请求队列
+                    ResponseContext? responseContext = responseQueue.GetNextResponse();
+                    if(responseContext != null)
                     {
-                        pluginsHost.Dispatch(responseContext);
-                    });
+                        //调度返回值，注意，这里调用的是没有返回值的
+                        Task.Run(() =>
+                        {
+                            pluginsHost.Dispatch(responseContext);
+                        });
+                    }
+                    Thread.Sleep(0);
                 }
-                Thread.Sleep(0);
-            }
+            });
+            await messageTask;
+            await responseTask;
         }
         
         private static IBotBuilder CreateDefaultBotBuilder(string[] args)
