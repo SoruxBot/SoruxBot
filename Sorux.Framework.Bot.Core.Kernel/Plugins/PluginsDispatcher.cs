@@ -102,13 +102,15 @@ public class PluginsDispatcher
         {
             pluginsPermissionList.PermissionDefaultConfig.ForEach(sp =>
             {
-                //qq&&TriggerId114514 -> 记录人
-                //Node/qq/TriggerId114515 -> 触发节点
-                _permissionStorage
-                    .AddPermission(sp.Platform +  "SoruxBot" + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition,
-                        sp.Node,
-                        sp.Node +  "SoruxBot" + sp.Platform +  "SoruxBot" 
-                        + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition);
+                if (!_permissionStorage.GetNodeCondition(sp.Node +  "SoruxBot" + sp.Platform +  "SoruxBot" 
+                                                        + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition))
+                {
+                    _permissionStorage
+                        .AddPermission(sp.Platform +  "SoruxBot" + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition,
+                            sp.Node,
+                            sp.Node +  "SoruxBot" + sp.Platform +  "SoruxBot" 
+                            + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition);
+                }
             });
         }
         
@@ -362,7 +364,6 @@ public class PluginsDispatcher
                 {
                     list.AddRange(tempAA);
                 }
-                
                 
                 if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out list))
                     return list;
