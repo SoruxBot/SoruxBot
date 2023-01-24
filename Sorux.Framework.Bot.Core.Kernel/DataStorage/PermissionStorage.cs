@@ -11,10 +11,11 @@ public class PermissionStorage
     private SQLiteCommand PreparedStatement(string sql, params string[] args)
     {
         var command = new SQLiteCommand(sql, _sqLiteConnection);
-        foreach (var t in args)
+        for (int i = 0; i < args.Length; i++)
         {
-            command.Parameters.Add(t);
+            command.Parameters.AddWithValue("arg" + i, args[i]);
         }
+
 
         return command;
     }
@@ -29,7 +30,7 @@ public class PermissionStorage
     {
         // preparestatement
         var command =  PreparedStatement(
-            "CREATE TABLE IF NOT EXISTS ? (node varchar(255), state varchar(255))",
+            "CREATE TABLE IF NOT EXISTS @arg0 (node varchar(255), state varchar(255))",
             tableName);
         command.ExecuteNonQuery();
     }
@@ -38,7 +39,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist("permissionTarget");
         var command = PreparedStatement(
-            "INSERT INTO permissionTarget (node, state) VALUES (?,'true')",
+            "INSERT INTO permissionTarget (node, state) VALUES (@arg0,'true')",
             condition);
         int res = command.ExecuteNonQuery();
         return res == 1;
@@ -48,7 +49,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist("permissionTarget");
         var command = PreparedStatement(
-            $"DELETE FROM permissionTarget WHERE node = ?",
+            $"DELETE FROM permissionTarget WHERE node = @arg0",
             condition);
         int res = command.ExecuteNonQuery();
         return res == 1;
@@ -58,7 +59,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist("permissionTarget");
         var command = PreparedStatement(
-            $"SELECT state FROM permissionTarget WHERE node = ?",
+            $"SELECT state FROM permissionTarget WHERE node = @arg0",
             condition);
         object res = command.ExecuteScalar();
         return res != null && ((string)res).Equals("true");
@@ -68,7 +69,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"INSERT INTO ? (node, state) VALUES (?,'true')",
+            $"INSERT INTO @arg0 (node, state) VALUES (@arg1,'true')",
             identity, node);
         command.ExecuteNonQuery();
         return AddNodeCondition(condition);
@@ -78,7 +79,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"DELETE FROM ? WHERE node = ?", 
+            $"DELETE FROM @arg0 WHERE node = @arg1", 
             identity, node);
         // FIXME: NEED? command.ExecuteNonQuery();
         return RemoveNodeCondition(condition);
@@ -88,7 +89,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"SELECT node FROM ?", identity);
+            $"SELECT node FROM @arg1", identity);
         SQLiteDataReader sqLiteDataReader = command.ExecuteReader();
         StringBuilder stringBuilder = new StringBuilder();
         while (sqLiteDataReader.Read())
