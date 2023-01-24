@@ -1,11 +1,10 @@
-﻿
-namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
+﻿namespace Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 
 public class PluginsActionParameter
 {
     public bool IsOptional { get; set; }
-    
+
     public Type ParameterType { get; set; }
-    
+
     public string Name { get; set; }
 }

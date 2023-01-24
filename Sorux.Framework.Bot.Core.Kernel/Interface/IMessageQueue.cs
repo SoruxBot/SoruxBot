@@ -1,5 +1,4 @@
-﻿
-using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
+﻿using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Interface
 {
@@ -7,8 +6,10 @@ namespace Sorux.Framework.Bot.Core.Kernel.Interface
     {
         //得到队列中的 Message
         public MessageContext? GetNextMessageRequest();
+
         //向队列中放入Message
         public void SetNextMsg(MessageContext value);
+
         //存储临时信息
         public void RestoreFromLocalStorage();
         public void SaveIntoLocalStorage();

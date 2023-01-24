@@ -17,6 +17,7 @@ using Sorux.Framework.Bot.Core.Kernel.Plugins.Models;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Plugins;
+
 /// <summary>
 /// 插件调度器，负责分配事件到具体的插件。
 /// </summary>
@@ -30,8 +31,8 @@ public class PluginsDispatcher
     private bool _isLongCommunicateEnable;
     private PermissionStorage _permissionStorage;
 
-    public PluginsDispatcher(BotContext botContext,ILoggerService loggerService, IPluginsStorage pluginsStorage,
-        IConfiguration configuration,PluginsListener pluginsListener,PermissionStorage permissionStorage)
+    public PluginsDispatcher(BotContext botContext, ILoggerService loggerService, IPluginsStorage pluginsStorage,
+        IConfiguration configuration, PluginsListener pluginsListener, PermissionStorage permissionStorage)
     {
         this._botContext = botContext;
         this._loggerService = loggerService;
@@ -44,19 +45,20 @@ public class PluginsDispatcher
         this._permissionStorage = permissionStorage;
     }
 
-    public delegate PluginFucFlag ActionDelegate(object instance,params object[] args);
+    public delegate PluginFucFlag ActionDelegate(object instance, params object[] args);
+
     //插件按照触发条件可以分为选项式命令触发和事件触发
     //前者针对某个特定 EventType 的某个特定的语句触发某个特定的方法
     //后者针对某个通用的 EventType 进行触发
-    private Dictionary<string, List<PluginsActionDescriptor>> _matchList = new ();
-    
-    
+    private Dictionary<string, List<PluginsActionDescriptor>> _matchList = new();
+
+
     /// <summary>
     /// 注册指令路由
     /// </summary>
     /// <param name="filepath"></param>
     /// <param name="name"></param>
-    public void RegisterCommandRoute(string filepath,string name)
+    public void RegisterCommandRoute(string filepath, string name)
     {
         Assembly assembly = Assembly.LoadFile(filepath);
         Type[] types = assembly.GetExportedTypes();
@@ -69,56 +71,56 @@ public class PluginsDispatcher
             {
                 case "Windows":
                     pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
-                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\" 
+                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\"
                             + name.Replace(".dll", ".json")));
                     break;
                 case "Linux":
                 case "MacOS":
                     pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
-                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/" 
+                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/"
                             + name.Replace(".dll", ".json")));
                     break;
                 default:
-                    _loggerService.Fatal("PluginsRegister","The system kind is not known! Exit...");
+                    _loggerService.Fatal("PluginsRegister", "The system kind is not known! Exit...");
                     return;
             }
-                
         }
         catch (Exception e)
         {
-            _loggerService.Error("PluginsRegister","The plugin:" + name + " loses json file:"+name.Replace(".dll", ".json")  +
-                                                   "ErrorCode:EX0003");
+            _loggerService.Error("PluginsRegister", "The plugin:" + name + " loses json file:" +
+                                                    name.Replace(".dll", ".json") +
+                                                    "ErrorCode:EX0003");
             return;
         }
+
         if (pluginsPermissionList != null && pluginsPermissionList.PermissionNode != null)
         {
-            pluginsPermissionList.PermissionNode.ForEach(sp =>
-            {
-                matchPermissionNodes.Add(sp.Node,sp);
-            });
+            pluginsPermissionList.PermissionNode.ForEach(sp => { matchPermissionNodes.Add(sp.Node, sp); });
         }
+
         //注册默认权限
         if (pluginsPermissionList != null && pluginsPermissionList.PermissionDefaultConfig != null)
         {
             pluginsPermissionList.PermissionDefaultConfig.ForEach(sp =>
             {
-                if (!_permissionStorage.GetNodeCondition(sp.Node +  "SoruxBot" + sp.Platform +  "SoruxBot" 
-                                                        + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition))
+                if (!_permissionStorage.GetNodeCondition(sp.Node + "SoruxBot" + sp.Platform + "SoruxBot"
+                                                         + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition))
                 {
                     _permissionStorage
-                        .AddPermission(sp.Platform +  "SoruxBot" + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition,
+                        .AddPermission(
+                            sp.Platform + "SoruxBot" + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition,
                             sp.Node,
-                            sp.Node +  "SoruxBot" + sp.Platform +  "SoruxBot" 
+                            sp.Node + "SoruxBot" + sp.Platform + "SoruxBot"
                             + matchPermissionNodes[sp.Node].ConditionChar + sp.Condition);
                 }
             });
         }
-        
+
         foreach (var className in types)
         {
             if (className.BaseType == typeof(BotController))
-            { 
-                _loggerService.Debug("CommandRoute","Controller is caught! For type ->" + className.Name);
+            {
+                _loggerService.Debug("CommandRoute", "Controller is caught! For type ->" + className.Name);
                 //缓存 Controller
                 ConstructorInfo constructorInfo = className.GetConstructors()[0];
                 ParameterInfo[] parameterInfos = constructorInfo.GetParameters();
@@ -127,33 +129,42 @@ public class PluginsDispatcher
                 foreach (var parameterInfo in parameterInfos)
                 {
                     #region 匹配参数
+
                     if (parameterInfo.ParameterType == typeof(BotContext))
                     {
                         objects.Add(_botContext);
-                    }else if (parameterInfo.ParameterType == typeof(ILoggerService))
+                    }
+                    else if (parameterInfo.ParameterType == typeof(ILoggerService))
                     {
                         objects.Add(_loggerService);
-                    }else if (parameterInfo.ParameterType == typeof(IBasicAPI))
+                    }
+                    else if (parameterInfo.ParameterType == typeof(IBasicAPI))
                     {
                         objects.Add(serviceProvider.GetRequiredService<IBasicAPI>());
-                    }else if (parameterInfo.ParameterType == typeof(ILongMessageCommunicate))
+                    }
+                    else if (parameterInfo.ParameterType == typeof(ILongMessageCommunicate))
                     {
                         objects.Add(serviceProvider.GetRequiredService<ILongMessageCommunicate>());
-                    }else if (parameterInfo.ParameterType == typeof(IPluginsDataStorage))
+                    }
+                    else if (parameterInfo.ParameterType == typeof(IPluginsDataStorage))
                     {
                         objects.Add(serviceProvider.GetRequiredService<IPluginsDataStorage>());
-                    }else if (parameterInfo.ParameterType == typeof(IPluginsStoragePermanentAble))
+                    }
+                    else if (parameterInfo.ParameterType == typeof(IPluginsStoragePermanentAble))
                     {
                         objects.Add(serviceProvider.GetRequiredService<IPluginsStoragePermanentAble>());
-                    }else if (parameterInfo.ParameterType == typeof(IPermission))
+                    }
+                    else if (parameterInfo.ParameterType == typeof(IPermission))
                     {
                         objects.Add(serviceProvider.GetRequiredService<IPermission>());
                     }
+
                     #endregion
                 }
-                _pluginsStorage.SetPluginInstance(name+ "." + className.Name, 
-                                 Activator.CreateInstance(className,objects.ToArray())!);
-                
+
+                _pluginsStorage.SetPluginInstance(name + "." + className.Name,
+                    Activator.CreateInstance(className, objects.ToArray())!);
+
                 MethodInfo[] methods = className.GetMethods();
                 foreach (var methodInfo in methods)
                 {
@@ -162,23 +173,28 @@ public class PluginsDispatcher
                         var methodEventAttribute = methodInfo.GetCustomAttribute<EventAttribute>();
                         if (methodEventAttribute is null)
                         {
-                            _loggerService.Warn("PluginsDispatcher","Missing Type for EventAttribute , plugin:" + name);
+                            _loggerService.Warn("PluginsDispatcher",
+                                "Missing Type for EventAttribute , plugin:" + name);
                             throw new Exception("Missing Type for EventAttribute, plugin:" + name);
                         }
+
                         string commandTriggerType = methodEventAttribute!.EventType.ToString();
                         var methodEventCommand = methodInfo.GetCustomAttribute<CommandAttribute>();
                         if (methodEventCommand is null)
                         {
-                            _loggerService.Warn("PluginsDispatcher","Missing Type for CommandAttribute , plugin:" + name);
+                            _loggerService.Warn("PluginsDispatcher",
+                                "Missing Type for CommandAttribute , plugin:" + name);
                             throw new Exception("Missing Type for CommandAttribute, plugin:" + name);
                         }
+
                         //判断是否持有平台特定的特性
                         if (methodInfo.IsDefined(typeof(PlatformConstraintAttribute)))
                         {
                             var methodPlatformConstraint = methodInfo.GetCustomAttribute<PlatformConstraintAttribute>();
-                            commandTriggerType = commandTriggerType + ";" + methodPlatformConstraint!.PlatformConstraint;
+                            commandTriggerType =
+                                commandTriggerType + ";" + methodPlatformConstraint!.PlatformConstraint;
                         }
-                        
+
                         PluginsActionDescriptor pluginsActionDescriptor = new();
                         //权限模块设置
                         if (methodInfo.IsDefined(typeof(PermissionAttribute)))
@@ -194,19 +210,19 @@ public class PluginsDispatcher
                                 switch (permissionNode.ConditionChar)
                                 {
                                     case "TriggerId":
-                                        pluginsPermissionDescriptor.FilterAction = 
+                                        pluginsPermissionDescriptor.FilterAction =
                                             context => "TriggerId" + context.TriggerId;
                                         pluginsActionDescriptor.PluginsPermissionDescriptor =
                                             pluginsPermissionDescriptor;
                                         break;
                                     case "TriggerPlatformId":
-                                        pluginsPermissionDescriptor.FilterAction = 
+                                        pluginsPermissionDescriptor.FilterAction =
                                             context => "TriggerPlatformId" + context.TriggerPlatformId;
                                         pluginsActionDescriptor.PluginsPermissionDescriptor =
                                             pluginsPermissionDescriptor;
                                         break;
                                     default:
-                                        _loggerService.Warn("PluginsPermission","Plugins:" + name + 
+                                        _loggerService.Warn("PluginsPermission", "Plugins:" + name +
                                             "'s jsonFile use unsupported permissionConditionChar");
                                         return;
                                 }
@@ -214,20 +230,21 @@ public class PluginsDispatcher
                             else
                             {
                                 pluginsPermissionDescriptor.FilterAction =
-                                    context => permissionNode.ConditionChar 
+                                    context => permissionNode.ConditionChar
                                                + context.UnderProperty[permissionNode.ConditionChar];
                                 pluginsActionDescriptor.PluginsPermissionDescriptor =
                                     pluginsPermissionDescriptor;
                             }
                         }
-                        
+
                         string commandPrefix = methodEventCommand.CommandPrefix switch
-                           {
-                               CommandAttribute.Prefix.None   => "",
-                               CommandAttribute.Prefix.Single => _pluginsStorage.GetPluginInfor(name,"CommandPrefixContent"),
-                               CommandAttribute.Prefix.Global => _globalCommandPrefix,
-                               _                              => ""
-                           };
+                        {
+                            CommandAttribute.Prefix.None => "",
+                            CommandAttribute.Prefix.Single => _pluginsStorage.GetPluginInfor(name,
+                                "CommandPrefixContent"),
+                            CommandAttribute.Prefix.Global => _globalCommandPrefix,
+                            _ => ""
+                        };
                         //生成 Controller 的委托
                         ParameterInfo[] parameters = methodInfo.GetParameters();
 
@@ -238,42 +255,46 @@ public class PluginsDispatcher
                             Type delegateType;
                             args.Add(methodInfo.ReturnType);
                             delegateType = Expression.GetFuncType(args.ToArray());
-                            pluginsActionDescriptor.ActionDelegate = 
+                            pluginsActionDescriptor.ActionDelegate =
                                 methodInfo.CreateDelegate(delegateType,
-                                    _pluginsStorage.GetPluginInstance(name+ "." + className.Name));
+                                    _pluginsStorage.GetPluginInstance(name + "." + className.Name));
                         }
                         else
                         {
                             string[] paras = methodEventCommand!.Command[0].Split(" ").Skip(1).ToArray();
                             int count = 0;
-                        
+
                             //添加必然存在的参数 MessageContext
                             PluginsActionParameter messageContextPara = new PluginsActionParameter();
                             messageContextPara.IsOptional = false;
                             messageContextPara.Name = "context";
                             messageContextPara.ParameterType = typeof(MessageContext);
                             pluginsActionDescriptor.ActionParameters.Add(messageContextPara);
-                            
+
                             foreach (var parameterInfo in parameters.Skip(1))
                             {
                                 //默认插件作者提供的命令列表的参数顺序和 Action 的函数顺序一致，否者绑定失败需要作者自己从 Context获取
                                 PluginsActionParameter pluginsActionParameter = new PluginsActionParameter();
                                 pluginsActionParameter.IsOptional = paras[count].Substring(0, 1).Equals("<");
-                                pluginsActionParameter.Name = paras[count].Substring(1, paras[count].Length - 2);//[message] 故全长-2
+                                pluginsActionParameter.Name =
+                                    paras[count].Substring(1, paras[count].Length - 2); //[message] 故全长-2
                                 pluginsActionParameter.ParameterType = parameterInfo.ParameterType;
                                 pluginsActionDescriptor.ActionParameters.Add(pluginsActionParameter);
                                 count++;
                             }
-                            pluginsActionDescriptor.IsParameterBinded = true;  //绑定成功 [其实绑定失败了就无法 Invoke了]
+
+                            pluginsActionDescriptor.IsParameterBinded = true; //绑定成功 [其实绑定失败了就无法 Invoke了]
                             var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
                             Type delegateType;
                             args.Add(methodInfo.ReturnType);
                             delegateType = Expression.GetFuncType(args.ToArray());
-                            pluginsActionDescriptor.ActionDelegate = 
+                            pluginsActionDescriptor.ActionDelegate =
                                 methodInfo.CreateDelegate(delegateType,
-                                    _pluginsStorage.GetPluginInstance(name+ "." + className.Name));
+                                    _pluginsStorage.GetPluginInstance(name + "." + className.Name));
                         }
+
                         #region EMIT
+
                         //List<Type> methodParaAll = new List<Type>();
                         //methodParaAll.Add(className);
                         //methodParaAll.AddRange(pluginsActionDescriptor
@@ -298,7 +319,9 @@ public class PluginsDispatcher
                         //il.Emit(OpCodes.Call,methodInfo);
                         //il.Emit(OpCodes.Ret);
                         //pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
+
                         #endregion
+
                         pluginsActionDescriptor.InstanceTypeName = name + "." + className.Name;
                         //特判匹配
                         if (pluginsActionDescriptor.IsParameterLexerDisable)
@@ -335,9 +358,8 @@ public class PluginsDispatcher
                                     _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
                                         list);
                                 }
-                            }    
+                            }
                         }
-                        
                     }
                 }
             }
@@ -348,10 +370,10 @@ public class PluginsDispatcher
     /// 得到路由被注册后的委托方法
     /// </summary>
     /// <returns></returns>
-    public List<PluginsActionDescriptor>? GetAction(string route,ref MessageContext messageContext)
+    public List<PluginsActionDescriptor>? GetAction(string route, ref MessageContext messageContext)
     {
         //Action捕获前，判断是否是长对话
-        if (_isLongCommunicateEnable && !_pluginsListener.Filter(messageContext,out messageContext))
+        if (_isLongCommunicateEnable && !_pluginsListener.Filter(messageContext, out messageContext))
             return null;
         //ActionGet
         var list = new List<PluginsActionDescriptor>();
@@ -359,28 +381,30 @@ public class PluginsDispatcher
         string[] waittingList = parts[0].Split(";");
         switch (waittingList.Length)
         {
-            case 1://通用匹配
+            case 1: //通用匹配
                 if (_matchList.TryGetValue(waittingList[0] + "/[SF-ALL]", out var tempAA))
                 {
                     list.AddRange(tempAA);
                 }
-                
+
                 if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out list))
                     return list;
                 return null;
-            case 2://平台特定的匹配，自然包含了通用匹配
+            case 2: //平台特定的匹配，自然包含了通用匹配
                 if (_matchList.TryGetValue(waittingList[0] + "/[SF-ALL]", out var tempBB))
                 {
                     list.AddRange(tempBB);
                 }
-                
+
                 if (_matchList.TryGetValue(waittingList[0] + ";" + waittingList[1] + "/" + parts[1], out var tempA))
                 {
                     list.AddRange(tempA);
-                }else if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out var tempB))
+                }
+                else if (_matchList.TryGetValue(waittingList[0] + "/" + parts[1], out var tempB))
                 {
                     list.AddRange(tempB);
                 }
+
                 if (list.Count != 0)
                     return list;
                 return null;
@@ -405,6 +429,7 @@ public class PluginsDispatcher
                 {
                     list.AddRange(tempE);
                 }
+
                 if (list.Count != 0)
                     return list;
                 return null;

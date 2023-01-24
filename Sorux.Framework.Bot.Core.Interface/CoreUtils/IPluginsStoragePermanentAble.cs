@@ -1,6 +1,4 @@
-﻿
-
-namespace Sorux.Framework.Bot.Core.Kernel.Interface
+﻿namespace Sorux.Framework.Bot.Core.Kernel.Interface
 {
     /// <summary>
     /// 热重启支持

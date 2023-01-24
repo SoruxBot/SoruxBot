@@ -13,7 +13,9 @@ public class BasicApi : IBasicAPI
     private ILoggerService _loggerService;
     private PluginsHost _pluginsHost;
     private IResponseQueue _responseQueue;
-    public BasicApi(BotContext botContext, ILoggerService loggerService, PluginsHost pluginsHost,IResponseQueue responseQueue)
+
+    public BasicApi(BotContext botContext, ILoggerService loggerService, PluginsHost pluginsHost,
+        IResponseQueue responseQueue)
     {
         this._botContext = botContext;
         this._loggerService = loggerService;
@@ -35,7 +37,7 @@ public class BasicApi : IBasicAPI
             MessageContent = content,
             ResopnseRoute = "sendPrivateMessage"
         };
-        
+
         ResponseContext response = new()
         {
             Message = context,
@@ -105,7 +107,7 @@ public class BasicApi : IBasicAPI
             MessageContent = content,
             ResopnseRoute = "sendPrivateMessage"
         };
-        
+
         ResponseContext response = new()
         {
             Message = context,
@@ -123,7 +125,7 @@ public class BasicApi : IBasicAPI
             MessageContent = content,
             ResopnseRoute = "sendPrivateMessage"
         };
-        
+
         ResponseContext response = new()
         {
             Message = context,

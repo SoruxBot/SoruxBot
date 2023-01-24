@@ -1,5 +1,4 @@
-﻿
-namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
+﻿namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 {
     /// <summary>
     /// 内置的低级信息存储类
@@ -23,7 +22,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                     new FileInfo(Directory.GetCurrentDirectory() + "\\parse.lock").Create();
                     new FileInfo(Directory.GetCurrentDirectory() + "\\Config\\AppSettings.json").Create();
                 }
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 if (!new FileInfo(Directory.GetCurrentDirectory() + "/parse.lock").Exists)
                 {
@@ -38,7 +38,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                     new FileInfo(Directory.GetCurrentDirectory() + "/Config/AppSettings.json").Create();
                 }
             }
-            
         }
 
         public static string GetMessageQueuePath()
@@ -46,7 +45,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Config\\MessageQueue.sb";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Config/MessageQueue.sb";
             }
@@ -61,7 +61,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Plugins\\Data";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Plugins/Data";
             }
@@ -76,7 +77,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name;
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name;
             }
@@ -85,28 +87,30 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name;
             }
         }
-        
-        public static string GetPluginsDataFile(string name,string key)
+
+        public static string GetPluginsDataFile(string name, string key)
         {
             if (System.OperatingSystem.IsWindows())
             {
-                return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name +"\\" + key + ".bin";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+                return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name + "\\" + key + ".bin";
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name +"/" +key + ".bin";
+                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name + "/" + key + ".bin";
             }
             else
             {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name + "/" +key + ".bin";
+                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name + "/" + key + ".bin";
             }
         }
-        
+
         public static string GetPluginsConfigDirectory()
         {
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Plugins\\Config";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Plugins/Config";
             }
@@ -121,7 +125,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Plugins\\Bin";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Plugins/Bin";
             }
@@ -141,7 +146,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Lib\\pluginsData.bin";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Lib/pluginsData.bin";
             }
@@ -150,13 +156,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 return Directory.GetCurrentDirectory() + "/Lib/pluginsData.bin";
             }
         }
-        
+
         public static string GetPluginsPermissionDataPath()
         {
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Lib\\pluginsPermission.bin";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Lib/pluginsPermission.bin";
             }
@@ -165,13 +172,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 return Directory.GetCurrentDirectory() + "/Lib/pluginsPermission.bin";
             }
         }
-        
+
         public static string GetResponseQueuePath()
         {
             if (System.OperatingSystem.IsWindows())
             {
                 return Directory.GetCurrentDirectory() + "\\Config\\ResponseQueue.sb";
-            }else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
             {
                 return Directory.GetCurrentDirectory() + "/Config/ResponseQueue.sb";
             }
@@ -180,6 +188,5 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
                 return Directory.GetCurrentDirectory() + "/Config/ResponseQueue.sb";
             }
         }
-
     }
 }

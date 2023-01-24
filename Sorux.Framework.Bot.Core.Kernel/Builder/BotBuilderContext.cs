@@ -3,14 +3,15 @@
     public class BotBuilderContext
     {
         public BotBuilderContext(BuildEnvironmentType buildEnvironmentType, RuntimeSystemType runtimeSystemType)
-            => (BuildEnvironment,RuntimeSystem) = (buildEnvironmentType,runtimeSystemType);
-        public BuildEnvironmentType BuildEnvironment { get; init;}
+            => (BuildEnvironment, RuntimeSystem) = (buildEnvironmentType, runtimeSystemType);
+
+        public BuildEnvironmentType BuildEnvironment { get; init; }
 
         public RuntimeSystemType RuntimeSystem { get; init; }
     }
 
     public enum BuildEnvironmentType
-    { 
+    {
         Normal,
         Debug,
         Developer
@@ -24,5 +25,4 @@
         Android,
         Unknown
     }
-
 }

@@ -19,100 +19,103 @@ public class CqController : ControllerBase
     GrpcChannel? channel = null;
     Message.MessageClient client = null;
 
-    public CqController(ILogger<CqController> logger,IConfiguration configuration)
+    public CqController(ILogger<CqController> logger, IConfiguration configuration)
     {
         this._logger = logger;
         channel = GrpcChannel.ForAddress(configuration["gRPCHost"]);
         client = new Message.MessageClient(channel);
     }
-    
+
     [HttpPost]
     [Route("")]
     public void Post([FromBody] JsonObject jsonObject)
     {
         Task.Run(() =>
         {
-        string postType = jsonObject["post_type"]!.ToString();
-        switch (postType)
-        {
-            case "message"://消息上报
-                string messageType = jsonObject["message_type"]!.ToString();
-                switch (messageType)
-                {
-                    case "private":
-                        PrivateMessageHandler(jsonObject);//SoloMessage;qq;message-private[subType]
-                        break;
-                    case "group":
-                        GroupMessageHandler(jsonObject);//GroupMessage;qq;message-group[subType]
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            case "notice":
-                string noticeType = jsonObject["notice_type"]!.ToString();
-                switch (noticeType)
-                {
-                    case "friend_recall":
-                        PrivateMessageRecallHandler(jsonObject);//SoloMessage;qq;notice-friend_call
-                        break;
-                    case "group_recall":
-                        GroupMessageRecallHandler(jsonObject);//NoticeAction;qq;notice-group_call
-                        break;
-                    case "group_increase":
-                        GroupMemberIncreaseHandler(jsonObject);//NoticeAction;qq;notice-group_increase[subType]
-                        break;
-                    case "group_decrease":
-                        GroupMemberDecreaseHandler(jsonObject);//NoticeAction;qq;notice-group_decrease[subType]
-                        break;
-                    case "group_admin":
-                        GroupManagerChangeHandler(jsonObject);//NoticeAction;qq;notice-group_admin[subType]
-                        break;
-                    case "group_upload":
-                        FileUpload(jsonObject);//NoticeAction;qq;notice-group_upload
-                        break;
-                    case "group_ban":
-                        GroupBanMessage(jsonObject);//NoticeAction;qq;notice-group_ban[subType]
-                        break;
-                    case "friend_add":
-                        FriendAdd(jsonObject);//NoticeAction;qq;notice-friend_add
-                        break;
-                    case "notify":
-                        Notify(jsonObject);//NoticeAction;qq;notice-notify
-                        break;
-                    case "group_card":
-                        GroupCardChangHandler(jsonObject);//NoticeAction;qq;notice-group_card
-                        break;
-                    case "offline_file":
-                        OfflineFileHandler(jsonObject);//NoticeAction;qq;notice-offline_file
-                        break;
-                    case "client_status":
-                        ClientChangeHandler(jsonObject);//NoticeAction;qq;notice-client_status
-                        break;
-                    case "essence":
-                        EssenceChangeHandler(jsonObject);//NoticeAction;qq;notice-essence[subType]
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            case "request":
-                string requestType = jsonObject["request_type"]!.ToString();
-                switch (requestType)
-                {
-                    case "friend":
-                        AddFrinedHandler(jsonObject);//NoticeAction;qq;request-friend
-                        break;
-                    case "group":
-                        AddGroupHandler(jsonObject);//NoticeAction;qq;request-group[subType]
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+            string postType = jsonObject["post_type"]!.ToString();
+            switch (postType)
+            {
+                case "message": //消息上报
+                    string messageType = jsonObject["message_type"]!.ToString();
+                    switch (messageType)
+                    {
+                        case "private":
+                            PrivateMessageHandler(jsonObject); //SoloMessage;qq;message-private[subType]
+                            break;
+                        case "group":
+                            GroupMessageHandler(jsonObject); //GroupMessage;qq;message-group[subType]
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+                case "notice":
+                    string noticeType = jsonObject["notice_type"]!.ToString();
+                    switch (noticeType)
+                    {
+                        case "friend_recall":
+                            PrivateMessageRecallHandler(jsonObject); //SoloMessage;qq;notice-friend_call
+                            break;
+                        case "group_recall":
+                            GroupMessageRecallHandler(jsonObject); //NoticeAction;qq;notice-group_call
+                            break;
+                        case "group_increase":
+                            GroupMemberIncreaseHandler(jsonObject); //NoticeAction;qq;notice-group_increase[subType]
+                            break;
+                        case "group_decrease":
+                            GroupMemberDecreaseHandler(jsonObject); //NoticeAction;qq;notice-group_decrease[subType]
+                            break;
+                        case "group_admin":
+                            GroupManagerChangeHandler(jsonObject); //NoticeAction;qq;notice-group_admin[subType]
+                            break;
+                        case "group_upload":
+                            FileUpload(jsonObject); //NoticeAction;qq;notice-group_upload
+                            break;
+                        case "group_ban":
+                            GroupBanMessage(jsonObject); //NoticeAction;qq;notice-group_ban[subType]
+                            break;
+                        case "friend_add":
+                            FriendAdd(jsonObject); //NoticeAction;qq;notice-friend_add
+                            break;
+                        case "notify":
+                            Notify(jsonObject); //NoticeAction;qq;notice-notify
+                            break;
+                        case "group_card":
+                            GroupCardChangHandler(jsonObject); //NoticeAction;qq;notice-group_card
+                            break;
+                        case "offline_file":
+                            OfflineFileHandler(jsonObject); //NoticeAction;qq;notice-offline_file
+                            break;
+                        case "client_status":
+                            ClientChangeHandler(jsonObject); //NoticeAction;qq;notice-client_status
+                            break;
+                        case "essence":
+                            EssenceChangeHandler(jsonObject); //NoticeAction;qq;notice-essence[subType]
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+                case "request":
+                    string requestType = jsonObject["request_type"]!.ToString();
+                    switch (requestType)
+                    {
+                        case "friend":
+                            AddFrinedHandler(jsonObject); //NoticeAction;qq;request-friend
+                            break;
+                        case "group":
+                            AddGroupHandler(jsonObject); //NoticeAction;qq;request-group[subType]
+                            break;
+                        default:
+                            break;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
         });
     }
 
@@ -141,7 +144,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void AddFrinedHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -166,8 +169,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     public void EssenceChangeHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -179,7 +182,7 @@ public class CqController : ControllerBase
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
-            ActionRoute = "NoticeAction;qq;notice-essence"+ jsonObject["sub_type"]!,
+            ActionRoute = "NoticeAction;qq;notice-essence" + jsonObject["sub_type"]!,
             BotAccount = jsonObject["self_id"]!.ToString(),
             LongMessageContext = null,
             Message = new MessageEntity(),
@@ -193,7 +196,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void ClientChangeHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -218,8 +221,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     public void OfflineFileHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -243,7 +246,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void GroupCardChangHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -268,7 +271,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void Notify(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -282,7 +285,7 @@ public class CqController : ControllerBase
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
-            ActionRoute = "NoticeAction;qq;notice-notify"+ jsonObject["sub_type"]!,
+            ActionRoute = "NoticeAction;qq;notice-notify" + jsonObject["sub_type"]!,
             BotAccount = jsonObject["self_id"]!.ToString(),
             LongMessageContext = null,
             Message = new MessageEntity(),
@@ -296,7 +299,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void FriendAdd(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -320,7 +323,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void GroupBanMessage(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -346,7 +349,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     public void FileUpload(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -371,8 +374,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     public void GroupManagerChangeHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -397,8 +400,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     public void GroupMemberDecreaseHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -423,8 +426,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     public void GroupMemberIncreaseHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -449,8 +452,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     private void GroupMessageRecallHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -475,8 +478,8 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
-    
+
+
     private void GroupMessageHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -508,7 +511,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     private void PrivateMessageRecallHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();
@@ -532,7 +535,7 @@ public class CqController : ControllerBase
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
     }
-    
+
     private void PrivateMessageHandler(JsonObject jsonObject)
     {
         Dictionary<string, string> dictionary = new();

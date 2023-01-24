@@ -16,7 +16,7 @@ public class SoruxController : ControllerBase
     private ILogger<CqController> _logger;
     private RestClient _host;
 
-    public SoruxController(ILogger<CqController> logger,IConfiguration configuration)
+    public SoruxController(ILogger<CqController> logger, IConfiguration configuration)
     {
         this._logger = logger;
         _host = new RestClient(configuration["GoCqHost"]);
@@ -40,7 +40,7 @@ public class SoruxController : ControllerBase
 
     private string SendGroupMessage(ResponseModel responseModel)
     {
-        var request = new RestRequest("send_group_msg",Method.Post);
+        var request = new RestRequest("send_group_msg", Method.Post);
         request.AddJsonBody(new
         {
             group_id = responseModel.Receiver,
@@ -52,7 +52,7 @@ public class SoruxController : ControllerBase
 
     private string SendPrivateMessage(ResponseModel responseModel)
     {
-        var request = new RestRequest("send_private_msg",Method.Post);
+        var request = new RestRequest("send_private_msg", Method.Post);
         request.AddJsonBody(new
         {
             user_id = responseModel.Receiver,

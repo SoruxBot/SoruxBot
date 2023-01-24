@@ -9,10 +9,10 @@ public class ResponseChannelWrapper : IResponseQueue
 {
     private ResponseChannel _rpChannel;
     private ILoggerService _loggerService;
-    
-    public ResponseChannelWrapper(ILoggerService loggerService,BotContext botContext)
+
+    public ResponseChannelWrapper(ILoggerService loggerService, BotContext botContext)
     {
-        _rpChannel = new ResponseChannel(loggerService,botContext);
+        _rpChannel = new ResponseChannel(loggerService, botContext);
         this._loggerService = loggerService;
     }
 
@@ -28,16 +28,16 @@ public class ResponseChannelWrapper : IResponseQueue
 
     public void RestoreFromLocalStorage()
     {
-        _loggerService.Error("ResponseChannelWrapper","This version of Response Queue didn't implement LocalStorage");
+        _loggerService.Error("ResponseChannelWrapper", "This version of Response Queue didn't implement LocalStorage");
     }
 
     public void SaveIntoLocalStorage()
     {
-        _loggerService.Error("ResponseChannelWrapper","This version of Response Queue didn't implement LocalStorage");
+        _loggerService.Error("ResponseChannelWrapper", "This version of Response Queue didn't implement LocalStorage");
     }
 
     public void DisposeFromLocalStorage()
     {
-        _loggerService.Error("ResponseChannelWrapper","This version of Response Queue didn't implement LocalStorage");
+        _loggerService.Error("ResponseChannelWrapper", "This version of Response Queue didn't implement LocalStorage");
     }
 }

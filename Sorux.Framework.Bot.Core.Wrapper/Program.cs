@@ -17,14 +17,15 @@ namespace Sorux.Framework.Bot.Core.Wrapper
     {
         private static int _gloabalPluginsLimitTime;
         private static ILoggerService _loggerService;
+
         static async Task Main(string[] args)
         {
             //机器人创建:负责初始化机器人的实例
             var app = CreateDefaultBotBuilder(args).Build();
-            
+
             //插件注册:负责注册机器人的插件服务
             app.Context.ServiceProvider.GetRequiredService<PluginsService>().RegisterPlugins();
-            
+
             //协议层注册:负责注册机器人的消息回调解析服务
             app.Context.ServiceProvider.GetRequiredService<PluginsHost>().Register();
 
@@ -49,7 +50,7 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             //出栈
             IResponseQueue responseQueue = app.Context.ServiceProvider.GetRequiredService<IResponseQueue>();
             PluginsHost pluginsHost = app.Context.ServiceProvider.GetRequiredService<PluginsHost>();
-            var messageTask= Task.Run(() =>
+            var messageTask = Task.Run(() =>
             {
                 while (true)
                 {
@@ -57,28 +58,31 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                     MessageContext? messageContext = messageQueue.GetNextMessageRequest();
                     if (messageContext != null)
                     {
-                        Task.Run( () =>
+                        Task.Run(() =>
                         {
                             string route = null;
-                            if (messageContext.Message != null)//消息，需要经过命名路由
+                            if (messageContext.Message != null) //消息，需要经过命名路由
                             {
                                 route = messageContext.ActionRoute + "/" +
                                         messageContext.Message.GetRawMessage().Split(" ")[0];
                             }
-                            else//非消息，不需要经过命名路由
+                            else //非消息，不需要经过命名路由
                             {
                                 route = messageContext.ActionRoute + "/";
                             }
-                    
-                            List<PluginsActionDescriptor>? list = pluginsDispatcher.GetAction(route,ref messageContext);
+
+                            List<PluginsActionDescriptor>?
+                                list = pluginsDispatcher.GetAction(route, ref messageContext);
                             if (list != null)
                                 list.ForEach(sp =>
                                 {
                                     if (messageContext.Message.MsgState != PluginFucFlag.MsgIgnored)
-                                        messageContext.Message.MsgState = pluginsCommandLexer.PluginAction(messageContext, sp);
+                                        messageContext.Message.MsgState =
+                                            pluginsCommandLexer.PluginAction(messageContext, sp);
                                 });
                         });
                     }
+
                     Thread.Sleep(0);
                 }
             });
@@ -88,50 +92,53 @@ namespace Sorux.Framework.Bot.Core.Wrapper
                 {
                     //请求队列
                     ResponseContext? responseContext = responseQueue.GetNextResponse();
-                    if(responseContext != null)
+                    if (responseContext != null)
                     {
                         //调度返回值，注意，这里调用的是没有返回值的
-                        Task.Run(() =>
-                        {
-                            pluginsHost.Dispatch(responseContext);
-                        });
+                        Task.Run(() => { pluginsHost.Dispatch(responseContext); });
                     }
+
                     Thread.Sleep(0);
                 }
             });
             await messageTask;
             await responseTask;
         }
-        
+
         private static IBotBuilder CreateDefaultBotBuilder(string[] args)
         {
             BotBuilder botBuilder = new();
             return botBuilder.ConfigureBotConfiguration((context, configure) =>
-                             {
-                                 configure.AddInMemoryCollection(new[]
-                                 {
-                                     //本两个设置默认不起作用，如果想要启用请根据 GetUrl 和 TryGetPort 方法内的注释修改代码以启用本设置
-                                     new KeyValuePair<string, string?>("WebListenerUrl","localhost"),
-                                     new KeyValuePair<string, string?>("WebListenerPort","7151"),
+                {
+                    configure.AddInMemoryCollection(new[]
+                    {
+                        //本两个设置默认不起作用，如果想要启用请根据 GetUrl 和 TryGetPort 方法内的注释修改代码以启用本设置
+                        new KeyValuePair<string, string?>("WebListenerUrl", "localhost"),
+                        new KeyValuePair<string, string?>("WebListenerPort", "7151"),
 
-                                     //本设置的 Debug 针对于框架内部，一般情况下不需要开启本项，即使是生产环境的调试，如果是开发框架，建议打开
-                                     new KeyValuePair<string, string?>("LoggerDebug","false")
-                                 });
-                             }).CreateDefaultBotConfigure(args)
-                             .ConfigureServices((config, services) =>
-                             {
-                                 //此处用于注册机器人的启动流程，顺序为：机器人组件组装->机器人内置服务分配->机器人实例组装->机器人额外启动流程（此处）
-                                 //注册机器人插件服务，若注释本两行则机器人不会加载插件
-                                 PluginsService.ConfigurePluginsServices(services);
-                             });
+                        //本设置的 Debug 针对于框架内部，一般情况下不需要开启本项，即使是生产环境的调试，如果是开发框架，建议打开
+                        new KeyValuePair<string, string?>("LoggerDebug", "false")
+                    });
+                }).CreateDefaultBotConfigure(args)
+                .ConfigureServices((config, services) =>
+                {
+                    //此处用于注册机器人的启动流程，顺序为：机器人组件组装->机器人内置服务分配->机器人实例组装->机器人额外启动流程（此处）
+                    //注册机器人插件服务，若注释本两行则机器人不会加载插件
+                    PluginsService.ConfigurePluginsServices(services);
+                });
         }
 
-        private static Server BuildGrpcServer(IBot app) 
-            => new Server {
-                Services = { Message.BindService(
-                new MessageTransmission(app,app.Context.ServiceProvider.GetRequiredService<ILoggerService>())) },
-                Ports = { new ServerPort(GetUrl(app), TryGetPort(app), ServerCredentials.Insecure) } };
-        
+        private static Server BuildGrpcServer(IBot app)
+            => new Server
+            {
+                Services =
+                {
+                    Message.BindService(
+                        new MessageTransmission(app, app.Context.ServiceProvider.GetRequiredService<ILoggerService>()))
+                },
+                Ports = { new ServerPort(GetUrl(app), TryGetPort(app), ServerCredentials.Insecure) }
+            };
+
         private static int TryGetPort(IBot app)
         {
             //if (!int.TryParse(app.Configuration["WebListenerPort"], out int port))
@@ -150,6 +157,5 @@ namespace Sorux.Framework.Bot.Core.Wrapper
             //取消上面一行的注释，并注释返回前的一行可以转而使用框架启动流程内注册的 WebListenerUrl 以方便调试
             //对外发布或者 Pr 的时候请注意调整成为 Release状态 ，即从配置文件获取地址
         }
-        
     }
 }

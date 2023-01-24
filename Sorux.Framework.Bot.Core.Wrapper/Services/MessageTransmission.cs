@@ -15,10 +15,11 @@ namespace Sorux.Framework.Bot.WebgRpc.Services
         private IBot _bot;
         private ILoggerService _logger;
         private IMessageQueue _messageQueue;
-        public MessageTransmission(IBot bot,ILoggerService logger)
+
+        public MessageTransmission(IBot bot, ILoggerService logger)
         {
             this._bot = bot;
-            this._logger= logger;
+            this._logger = logger;
             this._messageQueue = _bot.Context.ServiceProvider.GetRequiredService<IMessageQueue>();
         }
 
@@ -27,6 +28,5 @@ namespace Sorux.Framework.Bot.WebgRpc.Services
             _messageQueue.SetNextMsg(JsonConvert.DeserializeObject<MessageContext>(request.Payload)!);
             return Task.FromResult(new Empty());
         }
-
     }
 }

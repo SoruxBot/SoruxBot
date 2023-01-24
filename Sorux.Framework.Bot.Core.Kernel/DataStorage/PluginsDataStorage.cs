@@ -7,8 +7,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage;
 
 public class PluginsDataStorage : IPluginsDataStorage
 {
-
     private SQLiteConnection _sqLiteConnection;
+
     public PluginsDataStorage()
     {
         _sqLiteConnection = new SQLiteConnection("Data Source=" + DsLocalStorage.GetPluginsSqliteDataPath());
@@ -17,11 +17,11 @@ public class PluginsDataStorage : IPluginsDataStorage
 
     private void CreateTableIfNotExist(string pluginMark)
     {
-        string sql = "create table  if not exists "+ pluginMark +" (key varchar(255), value varchar(255))";
+        string sql = "create table  if not exists " + pluginMark + " (key varchar(255), value varchar(255))";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         command.ExecuteNonQuery();
     }
-    
+
     public bool AddStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
@@ -63,13 +63,13 @@ public class PluginsDataStorage : IPluginsDataStorage
         DirectoryInfo directoryInfo = new DirectoryInfo(DsLocalStorage.GetPluginsDataDirectory(pluginMark));
         if (!directoryInfo.Exists)
             directoryInfo.Create();
-        File.WriteAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark,key.GetSha256()),value);
+        File.WriteAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()), value);
         return true;
     }
 
     public bool RemoveBinarySettings(string pluginMark, string key)
     {
-        FileInfo fileInfo = new FileInfo(DsLocalStorage.GetPluginsDataFile(pluginMark,key.GetSha256()));
+        FileInfo fileInfo = new FileInfo(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()));
         if (fileInfo.Exists)
         {
             fileInfo.Delete();
@@ -77,21 +77,22 @@ public class PluginsDataStorage : IPluginsDataStorage
         }
         else
         {
-            return false;   
+            return false;
         }
     }
 
     public byte[]? GetBinarySettings(string pluginMark, string key)
     {
-        FileInfo fileInfo = new FileInfo(DsLocalStorage.GetPluginsDataFile(pluginMark,key.GetSha256()));
+        FileInfo fileInfo = new FileInfo(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()));
         if (fileInfo.Exists)
         {
-            return File.ReadAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark,key.GetSha256()));
+            return File.ReadAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()));
         }
         else
         {
-            return null;   
+            return null;
         }
+
         throw new NotImplementedException();
     }
 

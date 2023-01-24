@@ -9,7 +9,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
     {
         public BotContext Context { get; init; }
         public IConfiguration Configuration { get; init; }
-        public Bot(BotContext context,IConfiguration configuration) 
+
+        public Bot(BotContext context, IConfiguration configuration)
         {
             this.Context = context;
             this.Configuration = configuration;
@@ -22,7 +23,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             //     })
             //     .Build();
         }
-        
+
         public void AddMsgRequest(MessageContext msg)
         {
             this.Context.ServiceProvider.GetRequiredService<IMessageQueue>().SetNextMsg(msg);
@@ -42,6 +43,5 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         // {
         //     //_host.StopAsync();
         // }
-
     }
 }

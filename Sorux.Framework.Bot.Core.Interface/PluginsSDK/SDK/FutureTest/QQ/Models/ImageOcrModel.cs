@@ -3,6 +3,7 @@
 public class ImageOcrModel
 {
     public List<TextDetection> texts { get; set; }
+
     /// <summary>
     /// 语言
     /// </summary>

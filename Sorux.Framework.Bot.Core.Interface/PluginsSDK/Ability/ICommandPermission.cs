@@ -1,4 +1,5 @@
 ﻿namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Ability;
+
 /// <summary>
 /// 实现本接口才会向框架请求权限接管
 /// </summary>
@@ -10,16 +11,19 @@ public interface ICommandPermission
     /// </summary>
     /// <returns></returns>
     public string GetPermissionDeniedMessage();
+
     /// <summary>
     /// 权限不够时是否会艾特用户
     /// </summary>
     /// <returns></returns>
     public bool IsPermissionDeniedAutoAt();
+
     /// <summary>
     /// 权限不够时是否通知用户对应的权限节点是什么
     /// </summary>
     /// <returns></returns>
     public bool IsPermissionDeniedLeakOut();
+
     /// <summary>
     /// 权限不够时是否自动反馈权限不够的提示
     /// </summary>

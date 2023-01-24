@@ -1,5 +1,4 @@
-﻿
-using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
+﻿using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 
 namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
 {
@@ -15,6 +14,5 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute
         {
             EventType = eventType;
         }
-
     }
 }

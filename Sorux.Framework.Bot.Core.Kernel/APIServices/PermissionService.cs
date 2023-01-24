@@ -8,12 +8,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.APIServices;
 public class PermissionService : IPermission
 {
     private PermissionStorage _permissionStorage;
+
     public PermissionService(PermissionStorage permissionStorage)
     {
         this._permissionStorage = permissionStorage;
     }
-    
-    public bool AddGenericPermission(MessageContext context, PermissionType permissionType, string permissionChar, string node)
+
+    public bool AddGenericPermission(MessageContext context, PermissionType permissionType, string permissionChar,
+        string node)
     {
         string addingNode = node + "SoruxBot" + context.TargetPlatform + "SoruxBot";
         string condition;
@@ -40,12 +42,13 @@ public class PermissionService : IPermission
         }
 
         _permissionStorage
-            .AddPermission(context.TargetPlatform +  "SoruxBot" + condition,
+            .AddPermission(context.TargetPlatform + "SoruxBot" + condition,
                 node, addingNode);
         return true;
     }
 
-    public bool RemoveGenericPermission(MessageContext context, PermissionType permissionType, string permissionChar, string node)
+    public bool RemoveGenericPermission(MessageContext context, PermissionType permissionType, string permissionChar,
+        string node)
     {
         string addingNode = node + "SoruxBot" + context.TargetPlatform + "SoruxBot";
         string condition;
@@ -70,8 +73,9 @@ public class PermissionService : IPermission
             condition = permissionChar + context.UnderProperty[permissionChar];
             addingNode = addingNode + condition;
         }
+
         _permissionStorage
-            .RemovePermission(context.TargetPlatform +  "SoruxBot" + condition,
+            .RemovePermission(context.TargetPlatform + "SoruxBot" + condition,
                 node, addingNode);
         return true;
     }
@@ -111,7 +115,8 @@ public class PermissionService : IPermission
         return RemoveGenericPermission(context, PermissionType.BasicPermission, "TriggerPlatform", node);
     }
 
-    public bool GenericHasPermission(MessageContext context, PermissionType permissionType, string permissionChar, string node)
+    public bool GenericHasPermission(MessageContext context, PermissionType permissionType, string permissionChar,
+        string node)
     {
         string addingNode = node + "SoruxBot" + context.TargetPlatform + "SoruxBot";
         string condition;

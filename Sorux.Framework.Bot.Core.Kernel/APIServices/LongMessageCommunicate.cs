@@ -12,10 +12,10 @@ namespace Sorux.Framework.Bot.Core.Kernel.APIServices;
 
 public class LongMessageCommunicate : ILongMessageCommunicate
 {
-
     private IBot _bot;
     private ILoggerService _loggerService;
     private int _globalTimeOut;
+
     public LongMessageCommunicate(IBot _bot, ILoggerService loggerService)
     {
         this._bot = _bot;
@@ -23,8 +23,8 @@ public class LongMessageCommunicate : ILongMessageCommunicate
         this._globalTimeOut = int
             .Parse(_bot.Configuration.GetRequiredSection("LongCommunicateFunction")["DefaultTimeOutLimit"]!);
     }
-    
-    public Task<MessageContext?> ReadNextPrivateMessageAsync(MessageContext context,int? timeOut)
+
+    public Task<MessageContext?> ReadNextPrivateMessageAsync(MessageContext context, int? timeOut)
     {
         return CreateGenericListenerAsync(context.MessageEventType,
             context.TargetPlatform,
@@ -35,7 +35,8 @@ public class LongMessageCommunicate : ILongMessageCommunicate
             timeOut);
     }
 
-    public Task<MessageContext?> ReadNextGroupMessageAsync(LongCommunicateType type, MessageContext context,int? timeOut)
+    public Task<MessageContext?> ReadNextGroupMessageAsync(LongCommunicateType type, MessageContext context,
+        int? timeOut)
     {
         return CreateGenericListenerAsync(context.MessageEventType,
             context.TargetPlatform,
@@ -45,10 +46,10 @@ public class LongMessageCommunicate : ILongMessageCommunicate
             PluginFucFlag.MsgIntercepted,
             timeOut);
     }
-    
+
 
     public async Task<MessageContext?> CreateGenericListenerAsync(EventType eventType, string? targetPlatform,
-        string? targetAction, Func<MessageContext, bool> action, bool isIntercept, PluginFucFlag flag,int? timeOut)
+        string? targetAction, Func<MessageContext, bool> action, bool isIntercept, PluginFucFlag flag, int? timeOut)
     {
         if (timeOut == null)
             timeOut = _globalTimeOut;
@@ -62,12 +63,12 @@ public class LongMessageCommunicate : ILongMessageCommunicate
             flag = flag,
             nextContext = null
         };
-        
+
         _bot.Context.ServiceProvider.GetRequiredService<PluginsListener>().AddListener(pluginsListenerDescriptor);
 
         var tcs = new TaskCompletionSource<bool>();
         MessageContext res = null;
-        using (var cts = new CancellationTokenSource(timeOut.Value * 1000)) 
+        using (var cts = new CancellationTokenSource(timeOut.Value * 1000))
         {
             Task<MessageContext> task = Task.Run(() =>
             {
@@ -77,6 +78,7 @@ public class LongMessageCommunicate : ILongMessageCommunicate
                     {
                         return pluginsListenerDescriptor.nextContext;
                     }
+
                     Thread.Sleep(10);
                 }
             });
@@ -84,15 +86,16 @@ public class LongMessageCommunicate : ILongMessageCommunicate
             {
                 if (task == await (Task.WhenAny(task, tcs.Task)))
                 {
-                     res = await task;
+                    res = await task;
                 }
                 else
                 {
                     _loggerService.Warn("LongCommunicateListener"
-                        ,"Listener Timeout...Stop it:");
+                        , "Listener Timeout...Stop it:");
                 }
             }
         }
+
         _bot.Context.ServiceProvider.GetRequiredService<PluginsListener>().RemoveListener(pluginsListenerDescriptor);
         return res;
     }

@@ -10,7 +10,8 @@ public class PluginsListener
 {
     private BotContext _botContext;
     private ILoggerService _loggerService;
-    public PluginsListener(BotContext botContext,ILoggerService loggerService)
+
+    public PluginsListener(BotContext botContext, ILoggerService loggerService)
     {
         this._botContext = botContext;
         this._loggerService = loggerService;
@@ -35,31 +36,33 @@ public class PluginsListener
             return true;
         return false;
     }
-    
+
     /// <summary>
     /// 进入Filter队列，并且判断是否需要继续执行 Dispatcher
     /// </summary>
     /// <param name="context"></param>
     /// <param name="newContext"></param>
     /// <returns></returns>
-    public bool Filter(MessageContext context,out MessageContext newContext)
+    public bool Filter(MessageContext context, out MessageContext newContext)
     {
         newContext = context;
         foreach (var descriptor in _map)
         {
-            if (MatchRoute(descriptor,context) && descriptor.action(context))
+            if (MatchRoute(descriptor, context) && descriptor.action(context))
             {
                 descriptor.nextContext = context;
                 //监听拦截成功
                 if (descriptor.isIntercept)
                 {
-                    return false;//不继续执行
-                }else if (newContext.Message != null)
+                    return false; //不继续执行
+                }
+                else if (newContext.Message != null)
                 {
                     newContext.Message.MsgState = descriptor.flag;
                 }
             }
         }
+
         return true;
     }
 

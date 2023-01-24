@@ -15,12 +15,13 @@ namespace Sorux.Framework.Bot.Core.Kernel.Utils
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<LoggerService> _logger;
-        private readonly ConcurrentDictionary<Type,ILogger> _map = new ConcurrentDictionary<Type,ILogger>();
+        private readonly ConcurrentDictionary<Type, ILogger> _map = new ConcurrentDictionary<Type, ILogger>();
         private static string LoggerPath = Directory.GetCurrentDirectory();
+
         private string GetCurrentLogFile()
             => LoggerPath + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
 
-        public LoggerService(ILoggerFactory loggerFactory,ILogger<LoggerService> logger)
+        public LoggerService(ILoggerFactory loggerFactory, ILogger<LoggerService> logger)
         {
             this._loggerFactory = loggerFactory;
             this._logger = logger;
@@ -29,12 +30,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Utils
                 if (!new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Logs").Exists)
                     new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Logs").Create();
                 LoggerPath = LoggerPath + "\\Logs\\";
-            }else if (System.OperatingSystem.IsLinux())
+            }
+            else if (System.OperatingSystem.IsLinux())
             {
                 if (!new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Exists)
                     new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Create();
                 LoggerPath = LoggerPath + "/Logs/";
-            }else if (System.OperatingSystem.IsMacOS())
+            }
+            else if (System.OperatingSystem.IsMacOS())
             {
                 if (!new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Exists)
                     new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Create();

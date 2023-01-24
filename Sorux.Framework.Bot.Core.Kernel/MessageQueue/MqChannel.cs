@@ -14,8 +14,8 @@ public class MqChannel
     private Channel<MessageContext> _channel;
     private ILoggerService _loggerService;
     private BotContext _botContext;
-    
-    public MqChannel(ILoggerService loggerService,BotContext botContext)
+
+    public MqChannel(ILoggerService loggerService, BotContext botContext)
     {
         this._loggerService = loggerService;
         this._botContext = botContext;
@@ -31,5 +31,4 @@ public class MqChannel
     {
         await _channel.Writer.WriteAsync(value);
     }
-    
 }

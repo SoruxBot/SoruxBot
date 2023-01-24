@@ -11,8 +11,8 @@ public class ResponseChannel
     private Channel<ResponseContext> _channel;
     private ILoggerService _loggerService;
     private BotContext _botContext;
-    
-    public ResponseChannel(ILoggerService loggerService,BotContext botContext)
+
+    public ResponseChannel(ILoggerService loggerService, BotContext botContext)
     {
         this._loggerService = loggerService;
         this._botContext = botContext;

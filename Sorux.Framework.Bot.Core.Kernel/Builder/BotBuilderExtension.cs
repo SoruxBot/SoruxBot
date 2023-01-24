@@ -15,53 +15,53 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
     {
         public static IBotBuilder CreateDefaultBotConfigure(this IBotBuilder builder, string[]? args)
             => builder.ConfigureRuntimeConfiguration(config => ApplyDefaultRuntimeConfiguration(config, args))
-                      //注入Bot配置信息，用于存储基本的框架配置信息
-                      .ConfigureBotConfiguration((context, config) => ApplyDefaultBotConfiguration(context, config))
-                      //注入框架自身的版本信息
-                      .ConfigureBotConfiguration((context, config) => ApplyDefaultBotFrameworkInformation(context,config))
-                      //配置框架的基本服务信息
-                      .ConfigureServices(ApplyDefaultServices)
-                      //注入不可变的信息，分开放是因为这四个服务是绝对不会变的
-                      .ConfigureServices((config, services) =>
-                      {
-                          //Bot自身
-                          services.AddSingleton<IBot,Bot>();
-                          var loggerFactory = LoggerFactory.Create(builder =>
-                          {
-                              builder.AddConsole();
-                              if (config["LoggerDebug"] != null && config["LoggerDebug"]!.Equals("true"))
-                              {
-                                  builder.AddDebug();
-                              }
-                              services.AddSingleton(builder);
-                          });
-                          services.AddSingleton(loggerFactory);
-                          services.AddSingleton(typeof(ILogger<>),typeof(Logger<>));
-                          services.AddSingleton<ILoggerService, LoggerService>();
+                //注入Bot配置信息，用于存储基本的框架配置信息
+                .ConfigureBotConfiguration((context, config) => ApplyDefaultBotConfiguration(context, config))
+                //注入框架自身的版本信息
+                .ConfigureBotConfiguration((context, config) => ApplyDefaultBotFrameworkInformation(context, config))
+                //配置框架的基本服务信息
+                .ConfigureServices(ApplyDefaultServices)
+                //注入不可变的信息，分开放是因为这四个服务是绝对不会变的
+                .ConfigureServices((config, services) =>
+                {
+                    //Bot自身
+                    services.AddSingleton<IBot, Bot>();
+                    var loggerFactory = LoggerFactory.Create(builder =>
+                    {
+                        builder.AddConsole();
+                        if (config["LoggerDebug"] != null && config["LoggerDebug"]!.Equals("true"))
+                        {
+                            builder.AddDebug();
+                        }
 
-                      });
+                        services.AddSingleton(builder);
+                    });
+                    services.AddSingleton(loggerFactory);
+                    services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+                    services.AddSingleton<ILoggerService, LoggerService>();
+                });
 
         private static void ApplyDefaultRuntimeConfiguration(IConfigurationBuilder config, string[]? args)
         {
             //添加CommandLine 的 args
-            if (args is { Length: >0})
+            if (args is { Length: > 0 })
             {
                 config.AddCommandLine(args);
             }
         }
 
-        private static void ApplyDefaultBotConfiguration(BotBuilderContext context,IConfigurationBuilder config)
+        private static void ApplyDefaultBotConfiguration(BotBuilderContext context, IConfigurationBuilder config)
         {
             //Bot Configuration主要负责配置连接器的组装等操作
             string cwd = Environment.CurrentDirectory;
-            config.AddXmlFile("BotConfiguration.xml",optional:false,reloadOnChange:false);//配置为单例模式
+            config.AddXmlFile("BotConfiguration.xml", optional: false, reloadOnChange: false); //配置为单例模式
             //注入BotContext
             //注入CurrentPath【Controller不一定来源于当前目录】
             config.AddInMemoryCollection(new[]
             {
-                new KeyValuePair<string, string?>("ContextBuildEnvironment",context.BuildEnvironment.ToString()),
-                new KeyValuePair<string, string?>("ContextRuntimeSystem",context.RuntimeSystem.ToString()),
-                new KeyValuePair<string, string?>("CurrentPath",cwd)
+                new KeyValuePair<string, string?>("ContextBuildEnvironment", context.BuildEnvironment.ToString()),
+                new KeyValuePair<string, string?>("ContextRuntimeSystem", context.RuntimeSystem.ToString()),
+                new KeyValuePair<string, string?>("CurrentPath", cwd)
             });
         }
 
@@ -70,14 +70,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             //注入基本信息
             config.AddInMemoryCollection(new[]
             {
-                new KeyValuePair<string, string?>("FrameworkVersion",AppSettings.FrameworkVersion),
-                new KeyValuePair<string, string?>("CoreKernelVersion",AppSettings.CoreKernelVersion),
-                new KeyValuePair<string, string?>("WebDirector",AppSettings.WebDirector),
-                new KeyValuePair<string, string?>("WebApiDirector",AppSettings.WebApiDirector)
+                new KeyValuePair<string, string?>("FrameworkVersion", AppSettings.FrameworkVersion),
+                new KeyValuePair<string, string?>("CoreKernelVersion", AppSettings.CoreKernelVersion),
+                new KeyValuePair<string, string?>("WebDirector", AppSettings.WebDirector),
+                new KeyValuePair<string, string?>("WebApiDirector", AppSettings.WebApiDirector)
             });
         }
-        
-        private static void ApplyDefaultServices(IConfiguration configuration,IServiceCollection services)
+
+        private static void ApplyDefaultServices(IConfiguration configuration, IServiceCollection services)
         {
             IConfigurationSection section = configuration.GetSection("RuntimeAdapter");
             //直接绑定
@@ -101,7 +101,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     case "$None":
                         break;
                     default:
-                        throw new DllNotFoundException();       
+                        throw new DllNotFoundException();
                 }
             }
             else
@@ -114,13 +114,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IMessageQueue>(s => (IMessageQueue)Activator.CreateInstance(type)!);
                 }
             }
+
             //回复通信
             if (rqPath == "$BotFramework")
             {
                 switch (rqModule)
                 {
                     case "MessageQueue.ResponseQueue":
-                        services.AddSingleton<IResponseQueue,MessageQueue.ResponseQueue>();
+                        services.AddSingleton<IResponseQueue, MessageQueue.ResponseQueue>();
                         break;
                     case "MessageQueue.ResponseChannelWrapper":
                         services.AddSingleton<IResponseQueue, MessageQueue.ResponseChannelWrapper>();
@@ -128,7 +129,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     case "$None":
                         break;
                     default:
-                        throw new DllNotFoundException();       
+                        throw new DllNotFoundException();
                 }
             }
             else
@@ -141,7 +142,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     services.AddSingleton<IResponseQueue>(s => (IResponseQueue)Activator.CreateInstance(type)!);
                 }
             }
-            
+
             //插件数据文件储存
             if (pluginsDataStoragePath == "$BotFramework")
             {
@@ -160,10 +161,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             {
                 if (!pluginsDataStorageModule!.Equals("$None"))
                 {
-                    pluginsDataStoragePath = pluginsDataStoragePath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
+                    pluginsDataStoragePath =
+                        pluginsDataStoragePath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
                     Assembly assembly = Assembly.Load(pluginsDataStoragePath);
                     Type type = assembly.GetType(pluginsDataStorageModule!) ?? throw new DllNotFoundException();
-                    services.AddSingleton<IPluginsDataStorage>(s => (IPluginsDataStorage)Activator.CreateInstance(type)!);
+                    services.AddSingleton<IPluginsDataStorage>(
+                        s => (IPluginsDataStorage)Activator.CreateInstance(type)!);
                 }
             }
         }

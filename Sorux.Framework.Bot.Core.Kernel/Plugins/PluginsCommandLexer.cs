@@ -12,13 +12,13 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins;
 /// </summary>
 public class PluginsCommandLexer
 {
-
     private ILoggerService _loggerService;
     private IPluginsStorage _pluginsStorage;
     private bool _isPermissionEnable;
     private PluginsPermissionDispatcher _pluginsPermissionDispatcher;
-    public PluginsCommandLexer(ILoggerService loggerService,IPluginsStorage pluginsStorage,
-        IConfiguration configuration,PluginsPermissionDispatcher pluginsPermissionDispatcher)
+
+    public PluginsCommandLexer(ILoggerService loggerService, IPluginsStorage pluginsStorage,
+        IConfiguration configuration, PluginsPermissionDispatcher pluginsPermissionDispatcher)
     {
         this._loggerService = loggerService;
         this._pluginsStorage = pluginsStorage;
@@ -26,11 +26,11 @@ public class PluginsCommandLexer
             .Equals("Enable");
         this._pluginsPermissionDispatcher = pluginsPermissionDispatcher;
     }
-    
+
     public PluginFucFlag PluginAction(MessageContext context, PluginsActionDescriptor descriptor)
     {
         //Permission Filter
-        if (_isPermissionEnable && !_pluginsPermissionDispatcher.IsContinue(context,descriptor))
+        if (_isPermissionEnable && !_pluginsPermissionDispatcher.IsContinue(context, descriptor))
             return context.Message!.MsgState;
         string rawMessage = context.Message.GetRawMessage();
         string[] paras = rawMessage.Split(" ");
@@ -66,18 +66,20 @@ public class PluginsCommandLexer
                         {
                             _loggerService.Warn("PluginsCommandLexer", "Binding Parameter Error! " +
                                                                        "PluginsName:" + descriptor.InstanceTypeName
-                                                                       + "Try to parse" + paras[parasCount] + " to int");
+                                                                       + "Try to parse" + paras[parasCount] +
+                                                                       " to int");
                         }
-
                     }
+
                     parasCount++;
                 }
                 else
                 {
                     if (sp.IsOptional == false)
                     {
-                        isValid = false;//参数匹配失败
+                        isValid = false; //参数匹配失败
                     }
+
                     objects.Add(null);
                 }
                 //转换不了
@@ -85,6 +87,7 @@ public class PluginsCommandLexer
                 //{}
             });
         }
+
         if (!isValid)
             return context.Message.MsgState;
         return (PluginFucFlag)descriptor.ActionDelegate.DynamicInvoke(objects.ToArray())!;

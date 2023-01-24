@@ -16,11 +16,11 @@ public class PermissionStorage
 
     private void CreateTableIfNotExist(string tableName)
     {
-        string sql = "create table  if not exists "+ tableName +" (node varchar(255), state varchar(255))";
+        string sql = "create table  if not exists " + tableName + " (node varchar(255), state varchar(255))";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         command.ExecuteNonQuery();
     }
-    
+
     public bool AddNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
@@ -48,7 +48,7 @@ public class PermissionStorage
         return res != null && ((string)res).Equals("true");
     }
 
-    public bool AddPermission(string identity, string node,string condition)
+    public bool AddPermission(string identity, string node, string condition)
     {
         CreateTableIfNotExist(identity);
         string sql = $"insert into {identity} (node, state) values ('{node}','true')";
@@ -64,7 +64,7 @@ public class PermissionStorage
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         return RemoveNodeCondition(condition);
     }
-    
+
     public string GetPersonPermissionList(string identity)
     {
         CreateTableIfNotExist(identity);
@@ -76,6 +76,7 @@ public class PermissionStorage
         {
             stringBuilder.Append(sqLiteDataReader[0] + "\n");
         }
+
         return stringBuilder.ToString();
     }
 }

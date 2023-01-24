@@ -9,12 +9,13 @@ public class MqChannelWrapper : IMessageQueue
 {
     private MqChannel _mqChannel;
     private ILoggerService _loggerService;
-    public MqChannelWrapper(ILoggerService loggerService,BotContext botContext)
+
+    public MqChannelWrapper(ILoggerService loggerService, BotContext botContext)
     {
-        _mqChannel = new MqChannel(loggerService,botContext);
+        _mqChannel = new MqChannel(loggerService, botContext);
         this._loggerService = loggerService;
     }
-    
+
     public MessageContext? GetNextMessageRequest()
     {
         return _mqChannel.GetNextMessageRequest().Result;
@@ -27,16 +28,16 @@ public class MqChannelWrapper : IMessageQueue
 
     public void RestoreFromLocalStorage()
     {
-        _loggerService.Error("MessageChannelWrapper","This version of Message Queue didn't implement LocalStorage");
+        _loggerService.Error("MessageChannelWrapper", "This version of Message Queue didn't implement LocalStorage");
     }
 
     public void SaveIntoLocalStorage()
     {
-        _loggerService.Error("MessageChannelWrapper","This version of Message Queue didn't implement LocalStorage");
+        _loggerService.Error("MessageChannelWrapper", "This version of Message Queue didn't implement LocalStorage");
     }
 
     public void DisposeFromLocalStorage()
     {
-        _loggerService.Error("MessageChannelWrapper","This version of Message Queue didn't implement LocalStorage");
+        _loggerService.Error("MessageChannelWrapper", "This version of Message Queue didn't implement LocalStorage");
     }
 }

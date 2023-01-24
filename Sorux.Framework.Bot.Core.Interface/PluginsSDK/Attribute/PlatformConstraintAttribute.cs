@@ -7,6 +7,7 @@
 public class PlatformConstraintAttribute : System.Attribute
 {
     public string PlatformConstraint { get; init; }
+
     public PlatformConstraintAttribute(string platform)
     {
         this.PlatformConstraint = platform;

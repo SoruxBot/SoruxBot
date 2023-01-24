@@ -11,11 +11,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
     {
         private readonly ILoggerService _loggerService;
         private readonly Bot _bot;
-        public Work(ILoggerService loggerService,Bot bot)
+
+        public Work(ILoggerService loggerService, Bot bot)
         {
-            _loggerService= loggerService;
-            _bot= bot;
-            loggerService.Info("BackGroundWorkService","Init background service.");
+            _loggerService = loggerService;
+            _bot = bot;
+            loggerService.Info("BackGroundWorkService", "Init background service.");
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

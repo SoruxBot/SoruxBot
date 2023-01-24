@@ -13,15 +13,18 @@ public class PluginsHost
 {
     private IBot _bot;
     private ILoggerService _loggerService;
+
     public PluginsHost(IBot bot, ILoggerService loggerService)
     {
         this._bot = bot;
         this._loggerService = loggerService;
     }
+
     /// <summary>
     /// 表示需要被匹配的 Url ，其中 _host 为 [route,url]
     /// </summary>
-    private Dictionary<string, PluginsHostDescriptor> _host = new ();
+    private Dictionary<string, PluginsHostDescriptor> _host = new();
+
     /// <summary>
     /// 注册回调特性
     /// </summary>
@@ -41,7 +44,7 @@ public class PluginsHost
                 PluginsHostDescriptor pluginsHostDescriptor = row.Get<PluginsHostDescriptor>()!;
                 pluginsHostDescriptor.CommonHost = new RestClient(pluginsHostDescriptor.HttpPostJsonPath);
                 pluginsHostDescriptor.FutureHost = new RestClient(pluginsHostDescriptor.NetWorkHttpPostPath);
-                _host.Add(pluginsHostDescriptor.Platform,pluginsHostDescriptor);
+                _host.Add(pluginsHostDescriptor.Platform, pluginsHostDescriptor);
                 loop = false;
             }
             else
@@ -52,16 +55,17 @@ public class PluginsHost
                     PluginsHostDescriptor pluginsHostDescriptor = row.Get<PluginsHostDescriptor>()!;
                     pluginsHostDescriptor.CommonHost = new RestClient(pluginsHostDescriptor.HttpPostJsonPath);
                     pluginsHostDescriptor.FutureHost = new RestClient(pluginsHostDescriptor.NetWorkHttpPostPath);
-                    _host.Add(pluginsHostDescriptor.Platform,pluginsHostDescriptor);
+                    _host.Add(pluginsHostDescriptor.Platform, pluginsHostDescriptor);
                     count++;
                 }
                 else
                 {
                     loop = false;
-                }   
+                }
             }
         }
     }
+
     /// <summary>
     /// 分配调度 Response
     /// 由本方法执行的 API，表示插件主动舍弃对协议层 API 请求后的返回值
@@ -72,19 +76,18 @@ public class PluginsHost
         //response 格式为  Platform;Url
         if (response.ResponseRoute.Split(";")[0].Equals("common")) //common表示平台抽象的协议
         {
-            var request = new RestRequest("APIPost",Method.Post);
+            var request = new RestRequest("APIPost", Method.Post);
             request.AddJsonBody(response.ResponseData);
             await _host[response.Message.TargetPlatform].CommonHost.ExecuteAsync(request);
         }
         else
         {
-            var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
+            var request = new RestRequest(response.ResponseRoute.Split(";")[1], Method.Post);
             request.AddJsonBody(response.TargetPlatfromJson);
             await _host[response.Message.TargetPlatform].FutureHost.ExecuteAsync(request);
         }
-        
     }
-    
+
     /// <summary>
     /// 直接执行 Action
     /// 由本方法执行的 API 请求会返回 JSON 格式的返回值
@@ -96,19 +99,20 @@ public class PluginsHost
     {
         if (response.ResponseRoute.Split(";")[0].Equals("common")) //common表示平台抽象的协议
         {
-            var request = new RestRequest("APIPost",Method.Post);
+            var request = new RestRequest("APIPost", Method.Post);
             request.AddJsonBody(response.ResponseData);
             var result = await _host[response.Message.TargetPlatform].CommonHost.ExecuteAsync(request);
             return result.Content!;
         }
         else
         {
-            var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
+            var request = new RestRequest(response.ResponseRoute.Split(";")[1], Method.Post);
             request.AddJsonBody(response.TargetPlatfromJson);
             var result = await _host[response.Message.TargetPlatform].FutureHost.ExecuteAsync(request);
             return result.Content!;
         }
     }
+
     /// <summary>
     /// 直接执行 Action
     /// 由本方法执行的 API 请求会返回 JSON 格式的返回值
@@ -120,14 +124,14 @@ public class PluginsHost
     {
         if (response.ResponseRoute.Split(";")[0].Equals("common")) //common表示平台抽象的协议
         {
-            var request = new RestRequest("APIPost",Method.Post);
+            var request = new RestRequest("APIPost", Method.Post);
             request.AddJsonBody(response.ResponseData);
             var result = _host[response.Message.TargetPlatform].CommonHost.Execute(request);
             return result.Content!;
         }
         else
         {
-            var request = new RestRequest(response.ResponseRoute.Split(";")[1],Method.Post);
+            var request = new RestRequest(response.ResponseRoute.Split(";")[1], Method.Post);
             request.AddJsonBody(response.TargetPlatfromJson);
             var result = _host[response.Message.TargetPlatform].FutureHost.Execute(request);
             return result.Content!;
