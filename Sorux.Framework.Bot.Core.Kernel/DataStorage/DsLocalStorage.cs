@@ -15,7 +15,7 @@
 
         static DsLocalStorage()
         {
-            if (new FileInfo(AppendCurrentDirectory("parse.lock")).Exists) return;
+            if (File.Exists(AppendCurrentDirectory("parse.lock"))) return;
 
             Directory.CreateDirectory(AppendCurrentDirectory("Config"));
             Directory.CreateDirectory(AppendCurrentDirectory("Logs"));
