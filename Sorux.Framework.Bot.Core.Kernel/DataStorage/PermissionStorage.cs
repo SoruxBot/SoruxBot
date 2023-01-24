@@ -8,8 +8,13 @@ public class PermissionStorage
 {
     private SQLiteConnection _sqLiteConnection;
 
-    private static string CleanTableName(string tableName)
-        => tableName.Replace("'", "").Replace(";", "");
+
+    private string CleanTableName(string tableName)
+        => tableName.Replace("'", "")
+            .Replace("\"", "")
+            .Replace(";", "")
+            .Replace("#", "")
+            .Replace("--", "");
 
     private SQLiteCommand PreparedStatement(string sql, params string[]? args)
     {
