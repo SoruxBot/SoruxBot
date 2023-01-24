@@ -10,7 +10,8 @@ public class PermissionStorage
 
     private SQLiteCommand PreparedStatement(string sql, params string[] args)
     {
-        var command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = _sqLiteConnection.CreateCommand();
+        command.CommandText = sql;
         for (int i = 0; i < args.Length; i++)
         {
             command.Parameters.Add(new("@arg" + i, args[i]));
