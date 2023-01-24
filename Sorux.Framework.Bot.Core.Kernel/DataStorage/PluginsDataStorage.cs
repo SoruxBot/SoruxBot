@@ -60,52 +60,37 @@ public class PluginsDataStorage : IPluginsDataStorage
 
     public bool AddBinarySettings(string pluginMark, string key, byte[] value)
     {
-        DirectoryInfo directoryInfo = new DirectoryInfo(DsLocalStorage.GetPluginsDataDirectory(pluginMark));
-        if (!directoryInfo.Exists)
-            directoryInfo.Create();
+        var dic = DsLocalStorage.GetPluginsDataDirectory(pluginMark);
+
+        if (!Directory.Exists(dic)) Directory.CreateDirectory(dic);
         File.WriteAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()), value);
         return true;
     }
 
     public bool RemoveBinarySettings(string pluginMark, string key)
     {
-        FileInfo fileInfo = new FileInfo(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()));
-        if (fileInfo.Exists)
-        {
-            fileInfo.Delete();
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        var path = DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256());
+
+        if (!File.Exists(path)) return false;
+
+        File.Delete(path);
+        return true;
     }
 
     public byte[]? GetBinarySettings(string pluginMark, string key)
     {
-        FileInfo fileInfo = new FileInfo(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()));
-        if (fileInfo.Exists)
-        {
-            return File.ReadAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()));
-        }
-        else
-        {
-            return null;
-        }
+        var path = DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256());
 
-        throw new NotImplementedException();
+        if (!File.Exists(path)) return null;
+
+        return File.ReadAllBytes(path);
     }
 
     public bool EditBinarySettings(string pluginMark, string key, byte[] value)
     {
-        if (RemoveBinarySettings(pluginMark, key))
-        {
-            AddBinarySettings(pluginMark, key, value);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        if (!RemoveBinarySettings(pluginMark, key)) return false;
+
+        AddBinarySettings(pluginMark, key, value);
+        return true;
     }
 }
