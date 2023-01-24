@@ -10,216 +10,135 @@ namespace Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.FutureTest.QQ;
 /// </summary>
 public static class QqMessageExtension
 {
-    public static string? QqGetSenderNick(this MessageContext messageContext)
+    private static string? QqGetSender(this MessageContext messageContext, string prop)
     {
         JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["nickname"] == null ? null : jObject["nickname"]!.ToString();
+        return jObject[prop] == null ? null : jObject[prop]!.ToString();
     }
+
+    public static string? QqGetSenderNick(this MessageContext messageContext)
+        => messageContext.QqGetSender("nickname");
 
     public static string? QqGetUserId(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["user_id"] == null ? null : jObject["user_id"]!.ToString();
-    }
+        => messageContext.QqGetSender("user_id");
 
     public static string? QqGetSex(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["sex"] == null ? null : jObject["sex"]!.ToString();
-    }
+        => messageContext.QqGetSender("sex");
+
 
     public static string? QqGetAge(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["age"] == null ? null : jObject["age"]!.ToString();
-    }
+        => messageContext.QqGetSender("age");
 
     public static string? QqGetTempGroup(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["group_id"] == null ? null : jObject["group_id"]!.ToString();
-    }
+        => messageContext.QqGetSender("group_id");
+
 
     public static string? QqGetGroupInCard(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["card"] == null ? null : jObject["card"]!.ToString();
-    }
+        => messageContext.QqGetSender("card");
+
 
     public static string? QqGetGroupInArea(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["area"] == null ? null : jObject["area"]!.ToString();
-    }
+        => messageContext.QqGetSender("area");
+
 
     public static string? QqGetGroupInLevel(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["level"] == null ? null : jObject["level"]!.ToString();
-    }
+        => messageContext.QqGetSender("level");
 
     public static string? QqGetGroupInRole(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["role"] == null ? null : jObject["role"]!.ToString();
-    }
+        => messageContext.QqGetSender("role");
 
     public static string? QqGetGroupInTitle(this MessageContext messageContext)
+        => messageContext.QqGetSender("title");
+
+    private static string? TryGetValue(this MessageContext messageContext, string key)
     {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["sender"]);
-        return jObject["title"] == null ? null : jObject["title"]!.ToString();
+        if (messageContext.UnderProperty.TryGetValue(key, out string? value) && !string.IsNullOrEmpty(value))
+            return value;
+        return null;
     }
 
     public static string? QqGetMessageFont(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("font", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("font");
 
     public static string? QqGetTempPrivateMessageSource(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("temp_source", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("temp_source");
 
     public static bool QqIsGroupMessageAnonymous(this MessageContext messageContext)
     {
-        return messageContext.UnderProperty.TryGetValue("anonymous", out string? value) && !value.Equals("");
+        return messageContext.UnderProperty.TryGetValue("anonymous", out string? value) && !string.IsNullOrEmpty(value);
+    }
+
+    private static string? QqGetAnony(this MessageContext messageContext, string prop)
+    {
+        JObject jObject = JObject.Parse(messageContext.UnderProperty["anonymous"]);
+        return jObject[prop] == null ? null : jObject[prop]!.ToString();
     }
 
     public static string? QqGetAnonymousId(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["anonymous"]);
-        return jObject["id"] == null ? null : jObject["id"]!.ToString();
-    }
+        => messageContext.QqGetAnony("id");
 
     public static string? QqGetAnonymousName(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["anonymous"]);
-        return jObject["name"] == null ? null : jObject["name"]!.ToString();
-    }
+        => messageContext.QqGetAnony("name");
 
     public static string? QqGetAnonymousFlag(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["anonymous"]);
-        return jObject["flag"] == null ? null : jObject["flag"]!.ToString();
-    }
+        => messageContext.QqGetAnony("flag");
 
     public static string? QqGetMessageId(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("message_id", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("message_id");
 
     public static string? QqGetPostType(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("post_type", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("post_type");
 
     public static string? QqGetNoticeType(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("notice_type", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("notice_type");
 
     public static string? QqGetMessageType(this MessageContext messageContext)
+        => messageContext.TryGetValue("message_type");
+
+    private static string? QqGetFile(this MessageContext messageContext, string prop)
     {
-        if (messageContext.UnderProperty.TryGetValue("message_type", out string? value) && !value.Equals(""))
-            return value;
-        return null;
+        JObject jObject = JObject.Parse(messageContext.UnderProperty["file"]);
+        return jObject[prop] == null ? null : jObject[prop]!.ToString();
     }
 
     public static string? QqGetFileId(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["file"]);
-        return jObject["id"] == null ? null : jObject["id"]!.ToString();
-    }
+        => messageContext.QqGetFile("id");
 
     public static string? QqGetFileName(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["file"]);
-        return jObject["name"] == null ? null : jObject["name"]!.ToString();
-    }
+        => messageContext.QqGetFile("name");
 
     public static string? QqGetFileSize(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["file"]);
-        return jObject["size"] == null ? null : jObject["size"]!.ToString();
-    }
+        => messageContext.QqGetFile("size");
 
     public static string? QqGetFileBusid(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["file"]);
-        return jObject["busid"] == null ? null : jObject["busid"]!.ToString();
-    }
+        => messageContext.QqGetFile("busid");
 
     public static string? QqGetBanMessageDuration(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("duration", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("duration");
 
     public static string? QqGetHonorType(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("honor_type", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("honor_type");
 
     public static string? QqGetTitleChangingNewTitle(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("title", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("title");
 
     public static string? QqGetCardChangingOldCard(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("card_old", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("card_old");
 
     public static string? QqGetCardChangingNewCard(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("card_new", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("card_new");
 
     public static string? QqGetFileUrl(this MessageContext messageContext)
-    {
-        JObject jObject = JObject.Parse(messageContext.UnderProperty["file"]);
-        return jObject["url"] == null ? null : jObject["url"]!.ToString();
-    }
+        => messageContext.QqGetFile("url");
 
     public static string? QqGetFriendOrGroupAddComment(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("comment", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("comment");
 
     public static string? QqGetFriendOrGroupAddFlag(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("flag", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("flag");
 
     public static string? QqGetRequestType(this MessageContext messageContext)
-    {
-        if (messageContext.UnderProperty.TryGetValue("request_type", out string? value) && !value.Equals(""))
-            return value;
-        return null;
-    }
+        => messageContext.TryGetValue("request_type");
 
     private static string DealWithSpecialCode(string code)
     {
