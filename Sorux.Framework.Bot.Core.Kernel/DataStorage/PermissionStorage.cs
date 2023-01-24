@@ -8,7 +8,7 @@ public class PermissionStorage
 {
     private SQLiteConnection _sqLiteConnection;
 
-    private string CleanTableName(string tableName)
+    private static string CleanTableName(string tableName)
         => tableName.Replace("'", "").Replace(";", "");
 
     private SQLiteCommand PreparedStatement(string sql, params string[]? args)
@@ -32,8 +32,7 @@ public class PermissionStorage
     {
         // preparestatement
         var command =  PreparedStatement(
-            "CREATE TABLE IF NOT EXISTS @arg0 (node varchar(255), state varchar(255))",
-            tableName);
+            $"CREATE TABLE IF NOT EXISTS {CleanTableName(tableName)} (node varchar(255), state varchar(255))");
         
         command.ExecuteNonQuery();
     }
@@ -72,8 +71,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"INSERT INTO @arg0 (node, state) VALUES (@arg1,'true')",
-            identity, node);
+            $"INSERT INTO {CleanTableName(identity)} (node, state) VALUES (@arg0,'true')",node);
         command.ExecuteNonQuery();
         return AddNodeCondition(condition);
     }
@@ -82,8 +80,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"DELETE FROM @arg0 WHERE node = @arg1", 
-            identity, node);
+            $"DELETE FROM {CleanTableName(identity)} WHERE node = @arg0",node);
         // FIXME: NEED? command.ExecuteNonQuery();
         return RemoveNodeCondition(condition);
     }
@@ -92,7 +89,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"SELECT node FROM @arg1", identity);
+            $"SELECT node FROM {CleanTableName(identity)}");
         SQLiteDataReader sqLiteDataReader = command.ExecuteReader();
         StringBuilder stringBuilder = new StringBuilder();
         while (sqLiteDataReader.Read())
