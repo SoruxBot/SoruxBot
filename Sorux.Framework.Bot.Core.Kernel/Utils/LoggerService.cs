@@ -21,28 +21,18 @@ namespace Sorux.Framework.Bot.Core.Kernel.Utils
         private string GetCurrentLogFile()
             => LoggerPath + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
 
+        private static void CreateDirIfNotExists(string path)
+        {
+            path = Path.Join(Directory.GetCurrentDirectory(), path);
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+        }
+
         public LoggerService(ILoggerFactory loggerFactory, ILogger<LoggerService> logger)
         {
             this._loggerFactory = loggerFactory;
             this._logger = logger;
-            if (System.OperatingSystem.IsWindows())
-            {
-                if (!new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Logs").Exists)
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Logs").Create();
-                LoggerPath = LoggerPath + "\\Logs\\";
-            }
-            else if (System.OperatingSystem.IsLinux())
-            {
-                if (!new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Exists)
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Create();
-                LoggerPath = LoggerPath + "/Logs/";
-            }
-            else if (System.OperatingSystem.IsMacOS())
-            {
-                if (!new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Exists)
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Create();
-                LoggerPath = LoggerPath + "/Logs/";
-            }
+            CreateDirIfNotExists("Logs");
+            LoggerPath = Path.Join(LoggerPath, "Logs");
         }
 
         public ILogger GetLoggerObj()
