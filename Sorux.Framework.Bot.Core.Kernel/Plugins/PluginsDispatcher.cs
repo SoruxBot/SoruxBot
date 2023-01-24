@@ -136,165 +136,184 @@ public class PluginsDispatcher
                 MethodInfo[] methods = className.GetMethods();
                 foreach (var methodInfo in methods)
                 {
-                    if (methodInfo.IsDefined(typeof(EventAttribute)))
+                    if (!methodInfo.IsDefined(typeof(EventAttribute))) continue;
+                    
+                    var methodEventAttribute = methodInfo.GetCustomAttribute<EventAttribute>();
+                    if (methodEventAttribute is null)
                     {
-                        var methodEventAttribute = methodInfo.GetCustomAttribute<EventAttribute>();
-                        if (methodEventAttribute is null)
-                        {
-                            _loggerService.Warn("PluginsDispatcher",
-                                "Missing Type for EventAttribute , plugin:" + name);
-                            throw new Exception("Missing Type for EventAttribute, plugin:" + name);
-                        }
+                        _loggerService.Warn("PluginsDispatcher",
+                            "Missing Type for EventAttribute , plugin:" + name);
+                        throw new Exception("Missing Type for EventAttribute, plugin:" + name);
+                    }
 
-                        string commandTriggerType = methodEventAttribute!.EventType.ToString();
-                        var methodEventCommand = methodInfo.GetCustomAttribute<CommandAttribute>();
-                        if (methodEventCommand is null)
-                        {
-                            _loggerService.Warn("PluginsDispatcher",
-                                "Missing Type for CommandAttribute , plugin:" + name);
-                            throw new Exception("Missing Type for CommandAttribute, plugin:" + name);
-                        }
+                    string commandTriggerType = methodEventAttribute!.EventType.ToString();
+                    var methodEventCommand = methodInfo.GetCustomAttribute<CommandAttribute>();
+                    if (methodEventCommand is null)
+                    {
+                        _loggerService.Warn("PluginsDispatcher",
+                            "Missing Type for CommandAttribute , plugin:" + name);
+                        throw new Exception("Missing Type for CommandAttribute, plugin:" + name);
+                    }
 
-                        //判断是否持有平台特定的特性
-                        if (methodInfo.IsDefined(typeof(PlatformConstraintAttribute)))
-                        {
-                            var methodPlatformConstraint = methodInfo.GetCustomAttribute<PlatformConstraintAttribute>();
-                            commandTriggerType =
-                                commandTriggerType + ";" + methodPlatformConstraint!.PlatformConstraint;
-                        }
+                    //判断是否持有平台特定的特性
+                    if (methodInfo.IsDefined(typeof(PlatformConstraintAttribute)))
+                    {
+                        var methodPlatformConstraint = methodInfo.GetCustomAttribute<PlatformConstraintAttribute>();
+                        commandTriggerType =
+                            commandTriggerType + ";" + methodPlatformConstraint!.PlatformConstraint;
+                    }
 
-                        PluginsActionDescriptor pluginsActionDescriptor = new();
-                        //权限模块设置
-                        if (methodInfo.IsDefined(typeof(PermissionAttribute)))
+                    PluginsActionDescriptor pluginsActionDescriptor = new();
+                    //权限模块设置
+                    if (methodInfo.IsDefined(typeof(PermissionAttribute)))
+                    {
+                        var permissionAttribute = methodInfo.GetCustomAttribute<PermissionAttribute>();
+                        var permissionNode = matchPermissionNodes[permissionAttribute!.PermissionNode];
+                        var pluginsPermissionDescriptor = new PluginsPermissionDescriptor();
+                        pluginsPermissionDescriptor.PermissionNode = permissionAttribute.PermissionNode;
+                        pluginsPermissionDescriptor.Description = permissionNode.Description;
+                        if (permissionNode.ConditionType.Equals("BasicModel"))
                         {
-                            var permissionAttribute = methodInfo.GetCustomAttribute<PermissionAttribute>();
-                            PermissionNode permissionNode =
-                                matchPermissionNodes[permissionAttribute!.PermissionNode];
-                            PluginsPermissionDescriptor pluginsPermissionDescriptor = new PluginsPermissionDescriptor();
-                            pluginsPermissionDescriptor.PermissionNode = permissionAttribute.PermissionNode;
-                            pluginsPermissionDescriptor.Description = permissionNode.Description;
-                            if (permissionNode.ConditionType.Equals("BasicModel"))
+                            switch (permissionNode.ConditionChar)
                             {
-                                switch (permissionNode.ConditionChar)
-                                {
-                                    case "TriggerId":
-                                        pluginsPermissionDescriptor.FilterAction =
-                                            context => "TriggerId" + context.TriggerId;
-                                        pluginsActionDescriptor.PluginsPermissionDescriptor =
-                                            pluginsPermissionDescriptor;
-                                        break;
-                                    case "TriggerPlatformId":
-                                        pluginsPermissionDescriptor.FilterAction =
-                                            context => "TriggerPlatformId" + context.TriggerPlatformId;
-                                        pluginsActionDescriptor.PluginsPermissionDescriptor =
-                                            pluginsPermissionDescriptor;
-                                        break;
-                                    default:
-                                        _loggerService.Warn("PluginsPermission", "Plugins:" + name +
-                                            "'s jsonFile use unsupported permissionConditionChar");
-                                        return;
-                                }
+                                case "TriggerId":
+                                    pluginsPermissionDescriptor.FilterAction =
+                                        context => "TriggerId" + context.TriggerId;
+                                    pluginsActionDescriptor.PluginsPermissionDescriptor =
+                                        pluginsPermissionDescriptor;
+                                    break;
+                                case "TriggerPlatformId":
+                                    pluginsPermissionDescriptor.FilterAction =
+                                        context => "TriggerPlatformId" + context.TriggerPlatformId;
+                                    pluginsActionDescriptor.PluginsPermissionDescriptor =
+                                        pluginsPermissionDescriptor;
+                                    break;
+                                default:
+                                    _loggerService.Warn("PluginsPermission", "Plugins:" + name +
+                                                                             "'s jsonFile use unsupported permissionConditionChar");
+                                    return;
                             }
-                            else
-                            {
-                                pluginsPermissionDescriptor.FilterAction =
-                                    context => permissionNode.ConditionChar
-                                               + context.UnderProperty[permissionNode.ConditionChar];
-                                pluginsActionDescriptor.PluginsPermissionDescriptor =
-                                    pluginsPermissionDescriptor;
-                            }
-                        }
-
-                        string commandPrefix = methodEventCommand.CommandPrefix switch
-                        {
-                            CommandAttribute.Prefix.None => "",
-                            CommandAttribute.Prefix.Single => _pluginsStorage.GetPluginInfor(name,
-                                "CommandPrefixContent"),
-                            CommandAttribute.Prefix.Global => _globalCommandPrefix,
-                            _ => ""
-                        };
-                        //生成 Controller 的委托
-                        ParameterInfo[] parameters = methodInfo.GetParameters();
-
-                        if (methodEventCommand!.Command[0].Equals("[SF-ALL]"))
-                        {
-                            pluginsActionDescriptor.IsParameterLexerDisable = true;
-                            var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
-                            Type delegateType;
-                            args.Add(methodInfo.ReturnType);
-                            delegateType = Expression.GetFuncType(args.ToArray());
-                            pluginsActionDescriptor.ActionDelegate =
-                                methodInfo.CreateDelegate(delegateType,
-                                    _pluginsStorage.GetPluginInstance(name + "." + className.Name));
                         }
                         else
                         {
-                            string[] paras = methodEventCommand!.Command[0].Split(" ").Skip(1).ToArray();
-                            int count = 0;
+                            pluginsPermissionDescriptor.FilterAction =
+                                context => permissionNode.ConditionChar
+                                           + context.UnderProperty[permissionNode.ConditionChar];
+                            pluginsActionDescriptor.PluginsPermissionDescriptor =
+                                pluginsPermissionDescriptor;
+                        }
+                    }
 
-                            //添加必然存在的参数 MessageContext
-                            PluginsActionParameter messageContextPara = new PluginsActionParameter();
-                            messageContextPara.IsOptional = false;
-                            messageContextPara.Name = "context";
-                            messageContextPara.ParameterType = typeof(MessageContext);
-                            pluginsActionDescriptor.ActionParameters.Add(messageContextPara);
+                    string commandPrefix = methodEventCommand.CommandPrefix switch
+                    {
+                        CommandAttribute.Prefix.None => "",
+                        CommandAttribute.Prefix.Single => _pluginsStorage.GetPluginInfor(name,
+                            "CommandPrefixContent"),
+                        CommandAttribute.Prefix.Global => _globalCommandPrefix,
+                        _ => ""
+                    };
+                    //生成 Controller 的委托
+                    ParameterInfo[] parameters = methodInfo.GetParameters();
 
-                            foreach (var parameterInfo in parameters.Skip(1))
-                            {
-                                //默认插件作者提供的命令列表的参数顺序和 Action 的函数顺序一致，否者绑定失败需要作者自己从 Context获取
-                                PluginsActionParameter pluginsActionParameter = new PluginsActionParameter();
-                                pluginsActionParameter.IsOptional = paras[count].Substring(0, 1).Equals("<");
-                                pluginsActionParameter.Name =
-                                    paras[count].Substring(1, paras[count].Length - 2); //[message] 故全长-2
-                                pluginsActionParameter.ParameterType = parameterInfo.ParameterType;
-                                pluginsActionDescriptor.ActionParameters.Add(pluginsActionParameter);
-                                count++;
-                            }
+                    if (methodEventCommand!.Command[0].Equals("[SF-ALL]"))
+                    {
+                        pluginsActionDescriptor.IsParameterLexerDisable = true;
+                        var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
+                        Type delegateType;
+                        args.Add(methodInfo.ReturnType);
+                        delegateType = Expression.GetFuncType(args.ToArray());
+                        pluginsActionDescriptor.ActionDelegate =
+                            methodInfo.CreateDelegate(delegateType,
+                                _pluginsStorage.GetPluginInstance(name + "." + className.Name));
+                    }
+                    else
+                    {
+                        string[] paras = methodEventCommand!.Command[0].Split(" ").Skip(1).ToArray();
+                        int count = 0;
 
-                            pluginsActionDescriptor.IsParameterBinded = true; //绑定成功 [其实绑定失败了就无法 Invoke了]
-                            var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
-                            Type delegateType;
-                            args.Add(methodInfo.ReturnType);
-                            delegateType = Expression.GetFuncType(args.ToArray());
-                            pluginsActionDescriptor.ActionDelegate =
-                                methodInfo.CreateDelegate(delegateType,
-                                    _pluginsStorage.GetPluginInstance(name + "." + className.Name));
+                        //添加必然存在的参数 MessageContext
+                        PluginsActionParameter messageContextPara = new PluginsActionParameter();
+                        messageContextPara.IsOptional = false;
+                        messageContextPara.Name = "context";
+                        messageContextPara.ParameterType = typeof(MessageContext);
+                        pluginsActionDescriptor.ActionParameters.Add(messageContextPara);
+
+                        foreach (var parameterInfo in parameters.Skip(1))
+                        {
+                            //默认插件作者提供的命令列表的参数顺序和 Action 的函数顺序一致，否者绑定失败需要作者自己从 Context获取
+                            PluginsActionParameter pluginsActionParameter = new PluginsActionParameter();
+                            pluginsActionParameter.IsOptional = paras[count].Substring(0, 1).Equals("<");
+                            pluginsActionParameter.Name =
+                                paras[count].Substring(1, paras[count].Length - 2); //[message] 故全长-2
+                            pluginsActionParameter.ParameterType = parameterInfo.ParameterType;
+                            pluginsActionDescriptor.ActionParameters.Add(pluginsActionParameter);
+                            count++;
                         }
 
-                        #region EMIT
+                        pluginsActionDescriptor.IsParameterBinded = true; //绑定成功 [其实绑定失败了就无法 Invoke了]
+                        var args = new List<Type>(methodInfo.GetParameters().Select(sp => sp.ParameterType));
+                        Type delegateType;
+                        args.Add(methodInfo.ReturnType);
+                        delegateType = Expression.GetFuncType(args.ToArray());
+                        pluginsActionDescriptor.ActionDelegate =
+                            methodInfo.CreateDelegate(delegateType,
+                                _pluginsStorage.GetPluginInstance(name + "." + className.Name));
+                    }
 
-                        //List<Type> methodParaAll = new List<Type>();
-                        //methodParaAll.Add(className);
-                        //methodParaAll.AddRange(pluginsActionDescriptor
-                        //             .ActionParameters.Select( s => s.ParameterType));
-                        //List<Type> objparas = new List<Type>();
-                        //methodParaAll.ToList().ForEach( _ => objparas.Add(typeof(object)));
-                        //var method = new DynamicMethod(methodInfo.Name,typeof(PluginFucFlag),
-                        //    new Type[]{typeof(object),typeof(object[])});
-                        //var il = method.GetILGenerator();
-                        //il.Emit(OpCodes.Ldarg,0);
-                        //il.Emit(OpCodes.Ldarg,1);
-                        //int paraCount = 0;
-                        //pluginsActionDescriptor.ActionParameters.ForEach(sp =>
-                        //{
-                        //    il.Emit(OpCodes.Ldc_I4,paraCount);
-                        //    il.Emit(OpCodes.Ldelem_Ref);
-                        //    if (sp.ParameterType.IsValueType)
-                        //    {
-                        //        il.Emit(OpCodes.Unbox_Any, sp.ParameterType);
-                        //    }
-                        //});
-                        //il.Emit(OpCodes.Call,methodInfo);
-                        //il.Emit(OpCodes.Ret);
-                        //pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
+                    #region EMIT
 
-                        #endregion
+                    //List<Type> methodParaAll = new List<Type>();
+                    //methodParaAll.Add(className);
+                    //methodParaAll.AddRange(pluginsActionDescriptor
+                    //             .ActionParameters.Select( s => s.ParameterType));
+                    //List<Type> objparas = new List<Type>();
+                    //methodParaAll.ToList().ForEach( _ => objparas.Add(typeof(object)));
+                    //var method = new DynamicMethod(methodInfo.Name,typeof(PluginFucFlag),
+                    //    new Type[]{typeof(object),typeof(object[])});
+                    //var il = method.GetILGenerator();
+                    //il.Emit(OpCodes.Ldarg,0);
+                    //il.Emit(OpCodes.Ldarg,1);
+                    //int paraCount = 0;
+                    //pluginsActionDescriptor.ActionParameters.ForEach(sp =>
+                    //{
+                    //    il.Emit(OpCodes.Ldc_I4,paraCount);
+                    //    il.Emit(OpCodes.Ldelem_Ref);
+                    //    if (sp.ParameterType.IsValueType)
+                    //    {
+                    //        il.Emit(OpCodes.Unbox_Any, sp.ParameterType);
+                    //    }
+                    //});
+                    //il.Emit(OpCodes.Call,methodInfo);
+                    //il.Emit(OpCodes.Ret);
+                    //pluginsActionDescriptor.ActionDelegate = method.CreateDelegate(typeof(ActionDelegate));
 
-                        pluginsActionDescriptor.InstanceTypeName = name + "." + className.Name;
-                        //特判匹配
-                        if (pluginsActionDescriptor.IsParameterLexerDisable)
+                    #endregion
+
+                    pluginsActionDescriptor.InstanceTypeName = name + "." + className.Name;
+                    //特判匹配
+                    if (pluginsActionDescriptor.IsParameterLexerDisable)
+                    {
+                        if (_matchList.TryGetValue(commandTriggerType + "/[SF-ALL]",
+                                out List<PluginsActionDescriptor>? list))
                         {
-                            if (_matchList.TryGetValue(commandTriggerType + "/[SF-ALL]",
+                            list.Add(pluginsActionDescriptor);
+                        }
+                        else
+                        {
+                            list = new List<PluginsActionDescriptor>();
+                            list.Add(pluginsActionDescriptor);
+                            _matchList.Add(commandTriggerType + "/[SF-ALL]",
+                                list);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var s in methodEventCommand.Command)
+                        {
+                            //添加进入路由
+                            //[Type];[Platform];[Action]/<Prefix>[Command]
+                            //Command这个地方用 Delegate 来记录
+                            if (_matchList.TryGetValue(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
                                     out List<PluginsActionDescriptor>? list))
                             {
                                 list.Add(pluginsActionDescriptor);
@@ -303,29 +322,8 @@ public class PluginsDispatcher
                             {
                                 list = new List<PluginsActionDescriptor>();
                                 list.Add(pluginsActionDescriptor);
-                                _matchList.Add(commandTriggerType + "/[SF-ALL]",
+                                _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
                                     list);
-                            }
-                        }
-                        else
-                        {
-                            foreach (var s in methodEventCommand.Command)
-                            {
-                                //添加进入路由
-                                //[Type];[Platform];[Action]/<Prefix>[Command]
-                                //Command这个地方用 Delegate 来记录
-                                if (_matchList.TryGetValue(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
-                                        out List<PluginsActionDescriptor>? list))
-                                {
-                                    list.Add(pluginsActionDescriptor);
-                                }
-                                else
-                                {
-                                    list = new List<PluginsActionDescriptor>();
-                                    list.Add(pluginsActionDescriptor);
-                                    _matchList.Add(commandTriggerType + "/" + commandPrefix + s.Split(" ")[0],
-                                        list);
-                                }
                             }
                         }
                     }
@@ -373,9 +371,7 @@ public class PluginsDispatcher
                     list.AddRange(tempB);
                 }
 
-                if (list.Count != 0)
-                    return list;
-                return null;
+                return list.Count != 0 ? list : null;
             case 3: //平台及平台方法特定的匹配
                 if (_matchList.TryGetValue(waittingList[0] + "/[SF-ALL]", out var tempCC))
                 {
@@ -398,9 +394,7 @@ public class PluginsDispatcher
                     list.AddRange(tempE);
                 }
 
-                if (list.Count != 0)
-                    return list;
-                return null;
+                return list.Count != 0 ? list : null;
             default:
                 throw new Exception("Error Route");
         }
