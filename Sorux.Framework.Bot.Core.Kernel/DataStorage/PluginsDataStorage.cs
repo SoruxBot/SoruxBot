@@ -7,6 +7,24 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage;
 public class PluginsDataStorage : IPluginsDataStorage
 {
     private SQLiteConnection _sqLiteConnection;
+    
+    private string CleanTableName(string tableName)
+        => tableName.Replace("'", "")
+            .Replace("\"", "")
+            .Replace(";", "")
+            .Replace("#", "")
+            .Replace("--", "");
+
+    private SQLiteCommand PreparedStatement(string sql, params string[]? args)
+    {
+        var command = new SQLiteCommand(sql, _sqLiteConnection);
+        if (args == null) return command;
+        for (int i = 0; i < args.Length; i++)
+        {
+            command.Parameters.AddWithValue("@arg" + i, args[i]);
+        }
+        return command;
+    }
 
     public PluginsDataStorage()
     {
@@ -16,18 +34,18 @@ public class PluginsDataStorage : IPluginsDataStorage
 
     private void CreateTableIfNotExist(string pluginMark)
     {
-        // FIXME: SQL injection
-        string sql = $"create table  if not exists {pluginMark} (key varchar(255), value varchar(255))";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        
+        var command =  PreparedStatement(
+            $"CREATE TABLE IF NOT EXISTS {CleanTableName(pluginMark)} (node varchar(255), state varchar(255))");
         command.ExecuteNonQuery();
     }
 
     public bool AddStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
-        // FIXME: SQL injection
-        string sql = $"insert into {pluginMark} (key, value) values ('{key}','{value}')";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command
+            = PreparedStatement($"insert into {CleanTableName(pluginMark)} (key, value) values ('@arg0','@arg1')", key,
+                value);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -35,9 +53,8 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool RemoveStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
-        // FIXME: SQL injection
-        string sql = $"delete from {pluginMark} where key = '{key}'";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command
+            = PreparedStatement($"insert into {CleanTableName(pluginMark)} where key = '@arg0'", key);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -45,9 +62,8 @@ public class PluginsDataStorage : IPluginsDataStorage
     public string GetStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
-        // FIXME: SQL injection
-        string sql = $"select value from {pluginMark} where key = '{key}'";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command 
+            = PreparedStatement($"select value from {CleanTableName(pluginMark)} where key = '@arg0'",key);
         string res = (string)command.ExecuteScalar();
         return res;
     }
@@ -55,9 +71,9 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool EditStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
-        // FIXME: SQL injection
-        string sql = $"update {pluginMark} set value = {value} where key = '{key}'";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command 
+            = PreparedStatement($"update {CleanTableName(pluginMark)} set value = '@arg0' where key = '@arg1'",
+                key,value);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -65,7 +81,6 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool AddBinarySettings(string pluginMark, string key, byte[] value)
     {
         var dic = DsLocalStorage.GetPluginsDataDirectory(pluginMark);
-
         if (!Directory.Exists(dic)) Directory.CreateDirectory(dic);
         File.WriteAllBytes(DsLocalStorage.GetPluginsDataFile(pluginMark, key.GetSha256()), value);
         return true;
