@@ -17,7 +17,8 @@ public class PluginsDataStorage : IPluginsDataStorage
 
     private void CreateTableIfNotExist(string pluginMark)
     {
-        string sql = "create table  if not exists " + pluginMark + " (key varchar(255), value varchar(255))";
+        // FIXME: SQL injection
+        string sql = $"create table  if not exists {pluginMark} (key varchar(255), value varchar(255))";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         command.ExecuteNonQuery();
     }
@@ -25,6 +26,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool AddStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
+        // FIXME: SQL injection
         string sql = $"insert into {pluginMark} (key, value) values ('{key}','{value}')";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         int res = command.ExecuteNonQuery();
@@ -34,6 +36,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool RemoveStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
+        // FIXME: SQL injection
         string sql = $"delete from {pluginMark} where key = '{key}'";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         int res = command.ExecuteNonQuery();
@@ -43,6 +46,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     public string GetStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
+        // FIXME: SQL injection
         string sql = $"select value from {pluginMark} where key = '{key}'";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         string res = (string)command.ExecuteScalar();
@@ -52,6 +56,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool EditStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
+        // FIXME: SQL injection
         string sql = $"update {pluginMark} set value = {value} where key = '{key}'";
         SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
         int res = command.ExecuteNonQuery();
