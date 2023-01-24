@@ -8,17 +8,17 @@ public class PermissionStorage
 {
     private SQLiteConnection _sqLiteConnection;
 
-    private SQLiteCommand PreparedStatement(string sql, params string[] args)
+    private string CleanTableName(string tableName)
+        => tableName.Replace("'", "").Replace(";", "");
+
+    private SQLiteCommand PreparedStatement(string sql, params string[]? args)
     {
-        var command = _sqLiteConnection.CreateCommand();
-        Console.WriteLine("FUUUUUU: " + sql);
-        command.CommandText = sql;
+        var command = new SQLiteCommand(sql, _sqLiteConnection);
+        if (args == null) return command;
         for (int i = 0; i < args.Length; i++)
         {
             command.Parameters.AddWithValue("@arg" + i, args[i]);
         }
-
-        Console.WriteLine("GGGGGGG: " + command.CommandText);
         return command;
     }
 
@@ -34,6 +34,7 @@ public class PermissionStorage
         var command =  PreparedStatement(
             "CREATE TABLE IF NOT EXISTS @arg0 (node varchar(255), state varchar(255))",
             tableName);
+        
         command.ExecuteNonQuery();
     }
 
