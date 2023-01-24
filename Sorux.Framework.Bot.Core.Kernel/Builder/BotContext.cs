@@ -11,20 +11,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
         {
         }
 
-        public static BotContext Instance
-        {
-            get { return instance; }
-        }
+        public static BotContext Instance => instance;
 
         //IOC 工厂
         private IServiceCollection? _services;
 
         private IServiceProvider _serviceProvider;
 
-        public IServiceProvider ServiceProvider
-        {
-            get { return _serviceProvider; }
-        }
+        public IServiceProvider ServiceProvider => _serviceProvider;
 
         public void CreateContainer(IServiceCollection serviceCollection)
         {

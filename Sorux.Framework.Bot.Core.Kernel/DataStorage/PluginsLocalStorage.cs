@@ -195,7 +195,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         public void RemovePlugin(string name)
         {
-            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name));
+            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name);
             pluginsInformationTable.Rows.Remove(dataRow);
             pluginsInformationTable.AcceptChanges();
         }
@@ -204,39 +204,33 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
             => pluginsInformationTable.Clear();
 
         public string? GetAuthor(string name)
-            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["author"];
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name)["author"];
 
         public string? GetFileName(string name)
-            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["filename"];
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name)["filename"];
 
         public string? GetVersion(string name)
-            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["version"];
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name)["version"];
 
         public string? GetDescription(string name)
-            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))[
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name)[
                 "descrption"];
 
         public int? GetPrivilege(string name)
-            => (int)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["privilege"];
+            => (int)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name)["privilege"];
 
         public string? GetUUID(string name)
-            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name))["uuid"];
+            => (string?)pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name)["uuid"];
 
         public bool TryGetUUID(string name, out string uuid)
         {
-            if (GetUUID("name") != null && GetUUID("name")!.Equals("-1"))
-            {
-                uuid = GetUUID("name")!;
-                return false;
-            }
-
-            uuid = "-1"; //表示uuid不存在
-            return false;
+            uuid = GetUUID(name) ?? "-1";
+            return uuid == "-1";
         }
 
         public int EditPrivilege(string name, int privilege)
         {
-            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name));
+            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name);
             if (TryGetPrivilege(privilege, out int newPrivilege))
             {
                 dataRow["privilege"] = privilege;
@@ -255,7 +249,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         public int EditPrivilegeByUpper(string name, int privilege)
         {
-            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]).Equals(name));
+            DataRow dataRow = pluginsInformationTable.AsEnumerable().First(p => ((string)p["name"]) == name);
             if (TryGetPrivilegeUpper(privilege, out int newPrivilege))
             {
                 dataRow["privilege"] = privilege;
@@ -269,7 +263,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         }
 
         public bool IsExists(string name)
-            => pluginsInformationTable.AsEnumerable().FirstOrDefault(p => ((string)p["name"]).Equals(name)) == null;
+            => pluginsInformationTable.AsEnumerable().FirstOrDefault(p => ((string)p["name"]) == name) == null;
 
         public bool SetPluginInfor(string name, string key, string value)
         {
@@ -289,21 +283,16 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
         }
 
         public string GetPluginInfor(string name, string key)
-            => (string)_dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp["key"].Equals(key))!["value"];
+            => (string)_dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => (string)sp["key"] == key)!["value"];
 
         public bool TryGetPluginInfor(string name, string key, out string? value)
         {
             value = null;
-            if (_dataSet.Tables[name] is null)
-            {
-                return false;
-            }
+            if (_dataSet.Tables[name] is null) return false;
 
-            DataRow? dataRow = _dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => sp["key"].Equals(key));
-            if (dataRow is null)
-            {
-                return false;
-            }
+            DataRow? dataRow = _dataSet.Tables[name]!.AsEnumerable().FirstOrDefault(sp => (string)sp["key"] == key);
+            
+            if (dataRow is null) return false;
 
             value = (string)dataRow["value"];
             return true;
