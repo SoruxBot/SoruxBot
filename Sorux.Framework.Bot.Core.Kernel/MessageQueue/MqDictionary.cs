@@ -27,7 +27,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
         }
 
         public MessageContext? GetNextMessageRequest() =>
-            _Queue.TryDequeue(out MessageContext? value) == true ? value : null;
+            _Queue.TryDequeue(out MessageContext? value) ? value : null;
 
         public void RestoreFromLocalStorage()
         {
@@ -42,7 +42,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue
         public void DisposeFromLocalStorage()
         {
             _loggerService.Info("MqDictionary", "Dispose the local storage.");
-            new FileInfo(DsLocalStorage.GetMessageQueuePath()).Delete();
+            File.Delete(DsLocalStorage.GetMessageQueuePath());
         }
 
         public void SaveIntoLocalStorage()

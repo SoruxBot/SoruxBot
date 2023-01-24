@@ -1,7 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -67,23 +65,10 @@ public class PluginsDispatcher
         PluginsPermissionList? pluginsPermissionList = null;
         try
         {
-            switch (_botContext.ServiceProvider.GetService<IConfiguration>()!["ContextRuntimeSystem"])
-            {
-                case "Windows":
-                    pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
-                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\"
-                            + name.Replace(".dll", ".json")));
-                    break;
-                case "Linux":
-                case "MacOS":
-                    pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
-                        File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/"
-                            + name.Replace(".dll", ".json")));
-                    break;
-                default:
-                    _loggerService.Fatal("PluginsRegister", "The system kind is not known! Exit...");
-                    return;
-            }
+            var path = Path.Join(DsLocalStorage.GetPluginsConfigDirectory(),
+                name.Replace(".dll", ".json"));
+            pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
+                File.ReadAllText(path));
         }
         catch (Exception e)
         {

@@ -75,10 +75,7 @@ public class PluginsCommandLexer
                 }
                 else
                 {
-                    if (sp.IsOptional == false)
-                    {
-                        isValid = false; //参数匹配失败
-                    }
+                    if (sp.IsOptional == false) isValid = false; //参数匹配失败
 
                     objects.Add(null);
                 }
