@@ -68,39 +68,13 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
 
         private void InitContextBuild()
         {
-            #region OS Information Generate
-
-            RuntimeSystemType runtimeSystemType;
-            if (System.OperatingSystem.IsWindows())
-            {
-                runtimeSystemType = RuntimeSystemType.Windows;
-            }
-            else if (System.OperatingSystem.IsMacOS())
-            {
-                runtimeSystemType = RuntimeSystemType.MacOS;
-            }
-            else if (System.OperatingSystem.IsAndroid())
-            {
-                runtimeSystemType = RuntimeSystemType.Android;
-            }
-            else if (System.OperatingSystem.IsLinux())
-            {
-                runtimeSystemType = RuntimeSystemType.Linux;
-            }
-            else
-            {
-                runtimeSystemType = RuntimeSystemType.Unknown;
-            }
-
-            #endregion
-
             BuildEnvironmentType bet = _RuntimeConfiguration["section:RuntimeSettings:key:RuntimeType"] switch
             {
                 "Debug" => BuildEnvironmentType.Debug,
                 "Developer" => BuildEnvironmentType.Developer,
                 _ => BuildEnvironmentType.Normal
             };
-            _botBuilderContext = new BotBuilderContext(bet, runtimeSystemType);
+            _botBuilderContext = new BotBuilderContext(bet);
         }
 
         private void InitBotRuntimeActions()

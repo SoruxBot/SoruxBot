@@ -56,7 +56,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
             config.AddInMemoryCollection(new[]
             {
                 new KeyValuePair<string, string?>("ContextBuildEnvironment", context.BuildEnvironment.ToString()),
-                new KeyValuePair<string, string?>("ContextRuntimeSystem", context.RuntimeSystem.ToString()),
                 new KeyValuePair<string, string?>("CurrentPath", cwd)
             });
         }
