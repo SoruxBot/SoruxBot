@@ -9,11 +9,11 @@ namespace Sorux.Framework.Bot.Core.Kernel.Utils
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<LoggerService> _logger;
-        private readonly ConcurrentDictionary<Type, ILogger> _map = new ConcurrentDictionary<Type, ILogger>();
+        private readonly ConcurrentDictionary<Type, ILogger> _map = new ();
         private static string LoggerPath = Directory.GetCurrentDirectory();
 
         private string GetCurrentLogFile()
-            => LoggerPath + DateTime.Now.ToString("yyyy-MM-dd") + ".log";
+            => Path.Join(LoggerPath,DateTime.Now.ToString("yyyy-MM-dd") + ".log");
 
         private static void CreateDirIfNotExists(string path)
         {
