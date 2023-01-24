@@ -49,23 +49,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             JsonConfig? jsonfile;
             try
             {
-                switch (_botContext.ServiceProvider.GetService<IConfiguration>()!["ContextRuntimeSystem"])
-                {
-                    case "Windows":
-                        jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
-                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "\\"
-                                + name.Replace(".dll", ".json")));
-                        break;
-                    case "Linux":
-                    case "MacOS":
-                        jsonfile = JsonConvert.DeserializeObject<JsonConfig>(
-                            File.ReadAllText(DsLocalStorage.GetPluginsConfigDirectory() + "/"
-                                + name.Replace(".dll", ".json")));
-                        break;
-                    default:
-                        _loggerService.Fatal("PluginsRegister", "The system kind is not known! Exit...");
-                        return;
-                }
+                var _path = Path.Join(DsLocalStorage.GetPluginsConfigDirectory(), name.Replace(".dll", ".json"));
+                jsonfile = JsonConvert.DeserializeObject<JsonConfig>(File.ReadAllText(_path));
             }
             catch (Exception e)
             {
@@ -132,17 +117,15 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             pluginsStorage.SetPluginInfor(name, "CommandPrefix", "false");
             foreach (var subInterface in types)
             {
-                if (subInterface == typeof(IPluginsUUIDRegister))
+                if (intance is IPluginsUUIDRegister uuid)
                 {
                     pluginsStorage.SetPluginInfor(name, "PluginsUUIDRegister", "true");
-                    IPluginsUUIDRegister uuid = intance as IPluginsUUIDRegister;
                     pluginsStorage.SetPluginInfor(name, "UUID", uuid.GetUUID());
                 }
 
-                if (subInterface == typeof(ICommandPermission))
+                if (intance is ICommandPermission permission)
                 {
                     pluginsStorage.SetPluginInfor(name, "CommandPermission", "true");
-                    ICommandPermission permission = intance as ICommandPermission;
                     pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoAt",
                         permission.IsPermissionDeniedAutoAt().ToString());
                     pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoReply",
@@ -153,10 +136,9 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                         permission.GetPermissionDeniedMessage());
                 }
 
-                if (subInterface == typeof(ICommandPrefix))
+                if (intance is ICommandPrefix prefix)
                 {
                     pluginsStorage.SetPluginInfor(name, "CommandPrefix", "true");
-                    ICommandPrefix prefix = intance as ICommandPrefix;
                     pluginsStorage.SetPluginInfor(name, "CommandPrefixContent", prefix.GetCommandPrefix());
                 }
             }
