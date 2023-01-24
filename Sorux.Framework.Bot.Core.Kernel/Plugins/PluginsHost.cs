@@ -1,6 +1,4 @@
-﻿using System.Text;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
 using RestSharp;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Kernel.Builder;

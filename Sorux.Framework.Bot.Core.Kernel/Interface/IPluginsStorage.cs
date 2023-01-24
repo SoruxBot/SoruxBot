@@ -1,7 +1,4 @@
-﻿using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
-using Sorux.Framework.Bot.Core.Kernel.Utils;
-
-namespace Sorux.Framework.Bot.Core.Kernel.Interface
+﻿namespace Sorux.Framework.Bot.Core.Kernel.Interface
 {
     /// <summary>
     /// 存储插件信息

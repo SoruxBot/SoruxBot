@@ -1,13 +1,8 @@
-﻿using System.Runtime.Intrinsics.X86;
-using System.Text.Json.Nodes;
-using Google.Protobuf.WellKnownTypes;
-using System.Threading.Channels;
+﻿using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
-using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Grpc.Net.Client;
-using Newtonsoft.Json.Linq;
 using Sorux.Framework.Bot.WebgRpc;
 
 namespace Sorux.Framework.Bot.Provider.CqHttp.Controllers;
