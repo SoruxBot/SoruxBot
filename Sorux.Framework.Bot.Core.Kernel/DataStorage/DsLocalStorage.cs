@@ -5,135 +5,57 @@
     /// </summary>
     public class DsLocalStorage
     {
+        private static string AppendCurrentDirectory(params string[] subfolder)
+        {
+            var l = new List<string>();
+            l.Add(Directory.GetCurrentDirectory());
+            l.AddRange(subfolder);
+            return Path.Join(l.ToArray());
+        }
+
         static DsLocalStorage()
         {
-            // 操作系统的特判
-            if (System.OperatingSystem.IsWindows())
-            {
-                if (!new FileInfo(Directory.GetCurrentDirectory() + "\\parse.lock").Exists)
-                {
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Config").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Logs").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins\\Data").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins\\Bin").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Plugins\\Config").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "\\Lib").Create();
-                    new FileInfo(Directory.GetCurrentDirectory() + "\\parse.lock").Create();
-                    new FileInfo(Directory.GetCurrentDirectory() + "\\Config\\AppSettings.json").Create();
-                }
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                if (!new FileInfo(Directory.GetCurrentDirectory() + "/parse.lock").Exists)
-                {
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Config").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Logs").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Plugins").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Plugins/Data").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Plugins/Bin").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Plugins/Config").Create();
-                    new DirectoryInfo(Directory.GetCurrentDirectory() + "/Lib").Create();
-                    new FileInfo(Directory.GetCurrentDirectory() + "/parse.lock").Create();
-                    new FileInfo(Directory.GetCurrentDirectory() + "/Config/AppSettings.json").Create();
-                }
-            }
+            if (new FileInfo(AppendCurrentDirectory("parse.lock")).Exists) return;
+
+            Directory.CreateDirectory(AppendCurrentDirectory("Config"));
+            Directory.CreateDirectory(AppendCurrentDirectory("Logs"));
+            Directory.CreateDirectory(AppendCurrentDirectory("Plugins"));
+            Directory.CreateDirectory(AppendCurrentDirectory("Plugins", "Data"));
+            Directory.CreateDirectory(AppendCurrentDirectory("Plugins", "Bin"));
+            Directory.CreateDirectory(AppendCurrentDirectory("Plugins", "Config"));
+            Directory.CreateDirectory(AppendCurrentDirectory("Lib"));
+            File.Create(AppendCurrentDirectory("parse.lock"));
+            File.Create(AppendCurrentDirectory("Config", "AppSettings.json"));
         }
 
         public static string GetMessageQueuePath()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Config\\MessageQueue.sb";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Config/MessageQueue.sb";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Config/MessageQueue.sb";
-            }
+            return AppendCurrentDirectory("Config", "MessageQueue.sb");
         }
 
         public static string GetPluginsDataDirectory()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Plugins\\Data";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data";
-            }
+            return AppendCurrentDirectory("Plugins", "Data");
         }
 
         public static string GetPluginsDataDirectory(string name)
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name;
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name;
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name;
-            }
+            return AppendCurrentDirectory("Plugins", "Data", name);
         }
 
         public static string GetPluginsDataFile(string name, string key)
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Plugins\\Data\\" + name + "\\" + key + ".bin";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name + "/" + key + ".bin";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Data/" + name + "/" + key + ".bin";
-            }
+            return AppendCurrentDirectory("Plugins", "Data", name, key + ".bin");
         }
 
         public static string GetPluginsConfigDirectory()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Plugins\\Config";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Config";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Config";
-            }
+            return AppendCurrentDirectory("Plugins", "Config");
         }
 
         public static string GetPluginsDirectory()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Plugins\\Bin";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Bin";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Plugins/Bin";
-            }
+            return AppendCurrentDirectory("Plugins", "Bin");
         }
 
         public static string GetCurrentPath()
@@ -143,50 +65,17 @@
 
         public static string GetPluginsSqliteDataPath()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Lib\\pluginsData.bin";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Lib/pluginsData.bin";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Lib/pluginsData.bin";
-            }
+            return AppendCurrentDirectory("Lib", "pluginsData.bin");
         }
 
         public static string GetPluginsPermissionDataPath()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Lib\\pluginsPermission.bin";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Lib/pluginsPermission.bin";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Lib/pluginsPermission.bin";
-            }
+            return AppendCurrentDirectory("Lib", "pluginsPermission.bin");
         }
 
         public static string GetResponseQueuePath()
         {
-            if (System.OperatingSystem.IsWindows())
-            {
-                return Directory.GetCurrentDirectory() + "\\Config\\ResponseQueue.sb";
-            }
-            else if (System.OperatingSystem.IsLinux() || System.OperatingSystem.IsMacOS())
-            {
-                return Directory.GetCurrentDirectory() + "/Config/ResponseQueue.sb";
-            }
-            else
-            {
-                return Directory.GetCurrentDirectory() + "/Config/ResponseQueue.sb";
-            }
+            return AppendCurrentDirectory("Config", "ResponseQueue.sb");
         }
     }
 }

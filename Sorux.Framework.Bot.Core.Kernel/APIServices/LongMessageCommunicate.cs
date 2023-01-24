@@ -82,7 +82,7 @@ public class LongMessageCommunicate : ILongMessageCommunicate
                     Thread.Sleep(10);
                 }
             });
-            using (cts.Token.Register(() => tcs.TrySetResult(true)))
+            await using (cts.Token.Register(() => tcs.TrySetResult(true)))
             {
                 if (task == await (Task.WhenAny(task, tcs.Task)))
                 {
