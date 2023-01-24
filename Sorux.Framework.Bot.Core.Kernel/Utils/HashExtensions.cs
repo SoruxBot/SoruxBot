@@ -15,7 +15,8 @@ public static class HashExtensions
     /// <returns>MD5</returns>
     public static string GetFileMd5(this string path)
     {
-        return GetFileHash(path, MD5.Create());
+        using var md5 = MD5.Create();
+        return GetFileHash(path, md5);
     }
 
     /// <summary>
@@ -25,7 +26,8 @@ public static class HashExtensions
     /// <returns>MD5</returns>
     public static string GetMd5(this string str)
     {
-        return GetHash(str, MD5.Create());
+        using var md5 = MD5.Create();
+        return GetHash(str, md5);
     }
 
     /// <summary>
@@ -35,7 +37,8 @@ public static class HashExtensions
     /// <returns>Sha1</returns>
     public static string GetFileSha1(this string path)
     {
-        return GetFileHash(path, SHA1.Create());
+        var sha1 = SHA1.Create();
+        return GetFileHash(path, sha1);
     }
 
     /// <summary>
@@ -45,7 +48,8 @@ public static class HashExtensions
     /// <returns>Sha1</returns>
     public static string GetSha1(this string str)
     {
-        return GetHash(str, SHA1.Create());
+        using var sha1 = SHA1.Create();
+        return GetHash(str, sha1);
     }
 
 
@@ -56,7 +60,8 @@ public static class HashExtensions
     /// <returns>Sha256</returns>
     public static string GetFileSha256(this string path)
     {
-        return GetFileHash(path, SHA256.Create());
+        using var sha256 = SHA256.Create();
+        return GetFileHash(path, sha256);
     }
 
     /// <summary>
@@ -66,7 +71,8 @@ public static class HashExtensions
     /// <returns>Sha256</returns>
     public static string GetSha256(this string str)
     {
-        return GetHash(str, SHA256.Create());
+        using var sha256 = SHA256.Create();
+        return GetHash(str, sha256);
     }
 
     /// <summary>
@@ -76,7 +82,8 @@ public static class HashExtensions
     /// <returns>Sha384</returns>
     public static string GetFileSha384(this string path)
     {
-        return GetFileHash(path, SHA384.Create());
+        using var sha384 = SHA384.Create();
+        return GetFileHash(path, sha384);
     }
 
     /// <summary>
@@ -86,7 +93,8 @@ public static class HashExtensions
     /// <returns>Sha384</returns>
     public static string GetSha384(this string str)
     {
-        return GetHash(str, SHA384.Create());
+        using var sha384 = SHA384.Create();
+        return GetHash(str, sha384);
     }
 
     /// <summary>
@@ -96,7 +104,8 @@ public static class HashExtensions
     /// <returns>Sha512</returns>
     public static string GetFileSha512(this string path)
     {
-        return GetFileHash(path, SHA512.Create());
+        using var sha512 = SHA512.Create();
+        return GetFileHash(path, sha512);
     }
 
     /// <summary>
@@ -106,7 +115,8 @@ public static class HashExtensions
     /// <returns>Sha512</returns>
     public static string GetSha512(this string str)
     {
-        return GetHash(str, SHA512.Create());
+        using var sha512 = SHA512.Create();
+        return GetHash(str, sha512);
     }
 
     /// <summary>
@@ -149,14 +159,11 @@ public static class HashExtensions
     /// <returns>hash值</returns>
     public static string GetHash(this string str, HashAlgorithm hash, Encoding encoding)
     {
-        using (hash)
-        {
-            var sb = new StringBuilder();
-            var result = hash.ComputeHash(encoding.GetBytes(str));
-            foreach (var t in result)
-                sb.Append(t.ToString("x2"));
-            return sb.ToString();
-        }
+        var sb = new StringBuilder();
+        var result = hash.ComputeHash(encoding.GetBytes(str));
+        foreach (var t in result)
+            sb.Append(t.ToString("x2"));
+        return sb.ToString();
     }
 
     /// <summary>
