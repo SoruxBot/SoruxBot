@@ -116,12 +116,14 @@ public class CqController : ControllerBase
 
     public void AddGroupHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["request_type"] = jsonObject["request_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"] == null ? "" : jsonObject["sub_type"]!.ToString();
-        dictionary["comment"] = jsonObject["comment"] == null ? "" : jsonObject["comment"]!.ToString();
-        dictionary["flag"] = jsonObject["flag"] == null ? "" : jsonObject["flag"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["request_type"] = jsonObject["request_type"]!.ToString(),
+            ["post_type"   ] = jsonObject["post_type"   ]!.ToString(),
+            ["sub_type"    ] = jsonObject["sub_type"    ] == null ? "" : jsonObject["sub_type"]!.ToString(),
+            ["comment"     ] = jsonObject["comment"     ] == null ? "" : jsonObject["comment"]!.ToString(),
+            ["flag"        ] = jsonObject["flag"        ] == null ? "" : jsonObject["flag"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -142,11 +144,13 @@ public class CqController : ControllerBase
 
     public void AddFrinedHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["request_type"] = jsonObject["request_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["comment"] = jsonObject["comment"] == null ? "" : jsonObject["comment"]!.ToString();
-        dictionary["flag"] = jsonObject["flag"] == null ? "" : jsonObject["flag"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["request_type"] = jsonObject["request_type"]!.ToString(),
+            ["post_type"   ] = jsonObject["post_type"   ]!.ToString(),
+            ["comment"     ] = jsonObject["comment"     ] == null ? "" : jsonObject["comment"]!.ToString(),
+            ["flag"        ] = jsonObject["flag"        ] == null ? "" : jsonObject["flag"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -168,12 +172,14 @@ public class CqController : ControllerBase
 
     public void EssenceChangeHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["message_id"] = jsonObject["message_id"] == null ? "" : jsonObject["message_id"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"] == null ? "" : jsonObject["sub_type"]!.ToString();
-        dictionary["sender_id"] = jsonObject["user_id"] == null ? "" : jsonObject["sender_id"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["message_id" ] = jsonObject["message_id" ] == null ? "" : jsonObject["message_id"]!.ToString(),
+            ["sub_type"   ] = jsonObject["sub_type"   ] == null ? "" : jsonObject["sub_type"]!.ToString(),
+            ["sender_id"  ] = jsonObject["user_id"    ] == null ? "" : jsonObject["sender_id"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -194,11 +200,13 @@ public class CqController : ControllerBase
 
     public void ClientChangeHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["client"] = jsonObject["client"] == null ? "" : jsonObject["client"]!.ToString();
-        dictionary["online"] = jsonObject["online"] == null ? "" : jsonObject["online"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["client"     ] = jsonObject["client"     ] == null ? "" : jsonObject["client"]!.ToString(),
+            ["online"     ] = jsonObject["online"     ] == null ? "" : jsonObject["online"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -220,10 +228,12 @@ public class CqController : ControllerBase
 
     public void OfflineFileHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["file"] = jsonObject["file"] == null ? "" : jsonObject["file"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["file"       ] = jsonObject["file"       ] == null ? "" : jsonObject["file"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -244,11 +254,13 @@ public class CqController : ControllerBase
 
     public void GroupCardChangHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["card_old"] = jsonObject["card_old"] == null ? "" : jsonObject["card_old"]!.ToString();
-        dictionary["card_new"] = jsonObject["card_new"] == null ? "" : jsonObject["card_new"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["card_old"   ] = jsonObject["card_old"   ] == null ? "" : jsonObject["card_old"]!.ToString(),
+            ["card_new"   ] = jsonObject["card_new"   ] == null ? "" : jsonObject["card_new"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -297,10 +309,12 @@ public class CqController : ControllerBase
 
     public void FriendAdd(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"] == null ? "" : jsonObject["user_id"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["user_id"    ] = jsonObject["user_id"    ] == null ? "" : jsonObject["user_id"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -321,12 +335,14 @@ public class CqController : ControllerBase
 
     public void GroupBanMessage(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"] == null ? "" : jsonObject["sub_type"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"] == null ? "" : jsonObject["user_id"]!.ToString();
-        dictionary["duration"] = jsonObject["duration"] == null ? "" : jsonObject["duration"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["sub_type"   ] = jsonObject["sub_type"   ] == null ? "" : jsonObject["sub_type"]!.ToString(),
+            ["user_id"    ] = jsonObject["user_id"    ] == null ? "" : jsonObject["user_id" ]!.ToString(),
+            ["duration"   ] = jsonObject["duration"   ] == null ? "" : jsonObject["duration"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -338,8 +354,8 @@ public class CqController : ControllerBase
             TargetPlatform = "qq",
             TiedAttribute = "",
             TiedId = "",
-            TriggerId = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
-            TriggerPlatformId = jsonObject["group_id"] == null ? "" : jsonObject["group_id"]!.ToString(),
+            TriggerId         = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
+            TriggerPlatformId = jsonObject["group_id"   ] == null ? "" : jsonObject["group_id"   ]!.ToString(),
             UnderProperty = dictionary
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
@@ -349,9 +365,9 @@ public class CqController : ControllerBase
     {
         Dictionary<string, string> dictionary = new();
         dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["file"] = jsonObject["file"] == null ? "" : jsonObject["file"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"] == null ? "" : jsonObject["user_id"]!.ToString();
+        dictionary["post_type"  ] = jsonObject["post_type"  ]!.ToString();
+        dictionary["file"       ] = jsonObject["file"       ] == null ? "" : jsonObject["file"   ]!.ToString();
+        dictionary["user_id"    ] = jsonObject["user_id"    ] == null ? "" : jsonObject["user_id"]!.ToString();
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -375,9 +391,9 @@ public class CqController : ControllerBase
     {
         Dictionary<string, string> dictionary = new();
         dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"] == null ? "" : jsonObject["sub_type"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"] == null ? "" : jsonObject["user_id"]!.ToString();
+        dictionary["post_type"  ] = jsonObject["post_type"  ]!.ToString();
+        dictionary["sub_type"   ] = jsonObject["sub_type"   ] == null ? "" : jsonObject["sub_type"]!.ToString();
+        dictionary["user_id"    ] = jsonObject["user_id"    ] == null ? "" : jsonObject["user_id" ]!.ToString();
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -399,11 +415,13 @@ public class CqController : ControllerBase
 
     public void GroupMemberDecreaseHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"] == null ? "" : jsonObject["sub_type"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"] == null ? "" : jsonObject["user_id"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["sub_type"   ] = jsonObject["sub_type"   ] == null ? "" : jsonObject["sub_type"]!.ToString(),
+            ["user_id"    ] = jsonObject["user_id"    ] == null ? "" : jsonObject["user_id" ]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -415,8 +433,8 @@ public class CqController : ControllerBase
             TargetPlatform = "qq",
             TiedAttribute = "",
             TiedId = "",
-            TriggerId = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
-            TriggerPlatformId = jsonObject["group_id"] == null ? "" : jsonObject["group_id"]!.ToString(),
+            TriggerId         = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
+            TriggerPlatformId = jsonObject["group_id"   ] == null ? "" : jsonObject["group_id"   ]!.ToString(),
             UnderProperty = dictionary
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
@@ -427,9 +445,9 @@ public class CqController : ControllerBase
     {
         Dictionary<string, string> dictionary = new();
         dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"] == null ? "" : jsonObject["sub_type"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"] == null ? "" : jsonObject["user_id"]!.ToString();
+        dictionary["post_type"  ] = jsonObject["post_type"  ]!.ToString();
+        dictionary["sub_type"   ] = jsonObject["sub_type"   ] == null ? "" : jsonObject["sub_type"]!.ToString();
+        dictionary["user_id"    ] = jsonObject["user_id"    ] == null ? "" : jsonObject["user_id" ]!.ToString();
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -441,8 +459,8 @@ public class CqController : ControllerBase
             TargetPlatform = "qq",
             TiedAttribute = "",
             TiedId = "",
-            TriggerId = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
-            TriggerPlatformId = jsonObject["group_id"] == null ? "" : jsonObject["group_id"]!.ToString(),
+            TriggerId         = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
+            TriggerPlatformId = jsonObject["group_id"   ] == null ? "" : jsonObject["group_id"   ]!.ToString(),
             UnderProperty = dictionary
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
@@ -451,11 +469,13 @@ public class CqController : ControllerBase
 
     private void GroupMessageRecallHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["notice_type"] = jsonObject["notice_type"]!.ToString();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["message_id"] = jsonObject["message_id"] == null ? "" : jsonObject["message_id"]!.ToString();
-        dictionary["user_id"] = jsonObject["user_id"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["notice_type"] = jsonObject["notice_type"]!.ToString(),
+            ["post_type"  ] = jsonObject["post_type"  ]!.ToString(),
+            ["message_id" ] = jsonObject["message_id" ] == null ? "" : jsonObject["message_id"]!.ToString(),
+            ["user_id"    ] = jsonObject["user_id"    ]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -467,8 +487,8 @@ public class CqController : ControllerBase
             TargetPlatform = "qq",
             TiedAttribute = "",
             TiedId = "",
-            TriggerId = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
-            TriggerPlatformId = jsonObject["group_id"] == null ? "" : jsonObject["group_id"]!.ToString(),
+            TriggerId         = jsonObject["operator_id"] == null ? "" : jsonObject["operator_id"]!.ToString(),
+            TriggerPlatformId = jsonObject["group_id"   ] == null ? "" : jsonObject["group_id"   ]!.ToString(),
             UnderProperty = dictionary
         };
         client.MessagePushStack(new MessageRequest() { Payload = JsonConvert.SerializeObject(messageContext) });
@@ -477,15 +497,17 @@ public class CqController : ControllerBase
 
     private void GroupMessageHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["message_type"] = jsonObject["message_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["sub_type"]!.ToString();
-        dictionary["message_id"] = jsonObject["message_id"]!.ToString();
-        dictionary["message"] = jsonObject["message"]!.ToString();
-        dictionary["font"] = jsonObject["font"]!.ToString();
-        dictionary["sender"] = jsonObject["sender"]!.ToString();
-        dictionary["anonymous"] = jsonObject["anonymous"] == null ? "" : jsonObject["anonymous"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["post_type"   ] = jsonObject["post_type"   ]!.ToString(),
+            ["message_type"] = jsonObject["message_type"]!.ToString(),
+            ["sub_type"    ] = jsonObject["sub_type"    ]!.ToString(),
+            ["message_id"  ] = jsonObject["message_id"  ]!.ToString(),
+            ["message"     ] = jsonObject["message"     ]!.ToString(),
+            ["font"        ] = jsonObject["font"        ]!.ToString(),
+            ["sender"      ] = jsonObject["sender"      ]!.ToString(),
+            ["anonymous"   ] = jsonObject["anonymous"   ] == null ? "" : jsonObject["anonymous"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),
@@ -533,15 +555,17 @@ public class CqController : ControllerBase
 
     private void PrivateMessageHandler(JsonObject jsonObject)
     {
-        Dictionary<string, string> dictionary = new();
-        dictionary["post_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["sub_type"] = jsonObject["post_type"]!.ToString();
-        dictionary["message_type"] = jsonObject["message_type"]!.ToString();
-        dictionary["message_id"] = jsonObject["message_id"]!.ToString();
-        dictionary["message"] = jsonObject["message"]!.ToString();
-        dictionary["font"] = jsonObject["font"]!.ToString();
-        dictionary["sender"] = jsonObject["sender"]!.ToString();
-        dictionary["temp_source"] = jsonObject["temp_source"] == null ? "" : jsonObject["temp_source"]!.ToString();
+        Dictionary<string, string> dictionary = new()
+        {
+            ["post_type"   ] = jsonObject["post_type"   ]!.ToString(),
+            ["sub_type"    ] = jsonObject["post_type"   ]!.ToString(),
+            ["message_type"] = jsonObject["message_type"]!.ToString(),
+            ["message_id"  ] = jsonObject["message_id"  ]!.ToString(),
+            ["message"     ] = jsonObject["message"     ]!.ToString(),
+            ["font"        ] = jsonObject["font"        ]!.ToString(),
+            ["sender"      ] = jsonObject["sender"      ]!.ToString(),
+            ["temp_source" ] = jsonObject["temp_source" ] == null ? "" : jsonObject["temp_source"]!.ToString()
+        };
         MessageContext messageContext = new MessageContext()
         {
             MessageTime = jsonObject["time"]!.ToString(),

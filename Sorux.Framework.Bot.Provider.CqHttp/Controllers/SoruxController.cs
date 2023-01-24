@@ -22,15 +22,12 @@ public class SoruxController : ControllerBase
     public string Post([FromBody] JsonObject jsonObject)
     {
         ResponseModel responseModel = JsonConvert.DeserializeObject<ResponseModel>(jsonObject.ToJsonString())!;
-        switch (responseModel.ResopnseRoute)
+        return responseModel.ResopnseRoute switch
         {
-            case "sendPrivateMessage":
-                return SendPrivateMessage(responseModel);
-            case "sendGroupMessage":
-                return SendGroupMessage(responseModel);
-            default:
-                return "Error Request for goHttp, please check your version.";
-        }
+            "sendPrivateMessage" => SendPrivateMessage(responseModel),
+            "sendGroupMessage" => SendGroupMessage(responseModel),
+            _ => "Error Request for goHttp, please check your version."
+        };
     }
 
     private string SendGroupMessage(ResponseModel responseModel)
