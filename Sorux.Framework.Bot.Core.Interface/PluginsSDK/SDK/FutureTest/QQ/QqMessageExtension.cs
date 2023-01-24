@@ -304,7 +304,7 @@ public static class QqMessageExtension
         arg.AppendNotNullArgs("subType", subType);
         arg.AppendNotNullArgs("url", url);
         var cacheS = cache == null ? null : cache.Value ? "1" : "0";
-        arg.AppendNotNullArgs("cache", cacheS);
+        arg.AppendNotNullArgs("cache", cacheS, false);
         arg.AppendNotNullArgs("id", id);
         arg.AppendNotNullArgs("c", c);
 
