@@ -13,7 +13,7 @@ public class PermissionStorage
         var command = new SQLiteCommand(sql, _sqLiteConnection);
         for (int i = 0; i < args.Length; i++)
         {
-            command.Parameters.AddWithValue("@arg" + i, args[i]);
+            command.Parameters.Add(new("@arg" + i, args[i]));
         }
 
 
