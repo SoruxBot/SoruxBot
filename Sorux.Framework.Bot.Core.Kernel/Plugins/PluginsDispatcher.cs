@@ -7,7 +7,6 @@ using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Attribute;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.PluginsModels;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Register;
-using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
 using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
@@ -70,7 +69,7 @@ public class PluginsDispatcher
             pluginsPermissionList = JsonConvert.DeserializeObject<PluginsPermissionList>(
                 File.ReadAllText(path));
         }
-        catch (Exception e)
+        catch (Exception)
         {
             _loggerService.Error("PluginsRegister", "The plugin:" + name + " loses json file:" +
                                                     name.Replace(".dll", ".json") +

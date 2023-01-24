@@ -36,7 +36,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
         /// <summary>
         /// 配置插件服务，在Shell不启用插件的时候不进行加载，以防止向容器注入插件服务，反而导致错误在同游其他地方的子模块报错
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="services"></param>
         public static void ConfigurePluginsServices(IServiceCollection services)
         {
             //注册基础服务

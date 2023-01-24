@@ -52,7 +52,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
                 var _path = Path.Join(DsLocalStorage.GetPluginsConfigDirectory(), name.Replace(".dll", ".json"));
                 jsonfile = JsonConvert.DeserializeObject<JsonConfig>(File.ReadAllText(_path));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 _loggerService.Error("PluginsRegister", "The plugin:" + name + " loses json file:" +
                                                         name.Replace(".dll", ".json") +
@@ -111,36 +111,33 @@ namespace Sorux.Framework.Bot.Core.Kernel.Plugins
             _loggerService.Info("PluginsRegister", "Catch plugin:" + name);
 
             //Register 注册可选特性
-            Type[] types = type.GetInterfaces();
             pluginsStorage.SetPluginInfor(name, "PluginsUUIDRegister", "false");
             pluginsStorage.SetPluginInfor(name, "CommandPermission", "false");
             pluginsStorage.SetPluginInfor(name, "CommandPrefix", "false");
-            foreach (var subInterface in types)
+
+            if (intance is IPluginsUUIDRegister uuid)
             {
-                if (intance is IPluginsUUIDRegister uuid)
-                {
-                    pluginsStorage.SetPluginInfor(name, "PluginsUUIDRegister", "true");
-                    pluginsStorage.SetPluginInfor(name, "UUID", uuid.GetUUID());
-                }
+                pluginsStorage.SetPluginInfor(name, "PluginsUUIDRegister", "true");
+                pluginsStorage.SetPluginInfor(name, "UUID", uuid.GetUUID());
+            }
 
-                if (intance is ICommandPermission permission)
-                {
-                    pluginsStorage.SetPluginInfor(name, "CommandPermission", "true");
-                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoAt",
-                        permission.IsPermissionDeniedAutoAt().ToString());
-                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoReply",
-                        permission.IsPermissionDeniedAutoReply().ToString());
-                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedLeakOut",
-                        permission.IsPermissionDeniedLeakOut().ToString());
-                    pluginsStorage.SetPluginInfor(name, "PermissionDeniedMessage",
-                        permission.GetPermissionDeniedMessage());
-                }
+            if (intance is ICommandPermission permission)
+            {
+                pluginsStorage.SetPluginInfor(name, "CommandPermission", "true");
+                pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoAt",
+                    permission.IsPermissionDeniedAutoAt().ToString());
+                pluginsStorage.SetPluginInfor(name, "PermissionDeniedAutoReply",
+                    permission.IsPermissionDeniedAutoReply().ToString());
+                pluginsStorage.SetPluginInfor(name, "PermissionDeniedLeakOut",
+                    permission.IsPermissionDeniedLeakOut().ToString());
+                pluginsStorage.SetPluginInfor(name, "PermissionDeniedMessage",
+                    permission.GetPermissionDeniedMessage());
+            }
 
-                if (intance is ICommandPrefix prefix)
-                {
-                    pluginsStorage.SetPluginInfor(name, "CommandPrefix", "true");
-                    pluginsStorage.SetPluginInfor(name, "CommandPrefixContent", prefix.GetCommandPrefix());
-                }
+            if (intance is ICommandPrefix prefix)
+            {
+                pluginsStorage.SetPluginInfor(name, "CommandPrefix", "true");
+                pluginsStorage.SetPluginInfor(name, "CommandPrefixContent", prefix.GetCommandPrefix());
             }
         }
 
