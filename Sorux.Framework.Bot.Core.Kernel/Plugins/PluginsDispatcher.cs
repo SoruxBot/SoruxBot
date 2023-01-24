@@ -123,27 +123,10 @@ public class PluginsDispatcher
                     {
                         objects.Add(_loggerService);
                     }
-                    else if (parameterInfo.ParameterType == typeof(IBasicAPI))
+                    else
                     {
-                        objects.Add(serviceProvider.GetRequiredService<IBasicAPI>());
+                        objects.Add(serviceProvider.GetRequiredService(parameterInfo.ParameterType));
                     }
-                    else if (parameterInfo.ParameterType == typeof(ILongMessageCommunicate))
-                    {
-                        objects.Add(serviceProvider.GetRequiredService<ILongMessageCommunicate>());
-                    }
-                    else if (parameterInfo.ParameterType == typeof(IPluginsDataStorage))
-                    {
-                        objects.Add(serviceProvider.GetRequiredService<IPluginsDataStorage>());
-                    }
-                    else if (parameterInfo.ParameterType == typeof(IPluginsStoragePermanentAble))
-                    {
-                        objects.Add(serviceProvider.GetRequiredService<IPluginsStoragePermanentAble>());
-                    }
-                    else if (parameterInfo.ParameterType == typeof(IPermission))
-                    {
-                        objects.Add(serviceProvider.GetRequiredService<IPermission>());
-                    }
-
                     #endregion
                 }
 
