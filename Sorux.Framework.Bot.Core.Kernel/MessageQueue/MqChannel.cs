@@ -1,7 +1,6 @@
 ﻿using System.Threading.Channels;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
 using Sorux.Framework.Bot.Core.Kernel.Builder;
-using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.MessageQueue;

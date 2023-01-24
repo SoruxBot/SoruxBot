@@ -17,7 +17,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         private int lastPrivilege = 0;
         private DataTable pluginsInformationTable;
-        private Dictionary<string, object> _pluginsInstanceMap = new Dictionary<string, object>();
+        private Dictionary<string, object> _pluginsInstanceMap = new();
 
         public PluginsLocalStorage(BotContext context, ILoggerService loggerService)
         {
@@ -30,7 +30,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage
 
         private void InitDataSet()
         {
-            DataTable pluginsInformationTable = new DataTable("pluginsInformation");
+            pluginsInformationTable = new DataTable("pluginsInformation");
             DataColumn dataColumn;
 
             #region 插件信息生成

@@ -1,5 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.Security.Cryptography;
 using Sorux.Framework.Bot.Core.Kernel.Interface;
 using Sorux.Framework.Bot.Core.Kernel.Utils;
 

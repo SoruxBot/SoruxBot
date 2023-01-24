@@ -97,12 +97,14 @@
         /// 得到指定插件的 UUID , 若插件并未注册 UUID， 那么返回 False.
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="uuid"></param>
         /// <returns></returns>
         public bool TryGetUUID(string name, out string uuid);
 
         /// <summary>
         /// 修改插件的优先级顺序，且返回修改后真实的优先级（修改后的优先级后于或等于指定优先级）
         /// </summary>
+        /// <param name="name"></param>
         /// <param name="privilege"></param>
         /// <returns></returns>
         public int EditPrivilege(string name, int privilege);
@@ -110,7 +112,7 @@
         /// <summary>
         /// 得到指定优先级的插件名称，没有则返回 Null
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="privilege"></param>
         /// <returns></returns>
         public string? GetPluginByPrivilege(int privilege);
 

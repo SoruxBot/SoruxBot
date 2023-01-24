@@ -31,7 +31,7 @@ public class ResponseQueue : IResponseQueue
     }
 
     public ResponseContext? GetNextResponse()
-        => _Queue.TryDequeue(out ResponseContext? value) == true ? value : null;
+        => _Queue.TryDequeue(out ResponseContext? value) ? value : null;
 
     public void RestoreFromLocalStorage()
     {
