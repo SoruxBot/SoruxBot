@@ -36,7 +36,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     {
         
         var command =  PreparedStatement(
-            $"CREATE TABLE IF NOT EXISTS {CleanTableName(pluginMark)} (node varchar(255), state varchar(255))");
+            $"CREATE TABLE IF NOT EXISTS {CleanTableName(pluginMark)} (key varchar(255), value varchar(255))");
         command.ExecuteNonQuery();
     }
 
@@ -44,7 +44,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     {
         CreateTableIfNotExist(pluginMark);
         var command
-            = PreparedStatement($"insert into {CleanTableName(pluginMark)} (key, value) values ('@arg0','@arg1')", key,
+            = PreparedStatement($"insert into {CleanTableName(pluginMark)} (key, value) values (@arg0,@arg1)", key,
                 value);
         int res = command.ExecuteNonQuery();
         return res == 1;
@@ -54,7 +54,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     {
         CreateTableIfNotExist(pluginMark);
         var command
-            = PreparedStatement($"insert into {CleanTableName(pluginMark)} where key = '@arg0'", key);
+            = PreparedStatement($"insert into {CleanTableName(pluginMark)} where key = @arg0", key);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -63,7 +63,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     {
         CreateTableIfNotExist(pluginMark);
         var command 
-            = PreparedStatement($"select value from {CleanTableName(pluginMark)} where key = '@arg0'",key);
+            = PreparedStatement($"select value from {CleanTableName(pluginMark)} where key = @arg0",key);
         string res = (string)command.ExecuteScalar();
         return res;
     }
@@ -72,7 +72,7 @@ public class PluginsDataStorage : IPluginsDataStorage
     {
         CreateTableIfNotExist(pluginMark);
         var command 
-            = PreparedStatement($"update {CleanTableName(pluginMark)} set value = '@arg0' where key = '@arg1'",
+            = PreparedStatement($"update {CleanTableName(pluginMark)} set value = @arg0 where key = @arg1",
                 key,value);
         int res = command.ExecuteNonQuery();
         return res == 1;

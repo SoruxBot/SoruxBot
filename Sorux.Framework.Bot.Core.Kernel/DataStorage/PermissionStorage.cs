@@ -45,7 +45,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist("permissionTarget");
         var command = PreparedStatement(
-            "INSERT INTO permissionTarget (node, state) VALUES ('@arg0','true')",
+            "INSERT INTO permissionTarget (node, state) VALUES (@arg0,'true')",
             condition);
         int res = command.ExecuteNonQuery();
         return res == 1;
@@ -75,7 +75,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"INSERT INTO {CleanTableName(identity)} (node, state) VALUES ('@arg0',true')",node);
+            $"INSERT INTO {CleanTableName(identity)} (node, state) VALUES (@arg0,true)",node);
         command.ExecuteNonQuery();
         return AddNodeCondition(condition);
     }
@@ -84,7 +84,7 @@ public class PermissionStorage
     {
         CreateTableIfNotExist(identity);
         var command = PreparedStatement(
-            $"DELETE FROM {CleanTableName(identity)} WHERE node = '@arg0'",node);
+            $"DELETE FROM {CleanTableName(identity)} WHERE node = @arg0",node);
         // FIXME: NEED? command.ExecuteNonQuery();
         return RemoveNodeCondition(condition);
     }
