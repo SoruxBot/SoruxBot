@@ -15,7 +15,7 @@ public class PermissionStorage
         command.CommandText = sql;
         for (int i = 0; i < args.Length; i++)
         {
-            command.Parameters["@arg" + i].Value = args[i];
+            command.Parameters.AddWithValue("@arg" + i, args[i]);
         }
 
         Console.WriteLine("GGGGGGG: " + command.CommandText);
