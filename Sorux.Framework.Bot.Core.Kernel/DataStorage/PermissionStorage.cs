@@ -8,6 +8,17 @@ public class PermissionStorage
 {
     private SQLiteConnection _sqLiteConnection;
 
+    private SQLiteCommand PreparedStatement(string sql, params string[] args)
+    {
+        var command = new SQLiteCommand(sql, _sqLiteConnection);
+        foreach (var t in args)
+        {
+            command.Parameters.Add(t);
+        }
+
+        return command;
+    }
+
     public PermissionStorage()
     {
         _sqLiteConnection = new SQLiteConnection("Data Source=" + DsLocalStorage.GetPluginsPermissionDataPath());
@@ -16,16 +27,19 @@ public class PermissionStorage
 
     private void CreateTableIfNotExist(string tableName)
     {
-        string sql = "create table  if not exists " + tableName + " (node varchar(255), state varchar(255))";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        // preparestatement
+        var command =  PreparedStatement(
+            "CREATE TABLE IF NOT EXISTS ? (node varchar(255), state varchar(255))",
+            tableName);
         command.ExecuteNonQuery();
     }
 
     public bool AddNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
-        string sql = $"insert into permissionTarget (node, state) values ('{condition}','true')";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = PreparedStatement(
+            "INSERT INTO permissionTarget (node, state) VALUES (?,'true')",
+            condition);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -33,8 +47,9 @@ public class PermissionStorage
     public bool RemoveNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
-        string sql = $"delete from permissionTarget where node = '{condition}'";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = PreparedStatement(
+            $"DELETE FROM permissionTarget WHERE node = ?",
+            condition);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -42,8 +57,9 @@ public class PermissionStorage
     public bool GetNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
-        string sql = $"select state from permissionTarget where node = '{condition}'";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = PreparedStatement(
+            $"SELECT state FROM permissionTarget WHERE node = ?",
+            condition);
         object res = command.ExecuteScalar();
         return res != null && ((string)res).Equals("true");
     }
@@ -51,8 +67,9 @@ public class PermissionStorage
     public bool AddPermission(string identity, string node, string condition)
     {
         CreateTableIfNotExist(identity);
-        string sql = $"insert into {identity} (node, state) values ('{node}','true')";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = PreparedStatement(
+            $"INSERT INTO ? (node, state) VALUES (?,'true')",
+            identity, node);
         command.ExecuteNonQuery();
         return AddNodeCondition(condition);
     }
@@ -60,16 +77,18 @@ public class PermissionStorage
     public bool RemovePermission(string identity, string node, string condition)
     {
         CreateTableIfNotExist(identity);
-        string sql = $"delete from {identity} where node = '{node}'";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = PreparedStatement(
+            $"DELETE FROM ? WHERE node = ?", 
+            identity, node);
+        // FIXME: NEED? command.ExecuteNonQuery();
         return RemoveNodeCondition(condition);
     }
 
     public string GetPersonPermissionList(string identity)
     {
         CreateTableIfNotExist(identity);
-        string sql = $"select node from {identity}";
-        SQLiteCommand command = new SQLiteCommand(sql, _sqLiteConnection);
+        var command = PreparedStatement(
+            $"SELECT node FROM ?", identity);
         SQLiteDataReader sqLiteDataReader = command.ExecuteReader();
         StringBuilder stringBuilder = new StringBuilder();
         while (sqLiteDataReader.Read())
