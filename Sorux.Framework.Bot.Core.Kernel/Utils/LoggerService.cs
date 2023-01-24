@@ -51,10 +51,7 @@ namespace Sorux.Framework.Bot.Core.Kernel.Utils
             }
 
             Type? logType = logMethod.ReflectedType;
-            if (logType == null)
-            {
-                return _logger;
-            }
+            if (logType == null)  return _logger;
 
             return _map.GetOrAdd(logType, sp => _loggerFactory.CreateLogger(sp));
         }

@@ -5,8 +5,6 @@ using Sorux.Framework.Bot.Core.Kernel.Utils;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Sorux.Framework.Bot.Core.Interface.PluginsSDK.Models;
-using Sorux.Framework.Bot.Core.Interface.PluginsSDK.SDK.Basic;
-using Sorux.Framework.Bot.Core.Kernel.APIServices;
 using Sorux.Framework.Bot.Core.Kernel.DataStorage;
 
 namespace Sorux.Framework.Bot.Core.Kernel.Builder
@@ -29,10 +27,8 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                     var loggerFactory = LoggerFactory.Create(builder =>
                     {
                         builder.AddConsole();
-                        if (config["LoggerDebug"] != null && config["LoggerDebug"]!.Equals("true"))
-                        {
+                        if (config["LoggerDebug"] == "true")
                             builder.AddDebug();
-                        }
 
                         services.AddSingleton(builder);
                     });
@@ -104,15 +100,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                         throw new DllNotFoundException();
                 }
             }
-            else
+            else if (mqModule != "$None")
             {
-                if (!mqModule!.Equals("$None"))
-                {
-                    mqPath = mqPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
-                    Assembly assembly = Assembly.Load(mqPath);
-                    Type type = assembly.GetType(mqModule!) ?? throw new DllNotFoundException();
-                    services.AddSingleton<IMessageQueue>(s => (IMessageQueue)Activator.CreateInstance(type)!);
-                }
+                mqPath = mqPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
+                Assembly assembly = Assembly.Load(mqPath);
+                Type type = assembly.GetType(mqModule!) ?? throw new DllNotFoundException();
+                services.AddSingleton<IMessageQueue>(s => (IMessageQueue)Activator.CreateInstance(type)!);
             }
 
             //回复通信
@@ -132,15 +125,12 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                         throw new DllNotFoundException();
                 }
             }
-            else
+            else if (rqModule != "$None")
             {
-                if (!rqModule!.Equals("$None"))
-                {
-                    rqPath = rqPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
-                    Assembly assembly = Assembly.Load(rqPath);
-                    Type type = assembly.GetType(rqModule!) ?? throw new DllNotFoundException();
-                    services.AddSingleton<IResponseQueue>(s => (IResponseQueue)Activator.CreateInstance(type)!);
-                }
+                rqPath = rqPath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
+                Assembly assembly = Assembly.Load(rqPath);
+                Type type = assembly.GetType(rqModule!) ?? throw new DllNotFoundException();
+                services.AddSingleton<IResponseQueue>(s => (IResponseQueue)Activator.CreateInstance(type)!);
             }
 
             //插件数据文件储存
@@ -157,17 +147,14 @@ namespace Sorux.Framework.Bot.Core.Kernel.Builder
                         throw new DllNotFoundException();
                 }
             }
-            else
+            else if (pluginsDataStorageModule != "$None")
             {
-                if (!pluginsDataStorageModule!.Equals("$None"))
-                {
-                    pluginsDataStoragePath =
-                        pluginsDataStoragePath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
-                    Assembly assembly = Assembly.Load(pluginsDataStoragePath);
-                    Type type = assembly.GetType(pluginsDataStorageModule!) ?? throw new DllNotFoundException();
-                    services.AddSingleton<IPluginsDataStorage>(
-                        s => (IPluginsDataStorage)Activator.CreateInstance(type)!);
-                }
+                pluginsDataStoragePath =
+                    pluginsDataStoragePath!.Replace("$LocalRunPath", Directory.GetCurrentDirectory());
+                Assembly assembly = Assembly.Load(pluginsDataStoragePath);
+                Type type = assembly.GetType(pluginsDataStorageModule!) ?? throw new DllNotFoundException();
+                services.AddSingleton<IPluginsDataStorage>(
+                    s => (IPluginsDataStorage)Activator.CreateInstance(type)!);
             }
         }
     }
