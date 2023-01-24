@@ -25,7 +25,6 @@ public static class QqMessageExtension
     public static string? QqGetSex(this MessageContext messageContext)
         => messageContext.QqGetSender("sex");
 
-
     public static string? QqGetAge(this MessageContext messageContext)
         => messageContext.QqGetSender("age");
 
@@ -300,40 +299,14 @@ public static class QqMessageExtension
         string? id, string? c)
     {
         StringBuilder arg = new StringBuilder();
-        if (file != null)
-        {
-            arg.Append(",file=" + DealWithSpecialCode(file));
-        }
-
-        if (type != null)
-        {
-            arg.Append(",type=" + DealWithSpecialCode(type));
-        }
-
-        if (subType != null)
-        {
-            arg.Append(",subType=" + DealWithSpecialCode(subType));
-        }
-
-        if (url != null)
-        {
-            arg.Append(",url=" + DealWithSpecialCode(url));
-        }
-
-        if (cache != null)
-        {
-            arg.Append(",cache=" + (cache.Value ? "1" : "0"));
-        }
-
-        if (id != null)
-        {
-            arg.Append(",id=" + DealWithSpecialCode(id));
-        }
-
-        if (c != null)
-        {
-            arg.Append(",c=" + DealWithSpecialCode(c));
-        }
+        arg.AppendNotNullArgs("file", file);
+        arg.AppendNotNullArgs("type", type);
+        arg.AppendNotNullArgs("subType", subType);
+        arg.AppendNotNullArgs("url", url);
+        var cacheS = cache == null ? null : cache.Value ? "1" : "0";
+        arg.AppendNotNullArgs("cache", cacheS);
+        arg.AppendNotNullArgs("id", id);
+        arg.AppendNotNullArgs("c", c);
 
         return "[CQ:image" + arg + "]";
     }
@@ -349,27 +322,12 @@ public static class QqMessageExtension
     /// <returns></returns>
     public static string QqCreateReply(string id, string? text, string? qq, string? time, string? seq)
     {
-        var args = DealWithSpecialCode(id);
-
-        if (text != null)
-        {
-            args = args + ",text=" + text;
-        }
-
-        if (qq != null)
-        {
-            args = args + ",qq=" + qq;
-        }
-
-        if (time != null)
-        {
-            args = args + ",time=" + time;
-        }
-
-        if (seq != null)
-        {
-            args = args + ",seq=" + seq;
-        }
+        var args = new StringBuilder();
+        args.Append(DealWithSpecialCode(id));
+        args.AppendNotNullArgs("text", text, false);
+        args.AppendNotNullArgs("qq", qq, false);
+        args.AppendNotNullArgs("time", time, false);
+        args.AppendNotNullArgs("seq", seq, false);
 
         return "[CQ:reply,id=" + args + "]";
     }
@@ -405,10 +363,8 @@ public static class QqMessageExtension
     public static string QqCreateXmlMessage(string data, string? resid)
     {
         var args = DealWithSpecialCode(data);
-        if (resid != null)
-        {
-            args = args + ",resid=" + resid;
-        }
+
+        if (resid != null) args += ",resid=" + resid;
 
         return "[CQ:xml,data=" + args + "]";
     }
@@ -426,12 +382,16 @@ public static class QqMessageExtension
     public static string QqCreateJsonMessage(string data, string? resid)
     {
         var args = DealWithSpecialCode(data);
-        if (resid != null)
-        {
-            args = args + ",resid=" + resid;
-        }
+
+        if (resid != null) args += ",resid=" + resid;
 
         return "[CQ:xml,data=" + args + "]";
+    }
+
+    private static void AppendNotNullArgs(this StringBuilder arg, string name, string? value, bool specialCode = true)
+    {
+        if (value == null) return;
+        arg.Append("," + name + "=" + (specialCode ? DealWithSpecialCode(value) : value));
     }
 
     /// <summary>
@@ -451,36 +411,12 @@ public static class QqMessageExtension
         StringBuilder arg = new StringBuilder();
         arg.Append(",file=" + DealWithSpecialCode(file));
 
-        if (minwidth != null)
-        {
-            arg.Append(",minwidth=" + DealWithSpecialCode(minwidth));
-        }
-
-        if (minheight != null)
-        {
-            arg.Append(",minheight=" + DealWithSpecialCode(minheight));
-        }
-
-        if (maxwidth != null)
-        {
-            arg.Append(",maxwidth=" + DealWithSpecialCode(maxwidth));
-        }
-
-
-        if (icon != null)
-        {
-            arg.Append(",icon=" + DealWithSpecialCode(icon));
-        }
-
-        if (maxheight != null)
-        {
-            arg.Append(",maxheight=" + DealWithSpecialCode(maxheight));
-        }
-
-        if (source != null)
-        {
-            arg.Append(",source=" + DealWithSpecialCode(source));
-        }
+        arg.AppendNotNullArgs("minwidth", minwidth);
+        arg.AppendNotNullArgs("minheight", minheight);
+        arg.AppendNotNullArgs("maxwidth", maxwidth);
+        arg.AppendNotNullArgs("maxheight", maxheight);
+        arg.AppendNotNullArgs("source", source);
+        arg.AppendNotNullArgs("icon", icon);
 
         return "[CQ:cardimage" + arg + "]";
     }
