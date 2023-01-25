@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "Sorux.Bot.WebgRpc";
+
+import "google/protobuf/empty.proto";
+package message;
+
+
+service Message {
+  // Sends a greeting
+  rpc MessagePushStack (MessageRequest) returns (google.protobuf.Empty);
+}
+
+// The request message containing the user's name.
+message MessageRequest {
+  string payload = 1;
+}
+
+// The response message containing the greetings.

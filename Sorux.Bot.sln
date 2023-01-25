@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Bot.Core.Kernel", "Sorux.Bot.Core.Kernel\Sorux.Bot.Core.Kernel.csproj", "{FFA3C9D9-27AD-4076-93B0-247CA9D2E753}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Bot.Core.Wrapper", "Sorux.Bot.Core.Wrapper\Sorux.Bot.Core.Wrapper.csproj", "{6BC3C5D0-FED6-4AFF-9874-434B7D197714}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Bot.Core.Interface", "Sorux.Bot.Core.Interface\Sorux.Bot.Core.Interface.csproj", "{87EDD936-32EA-40B5-8D31-8302A6F9E747}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorux.Bot.Provider.CqHttp", "Sorux.Bot.Provider.CqHttp\Sorux.Bot.Provider.CqHttp.csproj", "{E167CF82-7E7F-4951-A306-929567B1DB73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFA3C9D9-27AD-4076-93B0-247CA9D2E753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFA3C9D9-27AD-4076-93B0-247CA9D2E753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFA3C9D9-27AD-4076-93B0-247CA9D2E753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFA3C9D9-27AD-4076-93B0-247CA9D2E753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC3C5D0-FED6-4AFF-9874-434B7D197714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC3C5D0-FED6-4AFF-9874-434B7D197714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC3C5D0-FED6-4AFF-9874-434B7D197714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC3C5D0-FED6-4AFF-9874-434B7D197714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87EDD936-32EA-40B5-8D31-8302A6F9E747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E167CF82-7E7F-4951-A306-929567B1DB73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E167CF82-7E7F-4951-A306-929567B1DB73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E167CF82-7E7F-4951-A306-929567B1DB73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E167CF82-7E7F-4951-A306-929567B1DB73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30FBFA30-E599-4FC6-9937-5CF763771A0E}
+	EndGlobalSection
+EndGlobal
