@@ -7,24 +7,6 @@ namespace Sorux.Framework.Bot.Core.Kernel.DataStorage;
 public class PluginsDataStorage : IPluginsDataStorage
 {
     private SQLiteConnection _sqLiteConnection;
-    
-    private string CleanTableName(string tableName)
-        => tableName.Replace("'", "")
-            .Replace("\"", "")
-            .Replace(";", "")
-            .Replace("#", "")
-            .Replace("--", "");
-
-    private SQLiteCommand PreparedStatement(string sql, params string[]? args)
-    {
-        var command = new SQLiteCommand(sql, _sqLiteConnection);
-        if (args == null) return command;
-        for (int i = 0; i < args.Length; i++)
-        {
-            command.Parameters.AddWithValue("@arg" + i, args[i]);
-        }
-        return command;
-    }
 
     public PluginsDataStorage()
     {
@@ -34,18 +16,17 @@ public class PluginsDataStorage : IPluginsDataStorage
 
     private void CreateTableIfNotExist(string pluginMark)
     {
-        
-        var command =  PreparedStatement(
-            $"CREATE TABLE IF NOT EXISTS {CleanTableName(pluginMark)} (key varchar(255), value varchar(255))");
+        var command = _sqLiteConnection.PreparedStatement(
+            $"CREATE TABLE IF NOT EXISTS {DataTableHelper.GetTableName(pluginMark)} (key varchar(255), value varchar(255))");
         command.ExecuteNonQuery();
     }
 
     public bool AddStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
-        var command
-            = PreparedStatement($"insert into {CleanTableName(pluginMark)} (key, value) values (@arg0,@arg1)", key,
-                value);
+        var command = _sqLiteConnection.PreparedStatement(
+            $"INSERT INTO {DataTableHelper.GetTableName(pluginMark)} (key, value) VALUES (@arg0,@arg1)",
+            key, value);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -53,8 +34,9 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool RemoveStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
-        var command
-            = PreparedStatement($"insert into {CleanTableName(pluginMark)} where key = @arg0", key);
+        var command = _sqLiteConnection.PreparedStatement(
+            $"INSERT INTO {DataTableHelper.GetTableName(pluginMark)} WHERE key = @arg0",
+            key);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }
@@ -62,8 +44,9 @@ public class PluginsDataStorage : IPluginsDataStorage
     public string GetStringSettings(string pluginMark, string key)
     {
         CreateTableIfNotExist(pluginMark);
-        var command 
-            = PreparedStatement($"select value from {CleanTableName(pluginMark)} where key = @arg0",key);
+        var command = _sqLiteConnection.PreparedStatement(
+            $"SELECT VALUE FROM {DataTableHelper.GetTableName(pluginMark)} WHERE key = @arg0",
+            key);
         string res = (string)command.ExecuteScalar();
         return res;
     }
@@ -71,9 +54,9 @@ public class PluginsDataStorage : IPluginsDataStorage
     public bool EditStringSettings(string pluginMark, string key, string value)
     {
         CreateTableIfNotExist(pluginMark);
-        var command 
-            = PreparedStatement($"update {CleanTableName(pluginMark)} set value = @arg0 where key = @arg1",
-                key,value);
+        var command = _sqLiteConnection.PreparedStatement(
+            $"UPDATE {DataTableHelper.GetTableName(pluginMark)} SET value = @arg0 WHERE key = @arg1",
+            key, value);
         int res = command.ExecuteNonQuery();
         return res == 1;
     }

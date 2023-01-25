@@ -29,53 +29,33 @@
         }
 
         public static string GetMessageQueuePath()
-        {
-            return AppendCurrentDirectory("Config", "MessageQueue.sb");
-        }
+            => AppendCurrentDirectory("Config", "MessageQueue.sb");
 
         public static string GetPluginsDataDirectory()
-        {
-            return AppendCurrentDirectory("Plugins", "Data");
-        }
+            => AppendCurrentDirectory("Plugins", "Data");
 
         public static string GetPluginsDataDirectory(string name)
-        {
-            return AppendCurrentDirectory("Plugins", "Data", name);
-        }
+            => AppendCurrentDirectory("Plugins", "Data", name);
 
         public static string GetPluginsDataFile(string name, string key)
-        {
-            return AppendCurrentDirectory("Plugins", "Data", name, key + ".bin");
-        }
+            => AppendCurrentDirectory("Plugins", "Data", name, key + ".bin");
 
         public static string GetPluginsConfigDirectory()
-        {
-            return AppendCurrentDirectory("Plugins", "Config");
-        }
+            => AppendCurrentDirectory("Plugins", "Config");
 
         public static string GetPluginsDirectory()
-        {
-            return AppendCurrentDirectory("Plugins", "Bin");
-        }
+            => AppendCurrentDirectory("Plugins", "Bin");
 
         public static string GetCurrentPath()
-        {
-            return Directory.GetCurrentDirectory();
-        }
+            => Directory.GetCurrentDirectory();
 
         public static string GetPluginsSqliteDataPath()
-        {
-            return AppendCurrentDirectory("Lib", "pluginsData.bin");
-        }
+            => AppendCurrentDirectory("Lib", "pluginsData.bin");
 
         public static string GetPluginsPermissionDataPath()
-        {
-            return AppendCurrentDirectory("Lib", "pluginsPermission.bin");
-        }
+            => AppendCurrentDirectory("Lib", "pluginsPermission.bin");
 
         public static string GetResponseQueuePath()
-        {
-            return AppendCurrentDirectory("Config", "ResponseQueue.sb");
-        }
+            => AppendCurrentDirectory("Config", "ResponseQueue.sb");
     }
 }

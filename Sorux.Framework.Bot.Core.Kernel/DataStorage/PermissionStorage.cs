@@ -1,30 +1,11 @@
 ﻿using System.Data.SQLite;
 using System.Text;
-using Sorux.Framework.Bot.Core.Kernel.Utils;
 
 namespace Sorux.Framework.Bot.Core.Kernel.DataStorage;
 
 public class PermissionStorage
 {
     private SQLiteConnection _sqLiteConnection;
-    
-    private string CleanTableName(string tableName)
-        => tableName.Replace("'", "")
-            .Replace("\"", "")
-            .Replace(";", "")
-            .Replace("#", "")
-            .Replace("--", "");
-
-    private SQLiteCommand PreparedStatement(string sql, params string[]? args)
-    {
-        var command = new SQLiteCommand(sql, _sqLiteConnection);
-        if (args == null) return command;
-        for (int i = 0; i < args.Length; i++)
-        {
-            command.Parameters.AddWithValue("@arg" + i, args[i]);
-        }
-        return command;
-    }
 
     public PermissionStorage()
     {
@@ -35,16 +16,16 @@ public class PermissionStorage
     private void CreateTableIfNotExist(string tableName)
     {
         // preparestatement
-        var command =  PreparedStatement(
-            $"CREATE TABLE IF NOT EXISTS {CleanTableName(tableName)} (node varchar(255), state varchar(255))");
-        
+        var command = _sqLiteConnection.PreparedStatement(
+            $"CREATE TABLE IF NOT EXISTS {DataTableHelper.GetTableName(tableName)} (node varchar(255), state varchar(255))");
+
         command.ExecuteNonQuery();
     }
 
     public bool AddNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
-        var command = PreparedStatement(
+        var command = _sqLiteConnection.PreparedStatement(
             "INSERT INTO permissionTarget (node, state) VALUES (@arg0,'true')",
             condition);
         int res = command.ExecuteNonQuery();
@@ -54,7 +35,7 @@ public class PermissionStorage
     public bool RemoveNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
-        var command = PreparedStatement(
+        var command = _sqLiteConnection.PreparedStatement(
             $"DELETE FROM permissionTarget WHERE node = @arg0",
             condition);
         int res = command.ExecuteNonQuery();
@@ -64,7 +45,7 @@ public class PermissionStorage
     public bool GetNodeCondition(string condition)
     {
         CreateTableIfNotExist("permissionTarget");
-        var command = PreparedStatement(
+        var command = _sqLiteConnection.PreparedStatement(
             $"SELECT state FROM permissionTarget WHERE node = @arg0",
             condition);
         object res = command.ExecuteScalar();
@@ -74,8 +55,8 @@ public class PermissionStorage
     public bool AddPermission(string identity, string node, string condition)
     {
         CreateTableIfNotExist(identity);
-        var command = PreparedStatement(
-            $"INSERT INTO {CleanTableName(identity)} (node, state) VALUES (@arg0,true)",node);
+        var command = _sqLiteConnection.PreparedStatement(
+            $"INSERT INTO {DataTableHelper.GetTableName(identity)} (node, state) VALUES (@arg0,true)", node);
         command.ExecuteNonQuery();
         return AddNodeCondition(condition);
     }
@@ -83,8 +64,8 @@ public class PermissionStorage
     public bool RemovePermission(string identity, string node, string condition)
     {
         CreateTableIfNotExist(identity);
-        var command = PreparedStatement(
-            $"DELETE FROM {CleanTableName(identity)} WHERE node = @arg0",node);
+        var command = _sqLiteConnection.PreparedStatement(
+            $"DELETE FROM {DataTableHelper.GetTableName(identity)} WHERE node = @arg0", node);
         // FIXME: NEED? command.ExecuteNonQuery();
         return RemoveNodeCondition(condition);
     }
@@ -92,8 +73,8 @@ public class PermissionStorage
     public string GetPersonPermissionList(string identity)
     {
         CreateTableIfNotExist(identity);
-        var command = PreparedStatement(
-            $"SELECT node FROM {CleanTableName(identity)}");
+        var command = _sqLiteConnection.PreparedStatement(
+            $"SELECT node FROM {DataTableHelper.GetTableName(identity)}");
         SQLiteDataReader sqLiteDataReader = command.ExecuteReader();
         StringBuilder stringBuilder = new StringBuilder();
         while (sqLiteDataReader.Read())
